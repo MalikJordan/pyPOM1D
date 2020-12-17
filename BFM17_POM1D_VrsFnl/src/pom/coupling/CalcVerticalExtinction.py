@@ -1,0 +1,3 @@
+def CalcVerticalExtinction():
+
+    return
