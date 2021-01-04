@@ -14,7 +14,7 @@ import numpy as np
 from decimal import *
 
 
-def PROFU(DT2):
+def PROFV(DT2):
 
     from BFM17_POM1D_VrsFnl.src.BFM.General.ModuleGlobalMem import RLEN
     from BFM17_POM1D_VrsFnl.src.pom.phys.POMModule import H, KB, A, C, KM, DZ, DZZ, VH, VHP, \
