@@ -187,7 +187,7 @@ WTADV = np.empty(KB,dtype=float); WSADV = np.empty(KB,dtype=float)
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def path_error(file):
-    message = 'Unable to locate' + file
+    message = 'Unable to locate:    ' + file
     print(message)
 
 #   EOC
