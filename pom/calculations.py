@@ -2,7 +2,7 @@
 # MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 from cppdefs import *
-from pom.modules import *
+# from pom.modules import *
 import numpy as np
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -21,10 +21,10 @@ def adverte(FB,F,FF,W):
     #   LOCAL VARIABLES
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    FB, F, FF = np.empty(KB,dtype=float)
-    W = np.empty(KB,dtype=float)
-    DTI2 = float()
-    K = int()
+    # FB, F, FF = np.empty(KB,dtype=float)
+    # W = np.empty(KB,dtype=float)
+    # DTI2 = float()
+    # K = int()
 
     F[KB-1] = F[KB-2]
     FB[KB-1] = FB[KB-2]
@@ -39,7 +39,7 @@ def adverte(FB,F,FF,W):
     for K in range(1,KB-1):
         FF[K] = DZR[K] * (F[K]*W[K+1] - F[K-1]*W[K])
 
-    return
+    return FF
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -63,19 +63,20 @@ def CALCDEPTH(Z,ZZ,DZ,DZZ,KB,KL1,KL2):
     Z[0] = 0.
     ZZ[0] = -DEL1/2.
 
-    for K in range(1,KL1 - 2):
+    for K in range(1,int(KL1) - 1):
         Z[K] = -DEL1 * np.exp(.693147 * float(K - 2))
         ZZ[K] = -DEL1 * np.exp(.693147 * (float(K) - 1.5))
 
-    for K in range(KL1 - 2,KL2 + 1):
+    for K in range(int(KL1) - 1,int(KL2) + 2):
         Z[K] = - (float(K) - CC) / BB
         ZZ[K] = - (float(K) - CC + 0.5) / BB
 
-    for K in range(0,KB - 1):
+    for K in range(0,int(KB) - 1):
         DZ[K] = Z[K] - Z[K+1]
         DZZ[K] = ZZ[K] - ZZ[K+1]
 
-    return
+
+    return Z, ZZ, DZ, DZZ
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -94,7 +95,7 @@ def CalcLightDistribution():
         box_no = BoxNumberZ
         EIR[box_no] = EIR[box_no - 1] * np.exp(- 1.0 * xEPS[box_no - 1] * Depth[box_no - 1])
 
-    return
+    return EIR
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -119,11 +120,12 @@ def DENS(T, S, ZZ, DT, RHO, KB):
         #   HERE, THE (APPROXIMATE) PRESSURE IS IN UNITS OF BARS
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-        P = -GRAV * 1.025 * ZZ(K) * DT * 0.01
+        P = -GRAV * 1.025 * ZZ[K] * DT * 0.01
         RHOR = 999.842594 + 6.793952E-2 * TR - 9.095290E-3 * TR ** 2 + \
                1.001685E-4 * TR ** 3 - 1.120083E-6 * TR ** 4 + 6.536332E-9 * TR ** 5
-        RHOR = RHOR + (0.824493 - 4.0899E-3 * TR + 7.6438E-5 * TR ** 2 - 8.2467E-7 * TR ** 3 + 5.3875E-9 * TR ** 4) * \
-               SR + (-5.72466E-3 + 1.0227E-4 * TR - 1.6546E-6 * TR ** 2) * (np.abs(SR)) ** 1.5 + 4.8314E-4 * SR ** 2
+        RHOR = RHOR + (0.824493 - 4.0899E-3 * TR + 7.6438E-5 * TR ** 2 -
+                             8.2467E-7 * TR ** 3 + 5.3875E-9 * TR ** 4) * SR + \
+                  (-5.72466E-3 + 1.0227E-4 * TR - 1.6546E-6 * TR ** 2) * (np.abs(SR)) ** 1.5 + 4.8314E-4 * SR ** 2
 
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         #   FOR SHALLOW WATER THE PRESSURE DEPENDENCY CAN BE NEGLECTED
@@ -136,7 +138,7 @@ def DENS(T, S, ZZ, DT, RHO, KB):
 
     RHO[KB - 1] = RHO[KB - 2]
 
-    return
+    return RHO
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -163,6 +165,7 @@ def DENS(T, S, ZZ, DT, RHO, KB):
 def MLDPTH(ZZ,T,KB,ZZMLD):
 
     ZERO = 1.E-06
+    T = T
 
     for K in range(0,KB - 1):
 
@@ -171,7 +174,7 @@ def MLDPTH(ZZ,T,KB,ZZMLD):
 
         ZZMLD[K] = ZZ[K] - (T[K] + 0.2 - T[0]) * (ZZ[K] - ZZ[K + 1]) / (T[K] - T[K + 1] + ZERO)
 
-    return
+    return ZZMLD
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
