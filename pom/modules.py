@@ -26,7 +26,7 @@ NMLUNIT = 310
 
 # THE UNIT OF THE LOG FILE IS NOT A PARAMETER TO ALLOW PARALLEL WRITING
 LOGUNIT = 0
-bef_lwp = True
+bfm_lwp = True
 ZERO = float(0.0)
 ONE = float(1.0)
 PI = float(3.14159265359)

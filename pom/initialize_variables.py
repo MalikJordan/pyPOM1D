@@ -212,6 +212,58 @@ def read_pom_input():
 # WSU1, WSV1, SSS1, SLUX1, ISM1, SCLIM1, TCLIM1, WCLIM1, WEDDY1, WEDDY2, SB, TB, \
 #     SWRAD1, WTSURF1, QCORR1, NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1 = read_pom_input()
 
+
+
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#
+# SUBROUTINE: get_TS_IC
+#
+# DESCRIPTION: This subroutine opens and reads files containing the T&S initial conditions
+#              Files are read in direct access mode reading path specified in pom_input nml
+#
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+
+def get_TS_IC():
+
+    from main_pombfm1d import current_path
+    from pom.modules import KB
+    from pom.modules import path_error
+
+    Sprofile_input = current_path + '/inputs/POM_BFM17/init_prof_S_150m_bermuda_killworth2.da'
+    Tprofile_input = current_path + '/inputs/POM_BFM17/init_prof_T_150m_bermuda_killworth2.da'
+
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    #   SALINITY INITIAL PROFILE
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    if not path.exists(Sprofile_input):
+        path_error(Sprofile_input)
+    open29 = np.fromfile(Sprofile_input, dtype=float)
+    SB = np.zeros(KB)
+    for k in range(0, KB):
+        SB[k] = open29[k]
+
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    #   TEMPERATURE INITIAL PROFILE
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    if not path.exists(Tprofile_input):
+        path_error(Tprofile_input)
+    open10 = np.fromfile(Tprofile_input, dtype=float)
+    TB = np.zeros(KB)
+    for k in range(0, KB):
+        TB[k] = open10[k]
+
+    T = np.zeros(KB)
+    S = np.zeros(KB)
+
+    T[:] = TB[:]
+    S[:] = SB[:]
+
+
+
 #   EOC
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   MODEL  POM - Princeton Ocean Model

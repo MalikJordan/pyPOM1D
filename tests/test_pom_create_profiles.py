@@ -1,15 +1,39 @@
-from cppdefs import *
-from pom.modules import *
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#   TESTS FOR POM PROFILES
+#       - profe
+#       - profq
+#       - profts
+#       - profu
+#       - profv
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+import numpy as np
+import matplotlib as plt
+from pom.calculations import CALCDEPTH
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-# MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# PROFE
 #
-# # ROUTINE: PROFE
 #
-# DESCRIPTION:  This subroutine solves for vertical diffusivity.
 #
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+H = 16.
+KB = 31
+A = np.empty(KB,dtype=float)
+C = np.empty(KB,dtype=float)
+KH = np.empty(KB,dtype=float)
+VH = np.empty(KB,dtype=float)
+VHP = np.empty(KB,dtype=float)
+
+KL1 = np.floor(0.3 * KB)
+KL2 = KB - 2
+x = np.ones(KB)
+
+Z = np.empty(KB)
+ZZ = np.empty(KB)
+DZ = np.empty(KB)
+DZZ = np.empty(KB)
+Z, ZZ, DZ, DZZ = CALCDEPTH(Z, ZZ, DZ, DZZ, KB, KL1, KL2)
+
 def PROFE(FF, WFSURF, FSURF, NBC, DT2):
 
     UMOLPR = 1.E-05
@@ -57,17 +81,23 @@ def PROFE(FF, WFSURF, FSURF, NBC, DT2):
     return FF
 
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-# MODEL  POM - Princeton Ocean Model
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# Comments:
 #
-# # ROUTINE: PROFQ1D
 #
-# DESCRIPTION:  This subroutine solves for the turbulent closure.
-#               Turbulent kinetic energy (Q2/2)
-#               Turbulent length scale (Q2l)
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# PROFQ
+#
+#
+#
+Q2F = np.empty(KB,dtype=float)
+
+
+
 def PROFQ(DT2):
 
 
@@ -239,39 +269,20 @@ def PROFQ(DT2):
 
     return Q2F, Q2LF, KM, KH, KQ
 
+# Comments:
+#
+#
+#
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-# MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# PROFTS
 #
-# # ROUTINE: PROFTS
 #
-# DESCRIPTION:  This subroutine solves for the conservative (Temperature and Salinity)
-#               and non-conservative (BFM state var's) scalars of BFM-POM1D.
-#               It handles the surface and bottom boundary condition.
-#               When used to compute temperature it handles also the solar radiation
-#               penetration along the water column, Based on:
 #
-#               Paulson C. A., Simpson J.J. (1977)
-#               Irradiance measurements in the upper ocean.
-#               Journal of Physical Oceanography, 7, 952-956.
-#
-#               Note that when the system is run in diagnostic mode (prescribed
-#               Temperature and salinity values), the soutine is used only to compute
-#               the vertical profiles of the non-conservative BFM scalars.
-#
-# THE ROUTINE DUMMY ARGUMENTS ARE:
-#               FF:     Property to be computed
-#               WFSURF: Property surface flux (for temperature it lacks the incoming surface solar radiation).
-#               WFBOT:  Property bottom flux.
-#               SWRAD:  Incoming solar radiation
-#               FSURF:  Prescribed surface property value
-#               NBC:    Flag for definition of the surface boundary condition
-#               DT2:    Twice the Time step.
-#               NTP:    Flag to choose the Optical (Jerlov) Water type
-#               UMOL:   Background diffusivity.
-#
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
 def PROFTS(FF, WFSURF, WFBOT, SWRAD, FSURF, NBC, DT2, NTP, UMOL):
 
     # FLAG FOR BOUNDARY CONDITION DEFINITION
@@ -376,17 +387,20 @@ def PROFTS(FF, WFSURF, WFBOT, SWRAD, FSURF, NBC, DT2, NTP, UMOL):
 
     return FF
 
+# Comments:
+#
+#
+#
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-# MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# PROFU
 #
-# # ROUTINE: PROFU
 #
-# DESCRIPTION:  This subroutine solves for the equation
-#               DT2*(KM*U')' - U= -UB
 #
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
 def PROFU(DT2):
 
     # UMOL1 = 0.0007
@@ -402,7 +416,7 @@ def PROFU(DT2):
     for K in range(1, KB - 2):
         VHP[K] = 1. / (A[K] + C[K] * (1. - VH[K - 1]) - 1.)
         VH[K] = A[K] * VHP[K]
-        VHP[K] = (C[K] * VHP[K - 1] - UF[K]) * VHP(K)
+        VHP[K] = (C[K] * VHP[K - 1] - UF[K]) * VHP[K]
 
     VH[0] = A[0] / (A[0] - 1.)
     VHP[0] = (-DT2 * WUSURF / (-DZ[0] * DH) - UF[0]) / (A[0] - 1.)
@@ -423,26 +437,28 @@ def PROFU(DT2):
         KI = KB - K
         UF[KI - 1] = VH[KI - 1] * UF[KI] + VHP[KI - 1]
 
-    # WUBOT = -CBC * UF[KB - 2]  # 92
+    WUBOT = -CBC * UF[KB - 2]  # 92
     for K in range(0, KB):
         VH[K] = 0.
         VHP[K] = 0.
         A[K] = 0.
         C[K] = 0.
 
-    return UF
+    return UF, WUBOT
 
+# Comments:
+#
+#
+#
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-# MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# PROFV
 #
-# # ROUTINE: PROFV
 #
-# DESCRIPTION:  This subroutine solves for the equation
-#               DT2*(KM*V')' - V= -VB
 #
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def PROFV(DT2):
 
     DH = H
@@ -478,17 +494,18 @@ def PROFV(DT2):
         KI = KB - K
         VF[KI] = VH[KI] * VF[KI + 1] + VHP[KI]
 
-    # WVBOT = -CBC * VF[KB - 2]  # 92
+    WVBOT = -CBC * VF[KB - 2]  # 92
     for K in range(0, KB):
         VH[K] = 0.
         VHP[K] = 0.
         A[K] = 0.
         C[K] = 0.
 
-    return VF
+    return VF, WVBOT
 
-
-# EOC
+# Comments:
+#
+#
+#
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#   MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
