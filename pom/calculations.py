@@ -79,6 +79,42 @@ def CALCDEPTH(Z,ZZ,DZ,DZZ,KB,KL1,KL2):
     return Z, ZZ, DZ, DZZ
 
 
+def calculate_vertical_grid_spacing(vertical_layers,surface_log_distribution,bottom_log_distribution):
+
+    # KL1 = surface_log_distribution
+    # KL2 = bottom_log_distribution
+    # KB = vertical_layers
+
+    vertical_coordinates = np.zeros(vertical_layers,dtype=float)
+    vertical_coordinates_staggered = np.zeros(vertical_layers,dtype=float)
+    vertical_spacing = np.zeros(vertical_layers, dtype=float)
+    vertical_spacing_staggered = np.zeros(vertical_layers, dtype=float)
+
+    surface_logspace_layers = surface_log_distribution - 2.
+    bottom_logspace_layers = vertical_layers - bottom_log_distribution - 1.
+
+    initial_spacing = (bottom_log_distribution - surface_log_distribution + 4.) * 2**(-6.3)
+
+    vertical_coordinates_staggered[0] = 0.5 * initial_spacing
+
+    for i in range(1,int(surface_log_distribution)-1):
+        vertical_coordinates[i] = -initial_spacing * 2**(i-2)
+        vertical_coordinates_staggered[i] = -initial_spacing * 2**(i-1.5)
+
+    for i in range(int(surface_log_distribution)-1,vertical_layers):
+        vertical_coordinates[i]  = -(i - surface_logspace_layers) / (bottom_log_distribution
+                                                                     - surface_log_distribution + 4.)
+        vertical_coordinates_staggered[i] = -(i - surface_logspace_layers + 0.5) / (bottom_log_distribution
+                                                                                    - surface_log_distribution + 4.)
+
+    for i in range(0,vertical_layers-1):
+        vertical_spacing[i] = vertical_coordinates[i] - vertical_coordinates[i+1]
+        vertical_spacing_staggered[i] = vertical_coordinates_staggered[i] - vertical_coordinates_staggered[i+1]
+
+    return vertical_coordinates, vertical_coordinates_staggered, vertical_spacing, vertical_spacing_staggered
+
+
+
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #
@@ -140,6 +176,37 @@ def DENS(T, S, ZZ, DT, RHO, KB):
 
     return RHO
 
+def calculate_density_profile(temperature,salinity,vertical_coordinates,timestep,vertical_layers):
+
+    density_profile = np.zeros(vertical_layers,dtype=float)
+    gravity = 9.806
+
+    for i in range(0,vertical_layers-1):
+
+        # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+        #   APPROXIMATE PRESSURE IN UNITS OF BARS
+        # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+        pressure = -gravity * 1.025 * vertical_coordinates[i] * timestep * 0.01
+        rho = 999.842594 + 6.793952E-2 * temperature[i] - 9.095290E-3 * temperature[i] ** 2 + \
+               1.001685E-4 * temperature[i] ** 3 - 1.120083E-6 * temperature[i] ** 4 + 6.536332E-9 * temperature[i] ** 5
+        rho = rho + (0.824493 - 4.0899E-3 * temperature[i] + 7.6438E-5 * temperature[i] ** 2 -
+                             8.2467E-7 * temperature[i] ** 3 + 5.3875E-9 * temperature[i] ** 4) * salinity[i] + \
+                  (-5.72466E-3 + 1.0227E-4 * temperature[i] - 1.6546E-6 * temperature[i] ** 2) * \
+                  (np.abs(salinity[i])) ** 1.5 + 4.8314E-4 * salinity[i] ** 2
+        # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+        #   FOR SHALLOW WATER THE PRESSURE DEPENDENCY CAN BE NEGLECTED
+        #   IN WHICH IT SHOULD ALSO BE OMITTED IN PROFQ
+        # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+        density_profile[i] = (rho - 1000.) * 1.E-3
+
+    density_profile[vertical_layers-1] = density_profile[vertical_layers-2]
+
+    return density_profile
+
+
+
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -175,6 +242,22 @@ def MLDPTH(ZZ,T,KB,ZZMLD):
         ZZMLD[K] = ZZ[K] - (T[K] + 0.2 - T[0]) * (ZZ[K] - ZZ[K + 1]) / (T[K] - T[K + 1] + ZERO)
 
     return ZZMLD
+
+def calculate_mixed_layer_depth(vertical_coordinates,temperature,vertical_layers):
+
+    mixed_layer_depth = np.zeros(vertical_layers,dtype=float)
+    zero = 1.E-06
+
+    for i in range(0,vertical_layers-1):
+
+        if temperature[0] > temperature[i]:
+            break
+
+        mixed_layer_depth[i] = vertical_coordinates[i] - (temperature[i] + 0.2 - temperature[0]) * \
+                            (vertical_coordinates[i] - vertical_coordinates[i+1]) / (temperature[i]
+                                                                                        - temperature[i+1] + zero)
+
+    return mixed_layer_depth
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

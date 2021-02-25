@@ -49,7 +49,7 @@ rst_fname_3d = ''
 parallel = False
 parallel_log = False
 parallel_rank = 0
-str = ' '*4
+# str = ' '*4
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   DIMENSION LENGTHS FOR OUTPUT
@@ -87,9 +87,9 @@ except FileNotFoundError:
 if INCLUDE_BEN:
     D2ave_ben = np.empty((dim,dim),dtype=float)
 
-var_names = ' '*64
-var_units = ' '*64
-var_long = ' '*64
+var_names = np.empty(dim,dtype=str)
+var_units = np.empty(dim,dtype=str)
+var_long = np.empty(dim,dtype=str)
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   INCICES OF THE VARIOUS OUTPUT VARIABLES
@@ -157,7 +157,7 @@ if INCLUDE_BEN:
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   ADDITIONAL OUTPUT VARIABLES
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-c1dim = float()
+c1dim = np.empty(dim,dtype=float)
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   BFM variable information for data input
@@ -199,14 +199,14 @@ InitVar = InputInfo
 #   ADDITIONAL 1D ARRAYS
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # INDICES OF BOTTOM AND SURFACE POINTS
-BOTindices = int()
-SRFindices = int()
+BOTindices = np.empty(dim,dtype=int)
+SRFindices = np.empty(dim,dtype=int)
 
 # REAL MASK OF RIVER POINTS AT SURFACE
-RIVmask = float()
+RIVmask = np.empty(dim,dtype=float)
 
 # TOTAL AMOUNT FOR EACH VARIABLE
-D3STATE_tot = float()
+D3STATE_tot = np.empty(dim,dtype=float)
 
 try:
     import INCLUDE_SEAICE
@@ -214,7 +214,7 @@ try:
 except FileNotFoundError:
     INCLUDE_SEAICE = False
 if INCLUDE_SEAICE:
-    D2STATE_ICE_tot = float()
+    D2STATE_ICE_tot = np.empty(dim,dtype=float)
 
 try:
     import INCLUDE_BEN
@@ -222,7 +222,7 @@ try:
 except FileNotFoundError:
     INCLUDE_BEN = False
 if INCLUDE_BEN:
-    D2STATE_BEN_tot = float()
+    D2STATE_BEN_tot = np.empty(dim,dtype=float)
 
 
 try:
@@ -231,18 +231,43 @@ try:
 except FileNotFoundError:
     BFM_NEMO = False
 if BFM_NEMO:
-    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   ADDITIONAL 3D ARAYS
-    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    ZEROS = np.empty((dim,dim,dim))
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    ZEROS = np.empty((dim,dim,dim),dtype=float)
+    # 3D BOOLEAN LAND-SEA MASK
+    SEAmask = np.empty((dim,dim,dim),dtype=bool)
+    # 3D BOOLEAN SEA-BOTTOM MASK
+    BOTmask = np.empty((dim,dim,dim),dtype=bool)
+    # 3D BOOLEAN MASK OF THE SURFACE POINTS
+    SRFmask = np.empty((dim,dim,dim),dtype=bool)
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    #   3D INDICES OF THE WET POINTS
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    iwet = np.empty(dim,dtype=int)
+    jwet = np.empty(dim,dtype=int)
+    kwet = np.empty(dim,dtype=int)
 
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    #   ADDITIONAL INTEGRATION ARRAYS FOR LEAPFROG SCHEME
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    D3STATEB = np.empty((dim,dim),dtype=float)
+    try:
+        import INCLUDE_SEAICE
+        INCLUDE_SEAICE = True
+    except FileNotFoundError:
+        INCLUDE_SEAICE = False
+    if INCLUDE_SEAICE:
+        D2STATEB_ICE = np.empty((dim,dim),dtype=float)
+
+    try:
+        import INCLUDE_BEN
+        INCLUDE_BEN = True
+    except FileNotFoundError:
+        INCLUDE_BEN = False
+    if INCLUDE_BEN:
+        D2STATEB_BEN = np.empty((dim, dim), dtype=float)
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
