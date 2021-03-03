@@ -15,6 +15,8 @@ def PROFE(FF, WFSURF, FSURF, NBC, DT2):
     UMOLPR = 1.E-05
     DH = H
 
+
+
     for K in range(1, KB - 1):
         A[K - 1] = -DT2 * (KH[K] + UMOLPR) / (DZ[K - 1] * DZZ[K - 1] * DH * DH)
         C[K] = -DT2 * (KH[K] + UMOLPR) / (DZ[K] * DZZ[K - 1] * DH * DH)

@@ -15,28 +15,23 @@ def STDERR(text):
 
 # STANDARD OUTPUT FOR PARALLEL COMPUTATION
 def LEVEL0():
-    call0 = ''
-    STDERR(call0)
+    STDERR('')
 
 def LEVEL1():
     call1 = '   '
-    STDERR(call1)
+    STDERR('   ')
 
 def LEVEL2():
-    call2 = '       '
-    STDERR(call2)
+    STDERR('       ')
 
 def LEVEL3():
-    call3 = '           '
-    STDERR(call3)
+    STDERR('           ')
 
 def LEVEL4():
-    call4 = '               '
-    STDERR(call4)
+    STDERR('               ')
 
 def FATAL():
-    callf = 'FATAL ERROR: '
-    STDERR(callf)
+    STDERR('FATAL ERROR: ')
 
 def LINE():
     print('------------------------------------------------------------------------')
