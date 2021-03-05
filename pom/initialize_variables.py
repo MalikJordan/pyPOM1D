@@ -18,7 +18,7 @@ from cppdefs import *
 def read_pom_input():
 
     from main_pombfm1d import current_path
-    from pom.modules import KB
+    from pom.modules import vertical_layers
     from pom.modules import path_error
 
     # PATHS TO INPUT DATA FILES
@@ -78,10 +78,10 @@ def read_pom_input():
     if not path.exists(inorganic_suspended_matter_data_path):
         path_error(inorganic_suspended_matter_data_path)
     inorganic_suspended_matter_data = np.fromfile(inorganic_suspended_matter_data_path,dtype=float)
-    inorganic_suspended_matter   = np.zeros((array_length,KB),dtype=float)
+    inorganic_suspended_matter   = np.zeros((array_length, vertical_layers), dtype=float)
     for i in range(0,array_length):
-        for x in range(0,KB):
-            inorganic_suspended_matter[i][x] = inorganic_suspended_matter_data[KB*i + x]
+        for x in range(0, vertical_layers):
+            inorganic_suspended_matter[i][x] = inorganic_suspended_matter_data[vertical_layers * i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SALINITY CLIMATOLOGY (DIAGNOSTIC MODE)
@@ -89,10 +89,10 @@ def read_pom_input():
     if not path.exists(salinity_vertical_profile_data_path):
         path_error(salinity_vertical_profile_data_path)
     salinity_vertical_profile_data = np.fromfile(salinity_vertical_profile_data_path,dtype=float)
-    salinity_climatology = np.zeros((array_length,KB),dtype=float)
+    salinity_climatology = np.zeros((array_length, vertical_layers), dtype=float)
     for i in range(0,array_length):
-        for x in range(0,KB):
-            salinity_climatology[i][x] = salinity_vertical_profile_data[KB*i + x]
+        for x in range(0, vertical_layers):
+            salinity_climatology[i][x] = salinity_vertical_profile_data[vertical_layers * i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   TEMPERATURE CLIMATOLOGY (DIAGNOSTIC MODE)
@@ -100,10 +100,10 @@ def read_pom_input():
     if not path.exists(temperature_vertical_profile_data_path):
         path_error(temperature_vertical_profile_data_path)
     temperature_vertical_profile_data = np.fromfile(temperature_vertical_profile_data_path,dtype=float)
-    temperature_climatology = np.zeros((array_length,KB),dtype=float)
+    temperature_climatology = np.zeros((array_length, vertical_layers), dtype=float)
     for i in range(0,array_length):
-        for x in range(0,KB):
-            temperature_climatology[i][x] = temperature_vertical_profile_data[KB*i + x]
+        for x in range(0, vertical_layers):
+            temperature_climatology[i][x] = temperature_vertical_profile_data[vertical_layers * i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GENERAL CIRCULATION W VELOITY CLIMATOLOGY
@@ -111,10 +111,10 @@ def read_pom_input():
     if not path.exists(general_circulation_w_velocity_data_path):
         path_error(general_circulation_w_velocity_data_path)
     general_circulation_w_velocity_data = np.fromfile(general_circulation_w_velocity_data_path,dtype=float)
-    w_velocity_climatology  = np.zeros((array_length,KB),dtype=float)
+    w_velocity_climatology  = np.zeros((array_length, vertical_layers), dtype=float)
     for i in range(0,array_length):
-        for x in range(0,KB):
-            w_velocity_climatology[i][x] = general_circulation_w_velocity_data[KB*i + x]
+        for x in range(0, vertical_layers):
+            w_velocity_climatology[i][x] = general_circulation_w_velocity_data[vertical_layers * i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   INTERMEDIATE EDDY W VELOCITY 1
@@ -122,10 +122,10 @@ def read_pom_input():
     if not path.exists(intermediate_eddy_w_velocity_1_data_path):
         path_error(intermediate_eddy_w_velocity_1_data_path)
     intermediate_eddy_w_velocity_1_data = np.fromfile(intermediate_eddy_w_velocity_1_data_path,dtype=float)
-    w_eddy_velocity_1  = np.zeros((array_length,KB),dtype=float)
+    w_eddy_velocity_1  = np.zeros((array_length, vertical_layers), dtype=float)
     for i in range(0,array_length):
-        for x in range(0,KB):
-            w_eddy_velocity_1[i][x] = intermediate_eddy_w_velocity_1_data[KB*i + x]
+        for x in range(0, vertical_layers):
+            w_eddy_velocity_1[i][x] = intermediate_eddy_w_velocity_1_data[vertical_layers * i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   INTERMEDIATE EDDY W VELOCITY 2
@@ -133,10 +133,10 @@ def read_pom_input():
     if not path.exists(intermediate_eddy_w_velocity_2_data_path):
         path_error(intermediate_eddy_w_velocity_2_data_path)
     intermediate_eddy_w_velocity_2_data = np.fromfile(intermediate_eddy_w_velocity_2_data_path,dtype=float)
-    w_eddy_velocity_2 = np.zeros((array_length,KB),dtype=float)
+    w_eddy_velocity_2 = np.zeros((array_length, vertical_layers), dtype=float)
     for i in range(0,array_length):
-        for x in range(0,KB):
-            w_eddy_velocity_2[i][x] = intermediate_eddy_w_velocity_2_data[KB*i + x]
+        for x in range(0, vertical_layers):
+            w_eddy_velocity_2[i][x] = intermediate_eddy_w_velocity_2_data[vertical_layers * i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SALINITY INITIAL PROFILE
@@ -144,8 +144,8 @@ def read_pom_input():
     if not path.exists(salinity_initial_conditions_data_path):
         path_error(salinity_initial_conditions_data_path)
     salinity_initial_conditions_data = np.fromfile(salinity_initial_conditions_data_path,dtype=float)
-    salinity_initial_profile = np.zeros(KB,dtype=float)
-    for i in range(0,KB):
+    salinity_initial_profile = np.zeros(vertical_layers, dtype=float)
+    for i in range(0, vertical_layers):
         salinity_initial_profile[i] = salinity_initial_conditions_data[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -154,8 +154,8 @@ def read_pom_input():
     if not path.exists(temperature_initial_conditions_data_path):
         path_error(temperature_initial_conditions_data_path)
     temperature_initial_conditions_data = np.fromfile(temperature_initial_conditions_data_path,dtype=float)
-    temperature_initial_profile = np.zeros(KB,dtype=float)
-    for i in range(0,KB):
+    temperature_initial_profile = np.zeros(vertical_layers, dtype=float)
+    for i in range(0, vertical_layers):
         temperature_initial_profile[i] = temperature_initial_conditions_data[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -235,7 +235,7 @@ def read_pom_input():
 def get_temperature_and_salinity_initial_coditions():
 
     from main_pombfm1d import current_path
-    from pom.modules import KB
+    from pom.modules import vertical_layers
     from pom.modules import path_error
 
     salinity_initial_conditions_data_path = current_path + '/inputs/POM_BFM17/init_prof_S_150m_bermuda_killworth2.da'
@@ -247,8 +247,8 @@ def get_temperature_and_salinity_initial_coditions():
     if not path.exists(salinity_initial_conditions_data_path):
         path_error(salinity_initial_conditions_data_path)
     salinity_initial_conditions_data = np.fromfile(salinity_initial_conditions_data_path,dtype=float)
-    salinity_backward_time_level = np.zeros(KB,dtype=float)
-    for i in range(0, KB):
+    salinity_backward_time_level = np.zeros(vertical_layers, dtype=float)
+    for i in range(0, vertical_layers):
         salinity_backward_time_level[i] = salinity_initial_conditions_data[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -257,12 +257,12 @@ def get_temperature_and_salinity_initial_coditions():
     if not path.exists(temperature_initial_conditions_data_path):
         path_error(temperature_initial_conditions_data_path)
     temperature_initial_conditions_data = np.fromfile(temperature_initial_conditions_data_path,dtype=float)
-    temperature_backward_time_level = np.zeros(KB,dtype=float)
-    for i in range(0, KB):
+    temperature_backward_time_level = np.zeros(vertical_layers, dtype=float)
+    for i in range(0, vertical_layers):
         temperature_backward_time_level[i] = temperature_initial_conditions_data[i]
 
-    temperature_current_time_level = np.zeros(KB,dtype=float)
-    salinity_current_time_level = np.zeros(KB,dtype=float)
+    temperature_current_time_level = np.zeros(vertical_layers, dtype=float)
+    salinity_current_time_level = np.zeros(vertical_layers, dtype=float)
 
     temperature_current_time_level[:] = temperature_backward_time_level[:]
     salinity_current_time_level[:] = salinity_backward_time_level[:]

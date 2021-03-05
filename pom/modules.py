@@ -206,7 +206,7 @@ TIME = float()
 TIME0 = float()
 
 # BOTTOM DEPTH
-H = float()
+bottom_depth = float()
 
 # LATITUDE & LONGITUDE
 ALAT = float(); ALON = float()
@@ -215,7 +215,7 @@ ALAT = float(); ALON = float()
 COR = float()
 
 # BACKGROUND DIFFUSION FOR U, V, Q2, Q2L
-UMOL = float()
+background_diffusion_momentum = float()
 
 # BACKGROUND DIFFUSION FOR T,S & BFM TRACERS
 UMOLT = float(); UMOLS = float(); UMOLBFM = float()
@@ -237,7 +237,7 @@ RCP = 4.187E6
 DAYI = ONE/SEC_PER_DAY
 
 # VERTICAL LAYERS
-KB = 151
+vertical_layers = 151
 
 # FLAGS TO CHOOSE T,S AND BFM TRACERS SURFACE B.C. IN PROFTS
 NBCT = float(); NBCS = float(); NBCBFM = float()
@@ -255,48 +255,48 @@ upperH = float()
 SSRT = float()
 
 # VERTICAL COORDINATE SYSTEM
-Z = np.empty(KB,dtype=float);  ZZ = np.empty(KB,dtype=float)
-DZ = np.empty(KB,dtype=float); DZZ = np.empty(KB,dtype=float); DZR = np.empty(KB,dtype=float)
+Z = np.empty(vertical_layers, dtype=float);  vertical_coordinates_staggered = np.empty(vertical_layers, dtype=float)
+vertical_spacing = np.empty(vertical_layers, dtype=float); vertical_spacing_staggered = np.empty(vertical_layers, dtype=float); DZR = np.empty(vertical_layers, dtype=float)
 
 # TEMPERATURE
-TF = np.empty(KB,dtype=float); T = np.empty(KB,dtype=float); TB = np.empty(KB,dtype=float)
+TF = np.empty(vertical_layers, dtype=float); temperature = np.empty(vertical_layers, dtype=float); TB = np.empty(vertical_layers, dtype=float)
 
 # SALINITY
-SF = np.empty(KB,dtype=float); S = np.empty(KB,dtype=float); SB = np.empty(KB,dtype=float)
+SF = np.empty(vertical_layers, dtype=float); salinity = np.empty(vertical_layers, dtype=float); SB = np.empty(vertical_layers, dtype=float)
 
 # DESITY
-RHO = np.empty(KB,dtype=float)
+density = np.empty(vertical_layers, dtype=float)
 
 # VELOCITY
-UF = np.empty(KB,dtype=float); U = np.empty(KB,dtype=float); UB = np.empty(KB,dtype=float)
-VF = np.empty(KB,dtype=float); V = np.empty(KB,dtype=float); VB = np.empty(KB,dtype=float)
+UF = np.empty(vertical_layers, dtype=float); velocity_zonal = np.empty(vertical_layers, dtype=float); UB = np.empty(vertical_layers, dtype=float)
+VF = np.empty(vertical_layers, dtype=float); velocity_meridional = np.empty(vertical_layers, dtype=float); VB = np.empty(vertical_layers, dtype=float)
 
 # TURBULENT KINETIC ENERGY (T.K.E.X2)
-Q2F = np.empty(KB,dtype=float); Q2 = np.empty(KB,dtype=float); Q2B = np.empty(KB,dtype=float)
+kinetic_energy_forward_time_level = np.empty(vertical_layers, dtype=float); kinetic_energy_current_time_level = np.empty(vertical_layers, dtype=float); kinetic_energy_backward_time_level = np.empty(vertical_layers, dtype=float)
 
 # LENGTH SCALE
-L = np.empty(KB,dtype=float)
+L = np.empty(vertical_layers, dtype=float)
 
 # (T.K.E.X2) TIMES LENGTH SCALE
-Q2LF = np.empty(KB,dtype=float); Q2L = np.empty(KB,dtype=float); Q2LB = np.empty(KB,dtype=float)
+kinetic_energy_times_length_forward_time_level = np.empty(vertical_layers, dtype=float); Q2L = np.empty(vertical_layers, dtype=float); kinetic_energy_times_length_backward_time_level = np.empty(vertical_layers, dtype=float)
 
 # VERTICAL DIFFUSION COEFFICIENTS
-KM = np.empty(KB,dtype=float); KH = np.empty(KB,dtype=float); KQ = np.empty(KB,dtype=float)
+diffusion_coefficient_momentum = np.empty(vertical_layers, dtype=float); diffusion_coefficient_tracers = np.empty(vertical_layers, dtype=float); diffusion_coefficient_kinetic_energy = np.empty(vertical_layers, dtype=float)
 
 # SERVICE ARRAYS USED IN POM ROUTINES
-GM = np.empty(KB,dtype=float); GH = np.empty(KB,dtype=float)
-SM = np.empty(KB,dtype=float); SH = np.empty(KB,dtype=float)
-KN = np.empty(KB,dtype=float)
-PROD = np.empty(KB,dtype=float); SPROD = np.empty(KB,dtype=float); BPROD = np.empty(KB,dtype=float)
-A = np.empty(KB,dtype=float); C = np.empty(KB,dtype=float)
-VH = np.empty(KB,dtype=float); VHP = np.empty(KB,dtype=float)
-DTEF = np.empty(KB,dtype=float); D = np.empty(KB,dtype=float); DT = np.empty(KB,dtype=float)
+GM = np.empty(vertical_layers, dtype=float); richardson_number = np.empty(vertical_layers, dtype=float)
+SM = np.empty(vertical_layers, dtype=float); SH = np.empty(vertical_layers, dtype=float)
+KN = np.empty(vertical_layers, dtype=float)
+PROD = np.empty(vertical_layers, dtype=float); SPROD = np.empty(vertical_layers, dtype=float); BPROD = np.empty(vertical_layers, dtype=float)
+A = np.empty(vertical_layers, dtype=float); C = np.empty(vertical_layers, dtype=float)
+VH = np.empty(vertical_layers, dtype=float); VHP = np.empty(vertical_layers, dtype=float)
+DTEF = np.empty(vertical_layers, dtype=float); D = np.empty(vertical_layers, dtype=float); DT = np.empty(vertical_layers, dtype=float)
 
 # WIND STRESS
-WUSURF = float(); WVSURF = float()
+wind_stress_zonal = float(); wind_stress_meridional = float()
 
 # BOTTOM STRESS
-WUBOT = float(); WVBOT = float()
+bottom_stress_zonal = float(); bottom_stress_meridional = float()
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   N.B.
@@ -323,7 +323,7 @@ WUBOT = float(); WVBOT = float()
 # WSSURF = float()
 
 # LATERAL ADVECTION FLUX FOR T & S
-WTADV = np.empty(KB,dtype=float); WSADV = np.empty(KB,dtype=float)
+WTADV = np.empty(vertical_layers, dtype=float); WSADV = np.empty(vertical_layers, dtype=float)
 
 
 
@@ -345,8 +345,8 @@ WTADV = np.empty(KB,dtype=float); WSADV = np.empty(KB,dtype=float)
 # PO4BOTT = float(); NO3BOTT = float(); O2BOTT  = float();  PONBOTTgrad = float()
 
 # SUSPENDED INORGANIC MATTER PROFILE
-ISM = np.empty(KB-1, dtype=float)
-WGEN = np.empty(KB, dtype=float); WEDDY = np.empty(KB, dtype=float)
+ISM = np.empty(vertical_layers - 1, dtype=float)
+WGEN = np.empty(vertical_layers, dtype=float); WEDDY = np.empty(vertical_layers, dtype=float)
 
 # FREQUENCY OF AVERAGING FOR OUTPUTi (IN DAYS)
 savef = float(); nitend = float()
@@ -587,8 +587,8 @@ def FORCING_MANAGER():
         SWRAD = SWRAD1 + RATIOF * (SWRAD2 - SWRAD1)
 
     # INTERPOLATE T&S PROFILES
-    TSTAR = np.zeros((array_length,KB))
-    SSTAR = np.zeros((array_length,KB))
+    TSTAR = np.zeros((array_length, vertical_layers))
+    SSTAR = np.zeros((array_length, vertical_layers))
     TSTAR[:] = TCLIM1[:] + RATIOF * (TCLIM2[:] - TCLIM1[:])
     SSTAR[:] = SCLIM1[:] + RATIOF * (SCLIM2[:] - SCLIM1[:])
     WGEN[:]  = WCLIM1[:] + RATIOF * (WCLIM2[:] - WCLIM1[:])
