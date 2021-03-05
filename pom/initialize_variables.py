@@ -46,11 +46,11 @@ def read_pom_input():
     if not path.exists(wind_stress_data_path):
         path_error(wind_stress_data_path)
     wind_speed_data = np.fromfile(wind_stress_data_path,dtype=float)
-    wind_speed_u   = np.zeros(array_length,dtype=float)
-    wind_speed_v   = np.zeros(array_length,dtype=float)
-    for k in range(0,array_length):
-        wind_speed_u[k] = wind_speed_data[2*k + 0]
-        wind_speed_v[k] = wind_speed_data[2*k + 1]
+    wind_speed_zonal   = np.zeros(array_length,dtype=float)
+    wind_speed_meridional   = np.zeros(array_length,dtype=float)
+    for i in range(0,array_length):
+        wind_speed_zonal[i] = wind_speed_data[2*i + 0]
+        wind_speed_meridional[i] = wind_speed_data[2*i + 1]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SURFACE SALINITY
@@ -59,8 +59,8 @@ def read_pom_input():
         path_error(surface_salinity_data_path)
     surface_salinity_data = np.fromfile(surface_salinity_data_path,dtype=float)
     surface_salinity   = np.zeros(array_length,dtype=float)
-    for k in range(0,array_length):
-        surface_salinity[k] = surface_salinity_data[k]
+    for i in range(0,array_length):
+        surface_salinity[i] = surface_salinity_data[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   RADIANCE
@@ -69,8 +69,8 @@ def read_pom_input():
         path_error(shortwave_solar_radiation_data_path)
     shortwave_solar_radiation_data = np.fromfile(shortwave_solar_radiation_data_path,dtype=float)
     solar_radiation  = np.zeros(array_length,dtype=float)
-    for k in range(0,array_length):
-        solar_radiation[k] = shortwave_solar_radiation_data[k]
+    for i in range(0,array_length):
+        solar_radiation[i] = shortwave_solar_radiation_data[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   INORGANIC SUSPENDED MATTER
@@ -79,9 +79,9 @@ def read_pom_input():
         path_error(inorganic_suspended_matter_data_path)
     inorganic_suspended_matter_data = np.fromfile(inorganic_suspended_matter_data_path,dtype=float)
     inorganic_suspended_matter   = np.zeros((array_length,KB),dtype=float)
-    for k in range(0,array_length):
+    for i in range(0,array_length):
         for x in range(0,KB):
-            inorganic_suspended_matter[k][x] = inorganic_suspended_matter_data[KB*k + x]
+            inorganic_suspended_matter[i][x] = inorganic_suspended_matter_data[KB*i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SALINITY CLIMATOLOGY (DIAGNOSTIC MODE)
@@ -90,9 +90,9 @@ def read_pom_input():
         path_error(salinity_vertical_profile_data_path)
     salinity_vertical_profile_data = np.fromfile(salinity_vertical_profile_data_path,dtype=float)
     salinity_climatology = np.zeros((array_length,KB),dtype=float)
-    for k in range(0,array_length):
+    for i in range(0,array_length):
         for x in range(0,KB):
-            salinity_climatology[k][x] = salinity_vertical_profile_data[KB*k + x]
+            salinity_climatology[i][x] = salinity_vertical_profile_data[KB*i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   TEMPERATURE CLIMATOLOGY (DIAGNOSTIC MODE)
@@ -101,9 +101,9 @@ def read_pom_input():
         path_error(temperature_vertical_profile_data_path)
     temperature_vertical_profile_data = np.fromfile(temperature_vertical_profile_data_path,dtype=float)
     temperature_climatology = np.zeros((array_length,KB),dtype=float)
-    for k in range(0,array_length):
+    for i in range(0,array_length):
         for x in range(0,KB):
-            temperature_climatology[k][x] = temperature_vertical_profile_data[KB*k + x]
+            temperature_climatology[i][x] = temperature_vertical_profile_data[KB*i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GENERAL CIRCULATION W VELOITY CLIMATOLOGY
@@ -112,9 +112,9 @@ def read_pom_input():
         path_error(general_circulation_w_velocity_data_path)
     general_circulation_w_velocity_data = np.fromfile(general_circulation_w_velocity_data_path,dtype=float)
     w_velocity_climatology  = np.zeros((array_length,KB),dtype=float)
-    for k in range(0,array_length):
+    for i in range(0,array_length):
         for x in range(0,KB):
-            w_velocity_climatology[k][x] = general_circulation_w_velocity_data[KB*k + x]
+            w_velocity_climatology[i][x] = general_circulation_w_velocity_data[KB*i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   INTERMEDIATE EDDY W VELOCITY 1
@@ -123,9 +123,9 @@ def read_pom_input():
         path_error(intermediate_eddy_w_velocity_1_data_path)
     intermediate_eddy_w_velocity_1_data = np.fromfile(intermediate_eddy_w_velocity_1_data_path,dtype=float)
     w_eddy_velocity_1  = np.zeros((array_length,KB),dtype=float)
-    for k in range(0,array_length):
+    for i in range(0,array_length):
         for x in range(0,KB):
-            w_eddy_velocity_1[k][x] = intermediate_eddy_w_velocity_1_data[KB*k + x]
+            w_eddy_velocity_1[i][x] = intermediate_eddy_w_velocity_1_data[KB*i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   INTERMEDIATE EDDY W VELOCITY 2
@@ -134,9 +134,9 @@ def read_pom_input():
         path_error(intermediate_eddy_w_velocity_2_data_path)
     intermediate_eddy_w_velocity_2_data = np.fromfile(intermediate_eddy_w_velocity_2_data_path,dtype=float)
     w_eddy_velocity_2 = np.zeros((array_length,KB),dtype=float)
-    for k in range(0,array_length):
+    for i in range(0,array_length):
         for x in range(0,KB):
-            w_eddy_velocity_2[k][x] = intermediate_eddy_w_velocity_2_data[KB*k + x]
+            w_eddy_velocity_2[i][x] = intermediate_eddy_w_velocity_2_data[KB*i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SALINITY INITIAL PROFILE
@@ -145,8 +145,8 @@ def read_pom_input():
         path_error(salinity_initial_conditions_data_path)
     salinity_initial_conditions_data = np.fromfile(salinity_initial_conditions_data_path,dtype=float)
     salinity_initial_profile = np.zeros(KB,dtype=float)
-    for k in range(0,KB):
-        salinity_initial_profile[k] = salinity_initial_conditions_data[k]
+    for i in range(0,KB):
+        salinity_initial_profile[i] = salinity_initial_conditions_data[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   TEMPERATURE INITIAL PROFILE
@@ -155,8 +155,8 @@ def read_pom_input():
         path_error(temperature_initial_conditions_data_path)
     temperature_initial_conditions_data = np.fromfile(temperature_initial_conditions_data_path,dtype=float)
     temperature_initial_profile = np.zeros(KB,dtype=float)
-    for k in range(0,KB):
-        temperature_initial_profile[k] = temperature_initial_conditions_data[k]
+    for i in range(0,KB):
+        temperature_initial_profile[i] = temperature_initial_conditions_data[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   HEAT FLUX
@@ -167,10 +167,10 @@ def read_pom_input():
     surface_solar_radiation = np.zeros(array_length,dtype=float)
     surface_heat_flux_loss = np.zeros(array_length,dtype=float)
     coriolis_heat_flux_loss = np.zeros(array_length,dtype=float)
-    for k in range(0,array_length):
-        surface_solar_radiation[k]  = heat_flux_loss_data[3*k + 0]
-        surface_heat_flux_loss[k] = heat_flux_loss_data[3*k + 1]
-        coriolis_heat_flux_loss[k]  = heat_flux_loss_data[3*k + 2]
+    for i in range(0,array_length):
+        surface_solar_radiation[i]  = heat_flux_loss_data[3*i + 0]
+        surface_heat_flux_loss[i] = heat_flux_loss_data[3*i + 1]
+        coriolis_heat_flux_loss[i]  = heat_flux_loss_data[3*i + 2]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SURFACE NUTRIENTS
@@ -182,11 +182,11 @@ def read_pom_input():
     NH4_s1  = np.zeros(array_length,dtype=float)
     PO4_s1  = np.zeros(array_length,dtype=float)
     SIO4_s1 = np.zeros(array_length,dtype=float)
-    for k in range(0,array_length):
-        NO3_s1[k]  = surface_nutrients_data[4*k + 0]
-        NH4_s1[k]  = surface_nutrients_data[4*k + 1]
-        PO4_s1[k]  = surface_nutrients_data[4*k + 2]
-        SIO4_s1[k] = surface_nutrients_data[4*k + 3]
+    for i in range(0,array_length):
+        NO3_s1[i]  = surface_nutrients_data[4*i + 0]
+        NH4_s1[i]  = surface_nutrients_data[4*i + 1]
+        PO4_s1[i]  = surface_nutrients_data[4*i + 2]
+        SIO4_s1[i] = surface_nutrients_data[4*i + 3]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   BOTTOM NUTRIENTS
@@ -198,13 +198,13 @@ def read_pom_input():
     NO3_b1  = np.zeros(array_length,dtype=float)
     PO4_b1  = np.zeros(array_length,dtype=float)
     PON_b1  = np.zeros(array_length,dtype=float)
-    for k in range(0,array_length):
-        O2_b1[k]  = bottom_nutrients_data[4*k + 0]
-        NO3_b1[k] = bottom_nutrients_data[4*k + 1]
-        PO4_b1[k] = bottom_nutrients_data[4*k + 2]
-        PON_b1[k] = bottom_nutrients_data[4*k + 3]
+    for i in range(0,array_length):
+        O2_b1[i]  = bottom_nutrients_data[4*i + 0]
+        NO3_b1[i] = bottom_nutrients_data[4*i + 1]
+        PO4_b1[i] = bottom_nutrients_data[4*i + 2]
+        PON_b1[i] = bottom_nutrients_data[4*i + 3]
 
-    return wind_speed_u, wind_speed_v, surface_salinity, solar_radiation, inorganic_suspended_matter, \
+    return wind_speed_zonal, wind_speed_meridional, surface_salinity, solar_radiation, inorganic_suspended_matter, \
            salinity_climatology, temperature_climatology, w_velocity_climatology, w_eddy_velocity_1, \
            w_eddy_velocity_2, salinity_initial_profile, temperature_initial_profile, \
            surface_solar_radiation, surface_heat_flux_loss, coriolis_heat_flux_loss, \
@@ -247,9 +247,9 @@ def get_temperature_and_salinity_initial_coditions():
     if not path.exists(salinity_initial_conditions_data_path):
         path_error(salinity_initial_conditions_data_path)
     salinity_initial_conditions_data = np.fromfile(salinity_initial_conditions_data_path,dtype=float)
-    salinity_backwards_time_level = np.zeros(KB,dtype=float)
-    for k in range(0, KB):
-        salinity_backwards_time_level[k] = salinity_initial_conditions_data[k]
+    salinity_backward_time_level = np.zeros(KB,dtype=float)
+    for i in range(0, KB):
+        salinity_backward_time_level[i] = salinity_initial_conditions_data[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   TEMPERATURE INITIAL PROFILE
@@ -257,18 +257,18 @@ def get_temperature_and_salinity_initial_coditions():
     if not path.exists(temperature_initial_conditions_data_path):
         path_error(temperature_initial_conditions_data_path)
     temperature_initial_conditions_data = np.fromfile(temperature_initial_conditions_data_path,dtype=float)
-    temperature_backwards_time_level = np.zeros(KB,dtype=float)
-    for k in range(0, KB):
-        temperature_backwards_time_level[k] = temperature_initial_conditions_data[k]
+    temperature_backward_time_level = np.zeros(KB,dtype=float)
+    for i in range(0, KB):
+        temperature_backward_time_level[i] = temperature_initial_conditions_data[i]
 
     temperature_current_time_level = np.zeros(KB,dtype=float)
     salinity_current_time_level = np.zeros(KB,dtype=float)
 
-    temperature_current_time_level[:] = temperature_backwards_time_level[:]
-    salinity_current_time_level[:] = salinity_backwards_time_level[:]
+    temperature_current_time_level[:] = temperature_backward_time_level[:]
+    salinity_current_time_level[:] = salinity_backward_time_level[:]
 
-    return temperature_current_time_level, temperature_backwards_time_level, \
-           salinity_current_time_level, salinity_backwards_time_level
+    return temperature_current_time_level, temperature_backward_time_level, \
+           salinity_current_time_level, salinity_backward_time_level
 
 
 # temperature_current_time_level, temperature_backwards_time_level, \
