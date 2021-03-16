@@ -1,6 +1,6 @@
 import numpy as np
 from cppdefs import *
-from pom.modules import RLEN, bfm_lwp, LOGUNIT, SEC_PER_DAY
+from pom.modules import RLEN, bfm_lwp, LOGUNIT, seconds_per_day
 
 
 # TimeInfo = dict(date0=' '*25,       # CALENDER DATE OF START (EMPTY STRING OF LENGTH 25)
@@ -55,7 +55,7 @@ secs0 = -1
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-def init_time(MinN, MaxN):
+def initialize_time_system(MinN, MaxN):
 
     bfmtime = TimeInfo
     # INPUT/OUTPUT PARAMETERS
@@ -80,7 +80,7 @@ def init_time(MinN, MaxN):
     #   READ TIME SPECIFIC THINGS FROM THE NAMELIST
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    LEVEL1(); print('init_time')
+    LEVEL1(); print('initialize_time_system')
 
     # CALCULATE MaxN -> MinN IS 1 IF NOT CHANGED BY HOTSTART
     MinN = 1
@@ -150,7 +150,7 @@ def init_time(MinN, MaxN):
 
     bfmtime.date0 = yy, '-', mm, '-', dd, ' ', hh, ':', nn
     bfmtime.time0 = jday
-    bfmtime.timeEnd = jday + (float(MaxN) * timestep) / SEC_PER_DAY
+    bfmtime.timeEnd = jday + (float(MaxN) * timestep) / seconds_per_day
     bfmtime.step0 = MinN - 1
     bfmtime.timestep = timestep
     bfmtime.stepnow = MinN - 1

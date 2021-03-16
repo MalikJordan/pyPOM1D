@@ -278,7 +278,7 @@ def PROFQ(twice_the_timestep):
 #               UMOL:   Background diffusivity.
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def PROFTS(FF, WFSURF, WFBOT, SWRAD, FSURF, NBC, DT2, NTP, UMOL):
+def calculate_vertical_temperature_and_salinity_profiles(FF, WFSURF, WFBOT, SWRAD, FSURF, NBC, DT2, NTP, UMOL):
 
     # FLAG FOR BOUNDARY CONDITION DEFINITION
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -314,7 +314,7 @@ def PROFTS(FF, WFSURF, WFBOT, SWRAD, FSURF, NBC, DT2, NTP, UMOL):
         A[K - 1] = -DT2 * (diffusion_coefficient_tracers[K] + UMOL) / (vertical_spacing[K - 1] * vertical_spacing_staggered[K - 1] * bottom_depth * bottom_depth)
         C[K] = -DT2 * (diffusion_coefficient_tracers[K] + UMOL) / (vertical_spacing[K] * vertical_spacing_staggered[K - 1] * bottom_depth * bottom_depth)
 
-    RAD[:] = ZERO
+    RAD[:] = zero
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SURFACE BOUNDARY CONDITION
@@ -323,27 +323,27 @@ def PROFTS(FF, WFSURF, WFBOT, SWRAD, FSURF, NBC, DT2, NTP, UMOL):
     # *** PENETRATIVE RADIATION CALCULATION. AT THE BOTTOM ANY UNATTENUATED IS DEPOSITED IN THE BOTTOM LAYER.
 
     if NBC == 1:
-        VH[0] = A[0] / (A[0] - ONE)
+        VH[0] = A[0] / (A[0] - one)
         VHP[0] = -DT2 * (WFSURF + SWRAD) / (-vertical_spacing[0] * bottom_depth) - FF[0]
-        VHP[0] = VHP[0] / (A[0] - ONE)
+        VHP[0] = VHP[0] / (A[0] - one)
 
     elif NBC == 2:
-        RAD[:] = SWRAD * (RP[NTP] * np.exp(Z[:] * bottom_depth / AD1[NTP]) + (ONE - RP[NTP] * np.exp(Z[:] * bottom_depth / AD2[NTP])))  # ***
-        RAD[vertical_layers - 1] = ZERO
+        RAD[:] = SWRAD * (RP[NTP] * np.exp(Z[:] * bottom_depth / AD1[NTP]) + (one - RP[NTP] * np.exp(Z[:] * bottom_depth / AD2[NTP])))  # ***
+        RAD[vertical_layers - 1] = zero
 
-        VH[0] = A[0] / (A[0] - ONE)
+        VH[0] = A[0] / (A[0] - one)
         VHP[0] = DT2 * (WFSURF + RAD[0] - RAD[1]) / (vertical_spacing[0] * bottom_depth) - FF[0]
-        VHP[0] = VHP[0] / (A[0] - ONE)
+        VHP[0] = VHP[0] / (A[0] - one)
 
     elif NBC == 3:
-        VH[0] = ZERO
+        VH[0] = zero
         VHP[0] = FSURF
 
     elif NBC == 4:
-        RAD[:] = SWRAD * (RP[NTP] * np.exp(Z[:] * bottom_depth / AD1[NTP]) + (ONE - RP[NTP] * np.exp(Z[:] * bottom_depth / AD2[NTP])))  # ***
+        RAD[:] = SWRAD * (RP[NTP] * np.exp(Z[:] * bottom_depth / AD1[NTP]) + (one - RP[NTP] * np.exp(Z[:] * bottom_depth / AD2[NTP])))  # ***
         RAD[vertical_layers - 1] = 0
 
-        VH[0] = ZERO
+        VH[0] = zero
         VHP[0] = FSURF
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -375,10 +375,10 @@ def PROFTS(FF, WFSURF, WFBOT, SWRAD, FSURF, NBC, DT2, NTP, UMOL):
     #   ZEROING
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    VH[:] = ZERO
-    VHP[:] = ZERO
-    A[:] = ZERO
-    C[:] = ZERO
+    VH[:] = zero
+    VHP[:] = zero
+    A[:] = zero
+    C[:] = zero
 
     return FF
 
@@ -393,17 +393,19 @@ def PROFTS(FF, WFSURF, WFBOT, SWRAD, FSURF, NBC, DT2, NTP, UMOL):
 #               DT2*(KM*U')' - U= -UB
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def PROFU(DT2):
+def calculate_vertical_zonal_velocity_profile(twice_the_timestep, bottom_depth, diffusion_coefficient_momentum, background_diffusion_momentum,
+                                              vertical_spacing, vertical_spacing_staggered, wind_stress_zonal):
 
     # UMOL1 = 0.0007
 
-    DH = bottom_depth  # 85
     for K in range(1, vertical_layers - 1):
-        A[K - 1] = -DT2 * (diffusion_coefficient_momentum[K] + background_diffusion_momentum) / (vertical_spacing[K - 1] * vertical_spacing_staggered[K - 1] * DH * DH)
-        C[K] = -DT2 * (diffusion_coefficient_momentum[K] + background_diffusion_momentum) / (vertical_spacing[K] * vertical_spacing_staggered[K - 1] * DH * DH)
+        A[K - 1] = -twice_the_timestep * (diffusion_coefficient_momentum[K] + background_diffusion_momentum) / \
+                   (vertical_spacing[K - 1] * vertical_spacing_staggered[K - 1] * bottom_depth * bottom_depth)
+        C[K] = -twice_the_timestep * (diffusion_coefficient_momentum[K] + background_diffusion_momentum) / \
+               (vertical_spacing[K] * vertical_spacing_staggered[K - 1] * bottom_depth * bottom_depth)
 
     VH[0] = A[0] / (A[0] - 1.)
-    VHP[0] = (-DT2 * wind_stress_zonal / (-vertical_spacing[0] * DH) - UF[0]) / (A[0] - 1.)
+    VHP[0] = (-twice_the_timestep * wind_stress_zonal / (-vertical_spacing[0] * bottom_depth) - UF[0]) / (A[0] - 1.)
 
     for K in range(1, vertical_layers - 2):
         VHP[K] = 1. / (A[K] + C[K] * (1. - VH[K - 1]) - 1.)
@@ -411,12 +413,12 @@ def PROFU(DT2):
         VHP[K] = (C[K] * VHP[K - 1] - UF[K]) * VHP(K)
 
     VH[0] = A[0] / (A[0] - 1.)
-    VHP[0] = (-DT2 * wind_stress_zonal / (-vertical_spacing[0] * DH) - UF[0]) / (A[0] - 1.)
+    VHP[0] = (-twice_the_timestep * wind_stress_zonal / (-vertical_spacing[0] * bottom_depth) - UF[0]) / (A[0] - 1.)
 
     # IF(NO_BOT_STRESS)THEN
     CBC = 0.0
     # ELSE
-    #    CBC = MAX(.0025,.16/LOG((ZZ(KB-1)-Z(KB))*DH/.01)**2)
+    #    CBC = MAX(.0025,.16/LOG((ZZ(KB-1)-Z(KB))*bottom_depth/.01)**2)
     #    CBC = CBC*SQRT(UB(KB-1)**2+ (.25* (VB(KB-1)+VB(KB-1)+VB(KB-1)+ &
     #        VB(KB-1)))**2)
     # ENDIF
@@ -424,7 +426,7 @@ def PROFU(DT2):
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
     UF[vertical_layers - 2] = (C[vertical_layers - 2] * VHP[vertical_layers - 3] - UF[vertical_layers - 2]) / (
-            CBC * DT2 / (-vertical_spacing[vertical_layers - 2] * DH) - 1. - (VH[vertical_layers - 3] - 1.) * C[vertical_layers - 2])
+            CBC * twice_the_timestep / (-vertical_spacing[vertical_layers - 2] * bottom_depth) - 1. - (VH[vertical_layers - 3] - 1.) * C[vertical_layers - 2])
     for K in range(1, vertical_layers - 1):
         KI = vertical_layers - K
         UF[KI - 1] = VH[KI - 1] * UF[KI] + VHP[KI - 1]
@@ -449,16 +451,17 @@ def PROFU(DT2):
 #               DT2*(KM*V')' - V= -VB
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def PROFV(DT2):
-
-    DH = bottom_depth
+def calculate_vertical_meridional_velocity_profile(twice_the_timestep, bottom_depth, diffusion_coefficient_momentum, background_diffusion_momentum,
+                                                   vertical_spacing, vertical_spacing_staggered, wind_stress_meridional):
 
     for K in range(1, vertical_layers - 1):
-        A[K - 1] = -DT2 * (diffusion_coefficient_momentum[K] + background_diffusion_momentum) / (vertical_spacing[K - 1] * vertical_spacing_staggered[K - 1] * DH * DH)
-        C[K] = -DT2 * (diffusion_coefficient_momentum[K] + background_diffusion_momentum) / (vertical_spacing[K] * vertical_spacing_staggered[K - 1] * DH * DH)
+        A[K - 1] = -twice_the_timestep * (diffusion_coefficient_momentum[K] + background_diffusion_momentum) / \
+                   (vertical_spacing[K - 1] * vertical_spacing_staggered[K - 1] * bottom_depth * bottom_depth)
+        C[K] = -twice_the_timestep * (diffusion_coefficient_momentum[K] + background_diffusion_momentum) / \
+               (vertical_spacing[K] * vertical_spacing_staggered[K - 1] * bottom_depth * bottom_depth)
 
     VH[0] = A[0] / (A[0] - 1.)
-    VHP[0] = (-DT2 * wind_stress_meridional / (-vertical_spacing[0] * DH) - VF[0]) / (A[0] - 1.)
+    VHP[0] = (-twice_the_timestep * wind_stress_meridional / (-vertical_spacing[0] * bottom_depth) - VF[0]) / (A[0] - 1.)
 
     # 98 CONTINUE
 
@@ -470,7 +473,7 @@ def PROFV(DT2):
     # IF(NO_BOT_STRESS)THEN
     CBC = 0.0
     # ELSE
-    # 104      CBC = MAX(.0025,.16/LOG((ZZ(KB-1)-Z(KB))*DH/.01)**2)
+    # 104      CBC = MAX(.0025,.16/LOG((ZZ(KB-1)-Z(KB))*bottom_depth/.01)**2)
     #          CBC = CBC*SQRT((.25* (UB(KB-1)+UB(KB-1)+UB(KB-1)+UB(KB-1)))**2 + VB(KB-1)**2)
     # ENDIF
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -478,7 +481,7 @@ def PROFV(DT2):
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
     VF[vertical_layers - 2] = (C[vertical_layers - 1] * VHP[vertical_layers - 3] - VF[vertical_layers - 2]) / (
-            CBC * DT2 / (-vertical_spacing[vertical_layers - 2] * DH) - 1. - (VH[vertical_layers - 3] - 1.) * C[vertical_layers - 2])
+            CBC * twice_the_timestep / (-vertical_spacing[vertical_layers - 2] * bottom_depth) - 1. - (VH[vertical_layers - 3] - 1.) * C[vertical_layers - 2])
 
     for K in range(1, vertical_layers - 1):
         KI = vertical_layers - K

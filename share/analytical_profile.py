@@ -15,7 +15,7 @@ import numpy as np
 
 def analytical_profile(nlev,z,z1,v1,z2,v2,prof):
 
-    from pom.modules import RLEN, ZERO, bfm_lwp, LOGUNIT
+    from pom.modules import RLEN, zero, bfm_lwp, LOGUNIT
 
     # INPUT PARAMETERS
     # nlev = int()

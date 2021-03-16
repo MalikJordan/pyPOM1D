@@ -166,11 +166,11 @@ def read_pom_input():
     heat_flux_loss_data = np.fromfile(heat_flux_loss_data_path,dtype=float)
     surface_solar_radiation = np.zeros(array_length,dtype=float)
     surface_heat_flux_loss = np.zeros(array_length,dtype=float)
-    coriolis_kinetic_energy = np.zeros(array_length,dtype=float)
+    kinetic_energy_loss = np.zeros(array_length,dtype=float)
     for i in range(0,array_length):
         surface_solar_radiation[i]  = heat_flux_loss_data[3*i + 0]
         surface_heat_flux_loss[i] = heat_flux_loss_data[3*i + 1]
-        coriolis_kinetic_energy[i]  = heat_flux_loss_data[3*i + 2]
+        kinetic_energy_loss[i]  = heat_flux_loss_data[3*i + 2]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SURFACE NUTRIENTS
@@ -207,14 +207,14 @@ def read_pom_input():
     return wind_speed_zonal, wind_speed_meridional, surface_salinity, solar_radiation, inorganic_suspended_matter, \
            salinity_climatology, temperature_climatology, w_velocity_climatology, w_eddy_velocity_1, \
            w_eddy_velocity_2, salinity_initial_profile, temperature_initial_profile, \
-           surface_solar_radiation, surface_heat_flux_loss, coriolis_kinetic_energy, \
+           surface_solar_radiation, surface_heat_flux_loss, kinetic_energy_loss, \
            NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1
 
 
 # wind_speed_zonal, wind_speed_meridional, surface_salinity, solar_radiation, inorganic_suspended_matter, \
 #            salinity_climatology, temperature_climatology, w_velocity_climatology, w_eddy_velocity_1, \
 #            w_eddy_velocity_2, salinity_initial_profile, temperature_initial_profile, \
-#            surface_solar_radiation, surface_heat_flux_loss, coriolis_kinetic_energy, \
+#            surface_solar_radiation, surface_heat_flux_loss, kinetic_energy_loss, \
 #            NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1                            = read_pom_input()
 
 

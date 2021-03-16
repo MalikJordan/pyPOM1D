@@ -27,10 +27,10 @@ NMLUNIT = 310
 # THE UNIT OF THE LOG FILE IS NOT A PARAMETER TO ALLOW PARALLEL WRITING
 LOGUNIT = 0
 bfm_lwp = True
-ZERO = float(0.0)
-ONE = float(1.0)
-PI = float(3.14159265359)
-BASETEMP = float(20.0)
+zero = 0.
+one = 1.
+pi = 3.14159265359
+base_temperature = 20.
 
 #   NEXT PARAMETERS ARE DEFINED TO CONTROL TYPES OF STATE VARIABLES
 OFF = -100
@@ -64,19 +64,19 @@ DIM_MISMATCH = 13
 # THIS INITIALIZATION HAS TO BE DONE IN MODULEPARAM BECAUSE SOME COMPILERS
 # DO NOT ALLOW THE INITIALIZATION OF CONSTANTS WITH INTRINSIC FUNCTIONS
 
-MIN_VAL_EXPFUN = ZERO
+MIN_VAL_EXPFUN = zero
 ECOLOGY = 1  # BASE TEMPERATURE FOR Q10
 TRANSPORT = 2
-ZERO_KELVIN = -273.15
-Rgas = 83.131  # GAS CONSTANT: bar mol^-1 deg-1
-MW_C = 12.0  # MOLECULAR WEIGHT CARBON
-MW_N = 14.0  # MOLECULAR WEIGHT NITROGEN
-MW_P = 31.0  # MOLECULAR WEIGHT PHOSPHORUS
-MW_SI = 28.0  # MOLECULAR WEIGHT SILICA
-E2W = 0.217  # MOLECULAR WEIGHT CONVERSION FACTOR EINSTEIN->W
-SEC_PER_DAY = 86400.  # SECONDS IN DAY
-DAY_PER_SEC = ZERO  # INVERSE OF SECONDS IN DAY
-ONE_PER_DAY = 1.  # RATE WHICH IS USED IN CASES WHERE IMPLICITLY ASSUMED
+zero_kelvin = -273.15
+molar_gas_constant = 83.131  # GAS CONSTANT: bar mol^-1 deg-1
+carbon_molecular_weight = 12.0  # MOLECULAR WEIGHT CARBON
+nitrogen_molecular_weight = 14.0  # MOLECULAR WEIGHT NITROGEN
+phosphorus_molecular_weight = 31.0  # MOLECULAR WEIGHT PHOSPHORUS
+silica_molecular_weight = 28.0  # MOLECULAR WEIGHT SILICA
+molecular_weight_conversion_factor = 0.217  # MOLECULAR WEIGHT CONVERSION FACTOR EINSTEIN->W
+seconds_per_day = 86400.  # SECONDS IN DAY
+days_per_second = zero  # INVERSE OF SECONDS IN DAY
+one_per_day = 1.  # RATE WHICH IS USED IN CASES WHERE IMPLICITLY ASSUMED
 
 NO_BENTHOS = 0
 BENTHIC_RETURN = 1
@@ -169,7 +169,7 @@ NLAYER = 8
 #   IDIAGN=0 PROGNOSTIC (T&S PROFILES COMPUTED)
 #   IDIAGN=1 DIAGNOSTIC (T&S PROFILES PRESCRIBED)
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-IDIAGN = float()
+prognostic_diagnostic_mode_switch = float()
 
 # # OF SURFACE/BOTTOM LAYERS WITH LOG DISTRIBUTION
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -185,19 +185,19 @@ KL1 = float(); KL2 = float()
 #
 #   SEE SUBROUTINE "CALCDEPTH"
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-IHOTST = float()
+hot_cold_switch = float()
 
 # MODEL TIME STEP
-DTI = float()
+timestep = float()
 
 # LENGTH OF THE RUN (DAYS)
-IDAYS = float()
+length_of_run_days = float()
 
 # ITERATIONS NEEDED FOR AN "IDAYS" RUN
-IEND = float()
+iterations_needed = float()
 
 # COUNTER FOR THE TIME MARCHING LOOP
-intt = float()
+time_loop_counter = float()
 
 # RUNNING TIME
 TIME = float()
@@ -209,16 +209,16 @@ TIME0 = float()
 bottom_depth = float()
 
 # LATITUDE & LONGITUDE
-ALAT = float(); ALON = float()
+latitude = float(); longitude = float()
 
 # CORIOLIS PARAMETER
-COR = float()
+coriolis_parameter = float()
 
 # BACKGROUND DIFFUSION FOR U, V, Q2, Q2L
 background_diffusion_momentum = float()
 
 # BACKGROUND DIFFUSION FOR T,S & BFM TRACERS
-UMOLT = float(); UMOLS = float(); UMOLBFM = float()
+background_diffusion_temperature = float(); background_diffusion_salinity = float(); background_diffusion_bfm = float()
 
 # NUTRIENT RELAXATION TIME
 NRT_o2o = float()
@@ -231,10 +231,10 @@ NRT_n4n = float()
 SMOTH = float()
 
 # SPECIFIC HEAT TIMES RHO0
-RCP = 4.187E6
+water_specific_heat_times_density = 4.187E6
 
 # 1 DAY IN SECONDS (RECIPROCAL)
-DAYI = ONE/SEC_PER_DAY
+DAYI = one / seconds_per_day
 
 # VERTICAL LAYERS
 vertical_layers = 151
@@ -259,10 +259,10 @@ Z = np.empty(vertical_layers, dtype=float);  vertical_coordinates_staggered = np
 vertical_spacing = np.empty(vertical_layers, dtype=float); vertical_spacing_staggered = np.empty(vertical_layers, dtype=float); DZR = np.empty(vertical_layers, dtype=float)
 
 # TEMPERATURE
-TF = np.empty(vertical_layers, dtype=float); temperature = np.empty(vertical_layers, dtype=float); TB = np.empty(vertical_layers, dtype=float)
+intermediate_temperature_profile = np.empty(vertical_layers, dtype=float); temperature = np.empty(vertical_layers, dtype=float); TB = np.empty(vertical_layers, dtype=float)
 
 # SALINITY
-SF = np.empty(vertical_layers, dtype=float); salinity = np.empty(vertical_layers, dtype=float); SB = np.empty(vertical_layers, dtype=float)
+intermediate_salinity_profile = np.empty(vertical_layers, dtype=float); salinity = np.empty(vertical_layers, dtype=float); SB = np.empty(vertical_layers, dtype=float)
 
 # DESITY
 density = np.empty(vertical_layers, dtype=float)
@@ -293,10 +293,10 @@ VH = np.empty(vertical_layers, dtype=float); VHP = np.empty(vertical_layers, dty
 DTEF = np.empty(vertical_layers, dtype=float); D = np.empty(vertical_layers, dtype=float); DT = np.empty(vertical_layers, dtype=float)
 
 # WIND STRESS
-wind_stress_zonal = float(); wind_stress_meridional = float()
+# wind_stress_zonal = float(); wind_stress_meridional = float()
 
 # BOTTOM STRESS
-bottom_stress_zonal = float(); bottom_stress_meridional = float()
+# bottom_stress_zonal = float(); bottom_stress_meridional = float()
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   N.B.
@@ -346,7 +346,7 @@ WTADV = np.empty(vertical_layers, dtype=float); WSADV = np.empty(vertical_layers
 
 # SUSPENDED INORGANIC MATTER PROFILE
 ISM = np.empty(vertical_layers - 1, dtype=float)
-WGEN = np.empty(vertical_layers, dtype=float); WEDDY = np.empty(vertical_layers, dtype=float)
+w_velocity_interpolation = np.empty(vertical_layers, dtype=float); WEDDY = np.empty(vertical_layers, dtype=float)
 
 # FREQUENCY OF AVERAGING FOR OUTPUTi (IN DAYS)
 savef = float(); nitend = float()
@@ -469,41 +469,47 @@ oxy_input = ''
 # RATIOF = float(); RATIOD = float()
 
 
-def FORCING_MANAGER():
+def forcing_manager():
 
     # LENGTH OF INPUT ARRAYS
     array_length = 13
 
     # LOOP COUNTER
-    K = float()
+    # K = float()
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   LOCAL ARRAYS
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    RLENGTH = float()
+    # RLENGTH = float()
 
     # INITIALISATION AND FIRST FORCING READING
-    if intt == int(ONE):
+    if time_loop_counter == 1:
 
         # DOUBLE READING OF DATA (NEEDED TO CARRY OUT THE TIME LINEAR INTERPOLATION)
-        WSU1, WSV1, SSS1, SLUX1, ISM1, SCLIM1, TCLIM1, WCLIM1, WEDDY1, WEDDY2, SB, TB, \
-            SWRAD1, WTSURF1, QCORR1, NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1 = read_pom_input()
+        wind_speed_zonal1, wind_speed_meridional1, surface_salinity1, solar_radiation1, inorganic_suspended_matter1, \
+            salinity_climatology1, temperature_climatology1, w_velocity_climatology1, w_eddy_velocity_1, \
+            w_eddy_velocity_2, salinity_initial_profile1, temperature_initial_profile1, \
+            surface_solar_radiation1, surface_heat_flux_loss1, kinetic_energy_loss1, \
+            NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1                          = read_pom_input()
 
         # NOT ALL VARIABLES FROM SECOND CALLING WILL BE USED
-        WSU2, WSV2, SSS2, SLUX2, ISM2, SCLIM2, TCLIM2, WCLIM2, WEDDY3, WEDDY4, SB2, TB2, \
-            SWRAD2, WTSURF2, QCORR2, NO3_s2, NH4_s2, PO4_s2, SIO4_s2, O2_b2, NO3_b2, PO4_b2, PON_b2 = read_pom_input()
+        wind_speed_zonal2, wind_speed_meridional2, surface_salinity2, solar_radiation2, inorganic_suspended_matter2, \
+            salinity_climatology2, temperature_climatology2, w_velocity_climatology2, w_eddy_velocity_3, \
+            w_eddy_velocity_4, salinity_initial_profile2, temperature_initial_profile2, \
+            surface_solar_radiation2, surface_heat_flux_loss2, kinetic_energy_loss2, \
+            NO3_s2, NH4_s2, PO4_s2, SIO4_s2, O2_b2, NO3_b2, PO4_b2, PON_b2                          = read_pom_input()
 
         # DAY COUNTER
-        IDOUNTF = 1
+        day_counter = 1
 
         # MONTH COUNTER
-        ICOUNTF = 1
+        month_counter = 1
 
         # TIME STEPS TO COVER ONE DAY
-        IFDCHGE = int(SEC_PER_DAY)/int(DTI)
+        timesteps_per_day = int(seconds_per_day) / int(timestep)
 
         # TIME STEPS TO COVER ONE MONTH
-        IFCHGE = float(30)*IFDCHGE
+        timesteps_per_month = 30 * timesteps_per_day
 
         # DAY INTERPOLATOR
 
@@ -512,13 +518,13 @@ def FORCING_MANAGER():
         # **                                                                   **
         # **  THE DAILY CLIMATOLOGICAL FORCING DATA ARE ASSUMED TO BE          **
         # **  CENTERED AT h 00.00 OF EACH CLIMATOLOGICAL DAY.THEREFORE         **
-        # **  THE MONTH INTERPOLATOR(IFDINT) IS INITIALISED AT THE VALUE       **
+        # **  THE MONTH INTERPOLATOR(day_interpolator) IS INITIALISED AT THE VALUE       **
         # **  CORRESPONDING TO MIDNIGHT MINUS 1 TIMESTEP.                      **
         # **                                                                   **
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 
-        IFDINT = -int(ONE)
+        day_interpolator = -1
 
         # MONTH INTERPOLATOR
 
@@ -527,13 +533,13 @@ def FORCING_MANAGER():
         # **                                                                   **
         # **  THE MONTHLY CLIMATOLOGICAL FORCING DATA ARE ASSUMED TO BE        **
         # **  CENTERED AT DAY 15 OF EACH CLIMATOLOGICAL MONTH. THEREFORE       **
-        # **  THE MONTH INTERPOLATOR (IFINT) IS INITIALISED AT THE VALUE       **
-        # **  (IFCHGE/2)-1 CORRESPONDING TO DAY 15 MINUS 1 TIMESTEP.           **
+        # **  THE MONTH INTERPOLATOR (month_interpolator) IS INITIALISED AT THE VALUE       **
+        # **  (timesteps_per_month/2)-1 CORRESPONDING TO DAY 15 MINUS 1 TIMESTEP.           **
         # **                                                                   **
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 
-        IFINT = (IFCHGE / float(2)) - int(ONE)
+        month_interpolator = (timesteps_per_month / 2.) - 1
 
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
@@ -544,96 +550,101 @@ def FORCING_MANAGER():
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 
         # WIND STRESS CONVERTED TO POM UNITS (N/m2-->m2/s2)
-        WSU1 = -WSU1 * float(1.E-03)
-        WSU2 = -WSU2 * float(1.E-03)
-        WSV1 = -WSV1 * float(1.E-03)
-        WSV2 = -WSV2 * float(1.E-03)
+        wind_speed_zonal1[:] = -wind_speed_zonal1[:]  * 1.E-03
+        wind_speed_zonal2[:]  = -wind_speed_zonal2[:]  * 1.E-03
+        wind_speed_meridional1[:]  = -wind_speed_meridional1[:]  * 1.E-03
+        wind_speed_meridional2[:]  = -wind_speed_meridional2[:]  * 1.E-03
 
         # HEAT FLUX CONVERTED TO POM UNITS(W/m2-->deg.C*m/s)
-        SWRAD1 = -SWRAD1 / RCP
-        SWRAD2 = -SWRAD2 / RCP
-        WTSURF1 = -WTSURF1 / RCP
-        WTSURF2 = -WTSURF2 / RCP
+        surface_solar_radiation1[:] = -surface_solar_radiation1[:] / water_specific_heat_times_density
+        surface_solar_radiation2[:] = -surface_solar_radiation2[:] / water_specific_heat_times_density
+        surface_heat_flux_loss1[:] = -surface_heat_flux_loss1[:] / water_specific_heat_times_density
+        surface_heat_flux_loss2[:] = -surface_heat_flux_loss2[:] / water_specific_heat_times_density
 
         # VERTICAL VELOCITY CONVERTED TO POM UNITS (m/s-->m/s)
-        WCLIM1 = WCLIM1
-        WCLIM2 = WCLIM2
+        # w_velocity_climatology1[:] = w_velocity_climatology1[:]
+        # w_velocity_climatology2[:] = w_velocity_climatology2[:]
 
         # UPDATE THE DAY COUNTER
-        IDOUNTF = IDOUNTF + int(ONE)
+        day_counter = day_counter + 1
 
         # UPDATE THE MONTH COUNTER
-        ICOUNTF = ICOUNTF + int(ONE)
+        month_counter = month_counter + 1
 
     # UPDATE INTERPOLATION COUNTERS
-    IFDINT = IFDINT + int(ONE)
-    RATIOD = float(IFDINT) / float(IFDCHGE)
+    day_interpolator = day_interpolator + 1
+    ratio_day = day_interpolator / timesteps_per_day
 
-    IFINT = IFINT + int(ONE)
-    RATIOF = float(IFINT) / float(IFCHGE)
+    month_interpolator = month_interpolator + 1
+    ratio_month = month_interpolator / timesteps_per_month
 
     # INTERPOLATE WIND STRESS
-    WUSURF = WSU1 + RATIOF * (WSU2 - WSU1)
-    WVSURF = WSV1 + RATIOF * (WSV2 - WSV1)
+    wind_stress_zonal = wind_speed_zonal1 + ratio_month * (wind_speed_zonal2 - wind_speed_zonal1)
+    wind_stress_meridional = wind_speed_meridional1 + ratio_month * (wind_speed_meridional2 - wind_speed_meridional1)
 
     # INTERPOLATE HEAT FLUX
-    if IDIAGN == int(ZERO):
-        WTSURF = WTSURF1 + RATIOF * (WTSURF2 - WTSURF1)
-        SWRAD = SWRAD1 + RATIOF * (SWRAD2 - SWRAD1)
-    elif IDIAGN == int(ONE):
+    if prognostic_diagnostic_mode_switch == 0:
+        surface_heat_flux_loss = surface_heat_flux_loss1 + ratio_month * (surface_heat_flux_loss2 - surface_heat_flux_loss1)
+        surface_solar_radiation = surface_solar_radiation1 + ratio_month * (surface_solar_radiation2 - surface_solar_radiation1)
+    elif prognostic_diagnostic_mode_switch == 1:
         # DAILY
-        # SWRAD = SWRAD1 + RATIOD * (SWRAD2 - SWRAD1)
+        # surface_solar_radiation = surface_solar_radiation1 + ratio_day * (surface_solar_radiation2 - surface_solar_radiation1)
         # MONTHLY
-        SWRAD = SWRAD1 + RATIOF * (SWRAD2 - SWRAD1)
+        surface_solar_radiation = surface_solar_radiation1 + ratio_month * (surface_solar_radiation2 - surface_solar_radiation1)
 
     # INTERPOLATE T&S PROFILES
-    TSTAR = np.zeros((array_length, vertical_layers))
-    SSTAR = np.zeros((array_length, vertical_layers))
-    TSTAR[:] = TCLIM1[:] + RATIOF * (TCLIM2[:] - TCLIM1[:])
-    SSTAR[:] = SCLIM1[:] + RATIOF * (SCLIM2[:] - SCLIM1[:])
-    WGEN[:]  = WCLIM1[:] + RATIOF * (WCLIM2[:] - WCLIM1[:])
-    if RATIOF <= 0.5:
-        WEDDY[:] = WEDDY1[:]
-    else:
-        WEDDY[:] = WEDDY2[:]
+    temperature_profile_interpolation = np.zeros((array_length, vertical_layers), dtype=float)
+    salinity_profile_interpolation = np.zeros((array_length, vertical_layers), dtype=float)
+    temperature_profile_interpolation[:] = temperature_climatology1[:] + \
+                                           ratio_month * (temperature_climatology2[:] - temperature_climatology1[:])
+    salinity_profile_interpolation[:] = salinity_climatology1[:] + \
+                                        ratio_month * (salinity_climatology2[:] - salinity_climatology1[:])
+    w_velocity_interpolation[:]  = w_velocity_climatology1[:] + ratio_month * (w_velocity_climatology2[:] - w_velocity_climatology1[:])
 
-    if IDIAGN == int(ZERO):
-        TSURF = TSTAR[0]
-        SSURF = SSTAR[0]
-    elif IDIAGN == int(ONE):
-        TF[:] = TSTAR[:]
-        SF[:] = SSTAR[:]
+    w_eddy_velocity = np.zeros((array_length, vertical_layers), dtype=float)
+    if ratio_month <= 0.5:
+        w_eddy_velocity[:] = w_eddy_velocity_1[:]
+    else:
+        w_eddy_velocity[:] = w_eddy_velocity_2[:]
+
+    if prognostic_diagnostic_mode_switch == 0:
+        surface_temperature = temperature_profile_interpolation[0]
+        surface_salinity = salinity_profile_interpolation[0]
+    elif prognostic_diagnostic_mode_switch == 1:
+        intermediate_temperature_profile[:] = temperature_profile_interpolation[:]
+        intermediate_salinity_profile[:] = salinity_profile_interpolation[:]
 
     # INTERPOLATE SUSPENDED INORGANIC MATTER
-    ISM[:] = ISM1[:] + RATIOF * (ISM2[:] - ISM1[:])
+    inorganic_suspended_matter = np.zeros((array_length, vertical_layers), dtype=float)
+    inorganic_suspended_matter[:] = inorganic_suspended_matter1[:] + ratio_month * (inorganic_suspended_matter2[:] - inorganic_suspended_matter1[:])
 
     # INTERPOLATE SURFACE NUTRIENTS
-    NO3SURF = NO3_s1 + RATIOF * (NO3_s2 - NO3_s1)
-    NH4SURF = NH4_s1 + RATIOF * (NH4_s2 - NH4_s1)
-    PO4SURF = PO4_s1 + RATIOF * (PO4_s2 - PO4_s1)
-    SIO4SURF = SIO4_s1 + RATIOF * (SIO4_s2 - SIO4_s1)
+    NO3SURF = NO3_s1 + ratio_month * (NO3_s2 - NO3_s1)
+    NH4SURF = NH4_s1 + ratio_month * (NH4_s2 - NH4_s1)
+    PO4SURF = PO4_s1 + ratio_month * (PO4_s2 - PO4_s1)
+    SIO4SURF = SIO4_s1 + ratio_month * (SIO4_s2 - SIO4_s1)
 
     # INTERPOLATE BOTTOM NUTRIENTS
-    O2BOTT = O2_b1 + RATIOF * (O2_b2 - O2_b1)
-    NO3BOTT = NO3_b1 + RATIOF * (NO3_b2 - NO3_b1)
-    PO4BOTT = PO4_b1 + RATIOF * (PO4_b2 - PO4_b1)
-    PONBOTTgrad = PON_b1 + RATIOF * (PON_b2 - PON_b1)
+    O2BOTT = O2_b1 + ratio_month * (O2_b2 - O2_b1)
+    NO3BOTT = NO3_b1 + ratio_month * (NO3_b2 - NO3_b1)
+    PO4BOTT = PO4_b1 + ratio_month * (PO4_b2 - PO4_b1)
+    PONBOTTgrad = PON_b1 + ratio_month * (PON_b2 - PON_b1)
 
-    if IFINT == IFCHGE:
+    if month_interpolator == timesteps_per_month:
 
         # A MONTH HAS GONE...IT IS NECESSARY TO...
         # ....UPDATE MONTH COUNTER....
-        ICOUNTF = ICOUNTF + 1
-        print('ICOUNTF = ',ICOUNTF)
+        month_counter = month_counter + 1
+        print('month_counter = ',month_counter)
 
         # ....RESET INTERPOLATOR....
-        IFINT = int(ZERO)
+        month_interpolator = 0
 
         # ....SHIFT THE MONTHLY DATA....
-        WSU1 = WSU2
-        WSV1 = WSV2
-        SWRAD1 = SWRAD2
-        WTSURF1 = WTSURF2
+        wind_speed_zonal1 = wind_speed_zonal2
+        wind_speed_meridional1 = wind_speed_meridional2
+        surface_solar_radiation1 = surface_solar_radiation2
+        surface_heat_flux_loss1 = surface_heat_flux_loss2
 #         SLUX1 = SLUX2
         NO3_s1 = NO3_s2
         NH4_s1 = NH4_s2
@@ -643,32 +654,37 @@ def FORCING_MANAGER():
         O2_b1 = O2_b2
         PO4_b1 = PO4_b2
         PON_b1 = PON_b2
-        ISM1[:]     = ISM2[:]
-        TCLIM1[:]   = TCLIM2[:]
-        SCLIM1[:]   = SCLIM2[:]
-        WCLIM1[:]   = WCLIM2[:]
-        WEDDY1[:]   = WEDDY3[:]
-        WEDDY2[:]   = WEDDY4[:]
+        inorganic_suspended_matter1[:]     = inorganic_suspended_matter2[:]
+        temperature_climatology1[:]   = temperature_climatology2[:]
+        salinity_climatology1[:]   = salinity_climatology2[:]
+        w_velocity_climatology1[:]   = w_velocity_climatology2[:]
+        w_eddy_velocity_1[:]   = w_eddy_velocity_3[:]
+        w_eddy_velocity_2[:]   = w_eddy_velocity_4[:]
 
-        if ICOUNTF > 13:
+        if month_counter > 13:
             # IF 12 MONTHS HAVE GONE, RESTART THE READING SEQUENCE
-            ICOUNTF = 2
+            month_counter = 2
 
-            WSU1, WSV1, SSS1, SLUX1, ISM1, SCLIM1, TCLIM1, WCLIM1, WEDDY1, WEDDY2, SB, TB, \
-                SWRAD1, WTSURF1, QCORR1, NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1 = read_pom_input()
+            wind_speed_zonal1, wind_speed_meridional1, surface_salinity1, solar_radiation1, inorganic_suspended_matter1, \
+                salinity_climatology1, temperature_climatology1, w_velocity_climatology1, w_eddy_velocity_1, \
+                w_eddy_velocity_2, salinity_initial_profile1, temperature_initial_profile1, \
+                surface_solar_radiation1, surface_heat_flux_loss1, kinetic_energy_loss1, \
+                NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1                       = read_pom_input()
+            wind_speed_zonal1 = -wind_speed_zonal1 * 1.E-03
+            wind_speed_meridional1 = -wind_speed_meridional1 * 1.E-03
+            surface_solar_radiation1 = -surface_solar_radiation1 / water_specific_heat_times_density
+            surface_heat_flux_loss1 = -surface_heat_flux_loss1 / water_specific_heat_times_density
 
-            WSU1 = -WSU1 * float(1.E-03)
-            WSV1 = -WSV1 * float(1.E-03)
-            SWRAD1 = -SWRAD1 / RCP
-            WTSURF1 = -WTSURF1 / RCP
+            wind_speed_zonal2, wind_speed_meridional2, surface_salinity2, solar_radiation2, inorganic_suspended_matter2, \
+                salinity_climatology2, temperature_climatology2, w_velocity_climatology2, w_eddy_velocity_3, \
+                w_eddy_velocity_4, salinity_initial_profile2, temperature_initial_profile2, \
+                surface_solar_radiation2, surface_heat_flux_loss2, kinetic_energy_loss2, \
+                NO3_s2, NH4_s2, PO4_s2, SIO4_s2, O2_b2, NO3_b2, PO4_b2, PON_b2                       = read_pom_input()
 
-            WSU2, WSV2, SSS2, SLUX2, ISM2, SCLIM2, TCLIM2, WCLIM2, WEDDY3, WEDDY4, SB2, TB2, \
-                SWRAD2, WTSURF2, QCORR2, NO3_s2, NH4_s2, PO4_s2, SIO4_s2, O2_b2, NO3_b2, PO4_b2, PON_b2 = read_pom_input()
-
-            WSU2 = -WSU2 * float(1.E-03)
-            WSV2 = -WSV2 * float(1.E-03)
-            SWRAD2 = -SWRAD2 / RCP
-            WTSURF2 = -WTSURF2 / RCP
+            wind_speed_zonal2 = -wind_speed_zonal2 * 1.E-03
+            wind_speed_meridional2 = -wind_speed_meridional2 * 1.E-03
+            surface_solar_radiation2 = -surface_solar_radiation2 / water_specific_heat_times_density
+            surface_heat_flux_loss2 = -surface_heat_flux_loss2 / water_specific_heat_times_density
 
     return
 
@@ -767,26 +783,36 @@ iiReset = -1000
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   GLOBAL SYSTEM CONSTANTS (PEL)
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-NO_D3_BOX_STATES   = 50
-NO_D3_BOX_DIAGNOSS = 91
-NO_D2_BOX_DIAGNOSS = 162
-NO_D3_BOX_FLUX     = 30
+no_d3_box_states   = 50
+no_d3_box_diagnoss = 91
+no_d2_box_diagnoss = 162
+no_d3_box_flux     = 30
 
-if 'INCLUDE_SEAICE' is not None:
+try:
+    import INCLUDE_SEAICE
+    INCLUDE_SEAICE = True
+except FileNotFoundError:
+    INCLUDE_SEAICE = False
+if INCLUDE_SEAICE:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GLOBAL SYSTEM CONSTANTS (ICE)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    NO_D2_BOX_STATES_ICE   = 0
-    NO_D2_BOX_DIAGNOSS_ICE = 0
-    NO_D2_BOX_FLUX_ICE     = 0
+    no_d2_box_states_ice   = 0
+    no_d2_box_diagnoss_ice = 0
+    no_d2_box_flux_ice     = 0
 
-if 'INCLUDE_BEN' is not None:
+try:
+    import INCLUDE_BEN
+    INCLUDE_BEN = True
+except FileNotFoundError:
+    INCLUDE_BEN = False
+if INCLUDE_BEN:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GLOBAL SYSTEM CONSTANTS (BEN)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    NO_D2_BOX_STATES_BEN   = 0
-    NO_D2_BOX_DIAGNOSS_BEN = 0
-    NO_D2_BOX_FLUX_BEN     = 0
+    no_d2_box_states_ben   = 0
+    no_d2_box_diagnoss_ben = 0
+    no_d2_box_flux_ben     = 0
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   GLOBAL DEFINITION OF PELAGIC (D3/D2) STATE VARIABLES
@@ -1012,14 +1038,24 @@ pptotsysn = 9; pptotsysp      = 10; pptotsyss    = 11; ppEICE  = 12
 #     ppPelDetritus, PelDetritus, ppInorganic, Inorganic
 
 
-if 'INCLUDE_SEAICE' is not None:
+try:
+    import INCLUDE_SEAICE
+    INCLUDE_SEAICE = True
+except FileNotFoundError:
+    INCLUDE_SEAICE = False
+if INCLUDE_SEAICE:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SHARED GLOBAL FUNCTIONS (ICE) (MUST BE BELOW CONTAINS)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     # Source_D2_vector_ice
     pass
 
-if 'INCLUDE_BEN' is not None:
+try:
+    import INCLUDE_BEN
+    INCLUDE_BEN = True
+except FileNotFoundError:
+    INCLUDE_BEN = False
+if INCLUDE_BEN:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SHARED GLOBAL FUNCTIONS (ICE) (MUST BE BELOW CONTAINS)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -1139,20 +1175,20 @@ check_fixed_quota = 0
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   PELAGIC MODEL PARAMETERS
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-p_small      = float(1.0E-20)
-slp0         = float(1013.25)
-p_PAR        = float(0.50)
-p_eps0       = float(0.04)
-p_epsESS     = float(0.04E-03)
+p_small      = 1.0E-20
+slp0         = 1013.25
+p_PAR        = 0.50
+p_eps0       = 0.04
+p_epsESS     = 0.04E-03
 p_epsChla    = 0.03
-p_epsR6      = float(0.1E-03)
-p_pe_R1c     = float(0.60)
-p_pe_R1n     = float(0.72)
-p_pe_R1p     = float(0.832)
-p_pe_R1s     = float(0.06)
-p_qro        = float(0.50)
-p_qon_dentri = float(1.25)
-p_qon_nitri  = float(1.5)
+p_epsR6      = 0.1E-03
+p_pe_R1c     = 0.60
+p_pe_R1n     = 0.72
+p_pe_R1p     = 0.832
+p_pe_R1s     = 0.06
+p_qro        = 0.50
+p_qon_dentri = 1.25
+p_qon_nitri  = 1.5
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # ! Benthic model parameters
@@ -1172,17 +1208,22 @@ p_qon_nitri  = float(1.5)
 
 # 0D-PARAMETERS
 p_sedlevels = 20
-p_sedsigma  = float(2.0)
-p_d_tot     = float(0.30)
+p_sedsigma  = 2.0
+p_d_tot     = 0.30
 p_poro0     = 0.4
 
 # 1D-PARAMETERS
-if 'INCLUDE_BEN' is not None:
-    p_InitSink = float(100.0)
-    p_q10diff  = float(1.49)
-    p_clDxm    = float(0.001)
-    p_clD1D2m  = float(0.01)
-    p_d_tot_2  = float(0.35)
+try:
+    import INCLUDE_BEN
+    INCLUDE_BEN = True
+except FileNotFoundError:
+    INCLUDE_BEN = False
+if INCLUDE_BEN:
+    p_InitSink = 100.0
+    p_q10diff  = 1.49
+    p_clDxm    = 0.001
+    p_clD1D2m  = 0.01
+    p_d_tot_2  = 0.35
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   SEAICE MODEL PARAMETERS
