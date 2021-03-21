@@ -3,15 +3,6 @@ from cppdefs import *
 from pom.modules import RLEN, bfm_lwp, LOGUNIT, seconds_per_day
 
 
-# TimeInfo = dict(date0=' '*25,       # CALENDER DATE OF START (EMPTY STRING OF LENGTH 25)
-#                 time0=float(),      # JULIAN DAY START OF RUN
-#                 timeEnd=float(),    # JULIAN DAY END OF RUN
-#                 step0=int(),        # INITIAL STEP #
-#                 timestep=int(),     # DELTA t
-#                 stepnow=int(),      # ACTUAL STEP #
-#                 stepEnd=int())      # ACTUAL STEP #
-
-
 class TimeInfo:
 
     def __init__(self, date0, time0, timeEnd, step0, timestep, stepnow, stepEnd):
@@ -28,16 +19,6 @@ class TimeInfo:
 timestr = ' ' * 19
 start = '2000-01-01 00:00:00'
 stop = ' ' * 19
-timestep = float()
-fsecs = float()
-simtime = float()
-julianday = int()
-secondsofday = int()
-timefmt = int()
-simdays = int()
-# MinN = int()
-# MaxN = int()
-HasRealTime = True
 
 # PRIVATE DATA MEMBERS
 jul0 = -1
@@ -55,26 +36,24 @@ secs0 = -1
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-def initialize_time_system(MinN, MaxN):
+def initialize_time_system(MinN,MaxN,timestep,timefmt,simdays,start,stop):
 
-    bfmtime = TimeInfo
-    # INPUT/OUTPUT PARAMETERS
-    # MinN = int()
-    # MaxN = int()
+    """
+    Description: Initializes the time module by reading a namelist.
+                 Takes actions accrding to the specifications.
 
-    # LOCAL VARIABLES
+    :param MinN: minimum number of time steps
+    :param MaxN: maximum number of time steps
+    :param timestep: size of time step
+    :param timefmt: time format
+    :param simdays: number of days for simulation
+    :param start: start date
+    :param stop: end date
+    :return:
+    """
+
     jul1 = -1
     secs1 = -1
-    jul2 = int()
-    secs2 = int()
-    ndays = int()
-    nsecs = int()
-    dd = int()
-    mm = int()
-    yy = int()
-    hh = int()
-    nn = int()
-    jday = float
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   READ TIME SPECIFIC THINGS FROM THE NAMELIST
@@ -94,10 +73,11 @@ def initialize_time_system(MinN, MaxN):
         LEVEL2(); print('Fake start:     ', start)
 
     elif timefmt == 2:
+        HasRealTime = True
         LEVEL2(); print('Start:          ', start)
         LEVEL2(); print('Stop:           ', stop)
-        read_time_string(start, jul1, secs1)
-        read_time_string(stop, jul2, secs2)
+        jul1, secs1 = read_time_string(start)
+        jul2, secs2 = read_time_string(stop)
 
         nsecs = time_diff(jul2, secs2, jul1, secs1)
         MaxN = round(nsecs / timestep)
@@ -107,21 +87,22 @@ def initialize_time_system(MinN, MaxN):
             ndays = ndays - 1
 
         nsecs = nsecs - 86400 * ndays
-        string = '  ==> ', ndays, ' day(s) and ', nsecs, ' seconds ==> ', MaxN, ' time steps'
+        string = '  ==> ' + str(ndays) + ' day(s) and ' + str(nsecs) + ' seconds ==> ' + str(MaxN) + ' time steps'
         STDERR(string)
 
     elif timefmt == 3:
+        HasRealTime = True
         LEVEL2(); print('Start:          ', start)
         LEVEL2(); print('# of timesteps: ', MaxN)
 
-        read_time_string(start, jul1, secs1)
+        jul1, secs1 = read_time_string(start)
 
         nsecs = np.rint(MaxN * timestep) + secs1
         ndays = nsecs / 86400
         jul2 = jul1 + ndays
         secs2 = nsecs % 86400
 
-        write_time_string(jul2, secs2, stop)
+        write_time_string(jul2, secs2)
         LEVEL2(); print('Stop:           ', stop)
 
     elif timefmt == 4:
@@ -146,15 +127,15 @@ def initialize_time_system(MinN, MaxN):
 
     # SET BFM TIME
     jday = float(jul0)
-    yy, mm, dd, hh, nn = calendar_date(jday, yy, mm, dd, hh, nn)
+    yy, mm, dd, hh, nn = calendar_date(jday)
 
-    bfmtime.date0 = yy, '-', mm, '-', dd, ' ', hh, ':', nn
-    bfmtime.time0 = jday
-    bfmtime.timeEnd = jday + (float(MaxN) * timestep) / seconds_per_day
-    bfmtime.step0 = MinN - 1
-    bfmtime.timestep = timestep
-    bfmtime.stepnow = MinN - 1
-    bfmtime.stepEnd = MaxN
+    bfmtime = TimeInfo(str(yy) + '-' + str(mm) + '-' + str(dd) + ' ' + str(hh) + ':' + str(nn),
+                       jday,
+                       jday + (float(MaxN) * timestep) / seconds_per_day,
+                       MinN - 1,
+                       timestep,
+                       MinN - 1,
+                       MaxN)
 
     LEVEL2(); print('bfmtime : ', bfmtime)
 
@@ -170,27 +151,17 @@ def initialize_time_system(MinN, MaxN):
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-def calendar_date(julian, yyyy, mm, dd, hh, nn):
-    # INPUT PARAMETERS
-    # julian = float()
+def calendar_date(julian):
 
-    # OUTPUT PARAMETERS
-    yyyy = int()
-    mm = int()
-    dd = int()
-    hh = int()
-    nn = int()
+    """
+    Description: Converts a Julian day to a calender date --- year, month, and day
+
+    :param julian: Julian day
+    :return: calender date
+    """
 
     # LOCAL VARIABLES
     IGREG = 2299161
-    ja = int()
-    jb = int()
-    jc = int()
-    jd = int()
-    je = int()
-    jday = int()
-    x = float()
-    res = float()
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -229,33 +200,28 @@ def calendar_date(julian, yyyy, mm, dd, hh, nn):
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #
-# # ROUTINE: CONVERT CALENDAR DATE TRUE JULIAN DAY
+# # ROUTINE: CONVERT CALENDAR DATE TO JULIAN DAY
 #
 # DESCRIPTION:  Converts a calendar date to a Julian day.
 #               Based on a similar routine in \emph{Numerical Recipes}.
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-def julian_day(yyyy,mm,dd,hh,nn,julian):
+def julian_day(yyyy,mm,dd,hh,nn):
 
-    # INPUT PARAMETERS
-    # yyyy = int()
-    # mm = int()
-    # dd = int()
-    # hh = int()
-    # nn = int()
+    """
+    Description: Converts a calender date to a Julian day.
 
-    # OUTPUT PARAMETERS
-    # julian = float()
+    :param yyyy: year
+    :param mm: month
+    :param dd: day
+    :param hh: hour
+    :param nn: minute
+    :return: Julian day
+    """
 
     # LOCAL VARIABLES
     IGREG = 15 + 31 * (10 + 12 * 1582)
-    ja = int()
-    jy = int()
-    jm = int()
-    jh = int()
-    jn = int()
-    jday = int()
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -287,7 +253,7 @@ def julian_day(yyyy,mm,dd,hh,nn,julian):
 
     julian = float(jday) + float(jh) / 24 + float(jn) / (24 * 60)
 
-    return julian, jday
+    return julian
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -301,52 +267,43 @@ def julian_day(yyyy,mm,dd,hh,nn,julian):
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-def update_time(n):
+def update_time(n,timestep,secs0):
 
-    # INPUT PARAMETERES
-    # n = int()
+    """
+    Description: Based on a starting time this routine calculates the actual time in a model integration
+                 using the number of time steps and the size of the time step.
 
-    # LOCAL VARIABLES
-    nsecs = int()
-
-    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    :param n: number of time steps
+    :param timestep: size of time step
+    :param secs0:
+    :return: actual time in a model integration
+    """
 
     nsecs = np.rint(n * timestep) + secs0
     fsecs = n * timestep + secs0
     julianday = jul0 + nsecs / 86400
     secondsofday = nsecs % 86400
 
-    return
+    return fsecs, julianday, secondsofday
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #
-# # ROUTINE: CONVERT A TIME STRING TO JULINA DAY AND SECONDS
+# # ROUTINE: CONVERT A TIME STRING TO JULIAN DAY AND SECONDS
 #
 # DESCRIPTION:  Converts a time string to the true Julian day and seconds of that day.
 #               The format of the time string must be: {\tt yyyy-mm-dd hh:hh:ss }.
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-def read_time_string(timestr,jul,secs):
+def read_time_string(timestr):
 
-    # INPUT PARAMETERS
-    # timestr = ' '*19
+    """
+    Description: Converts a time string to the true Julian day and the seconds of that day.
 
-    # OUTPUT PARAMETERS
-    jul = int()
-    secs = int()
-
-    # LOCAL VARIABLES
-    yy = int()
-    mm = int()
-    dd = int()
-    hh = int()
-    mins = int()
-    ss = int()
-    jday = float()
-
-    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    :param timestr: time string
+    :return: Julian day and seconds of that day
+    """
 
     yy = timestr[0:4]
     mm = timestr[5:7]
@@ -355,7 +312,7 @@ def read_time_string(timestr,jul,secs):
     mins = timestr[14:16]
     ss = timestr[17:19]
 
-    julian, jday = julian_day(yy,mm,dd,0,0,jday)
+    julian, jday = julian_day(yy,mm,dd,0,0)
     jul = int(jday)
     secs = 3600*hh + 60*mins + ss
 
@@ -372,36 +329,24 @@ def read_time_string(timestr,jul,secs):
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 
-def write_time_string(jul,secs,timestr):
+def write_time_string(jul,secs):
 
-    # INPUT PARAMETERS
-    # jul = int()
-    # secs = int()
+    """
+    Description: Formats Julian day and seconds of that day into a character string.
 
-    # OUTPUT PARAMETERS
-    timestr = ' '*19
+    :param jul: Julian day
+    :param secs: seconds of Julian day
+    :return: time string
+    """
 
-    # LOCAL VARIABLES
-    ss = int()
-    mins = int()
-    hh = int()
-    dd = int()
-    mm = int()
-    yy = int()
-    jh = int()
-    jn = int()
-    jday = float()
-
-    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    jday = float(jul)
+    yy, mm, dd, hh, nn = calendar_date(jday)
 
     hh = secs / 3600
     mins = (secs - hh * 3600) / 60
     ss = secs - 3600 * hh - 60 * mins
-    jday = float(jul)
 
-    calendar_date(jday,yy,mm,dd,jh,jn)
-
-    timestr = yy,'-',mm,'-',dd,' ',hh,':',mins,':',ss
+    timestr = str(yy) + '-' + str(mm) + '-' + str(dd) + ' ' + str(hh) + ':' + str(mins) + ':' + str(ss)
 
     return timestr
 
@@ -416,17 +361,19 @@ def write_time_string(jul,secs,timestr):
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-def time_diff(jul1,secs1,jul2,secs2):
+def time_diff(jul2,secs2,jul1,secs1):
 
-    # INPUT PARAMETERS
-    # jul1 = int()
-    # secs1 = int()
-    # jul2 = int()
-    # secs2 = int()
+    """
+    Description: Returns the time difference between two dates in seconds.
 
-    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    :param jul2: Julian day 2
+    :param secs2: seconds of julian day 2
+    :param jul1: Julian day 1
+    :param secs1: seconds of julian day 1
+    :return: difference between Julian day 2 and Julian day 1
+    """
 
-    time_diff = 86400*(jul1-jul2) + (secs1-secs2)
+    time_diff = 86400*(jul2-jul1) + (secs2-secs1)
 
     return time_diff
 
@@ -439,28 +386,19 @@ def time_diff(jul1,secs1,jul2,secs2):
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-def dayofyear(julian,ddyear):
+def dayofyear(julian,yy):
 
-    # INPUT PARAMETERS
-    # julian = int()
+    """
+    Description: Converts a Julian day to the day number in the curent year.
 
-    # OUTPUT PARAMETERS
-    ddyear = int()
-
-    # LOCAL VARIABLES
-    yy = int()
-    mm = int()
-    dd = int()
-    hh = int()
-    nn = int()
-    julian0 = float()
-    jday = float()
-
-    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    :param julian: Julian day
+    :param yy: current year
+    :return: day number of the current year
+    """
 
     jday = float(julian)
-    calendar_date(jday,yy,mm,dd,hh,nn)
-    julian0, jday = julian_day(yy,1,1,0,0,julian0)
+    calendar_date(jday)
+    julian0, jday = julian_day(yy,1,1,0,0)
 
     ddyear = julian - int(julian0) + 1
 
@@ -477,9 +415,16 @@ def dayofyear(julian,ddyear):
 
 def eomdays(Year,Month):
 
-    # Month = int()
-    # Year = int()
+    """
+    Description: Provides system with the number of days in a given month.
+                 Accounts for leap year using Year input.
 
+    :param Year: current year
+    :param Month: current month
+    :return: numbr of days in current month
+    """
+
+    eomdays = 0
     if Month < 1 or Month > 12:
         print('eomdays: Invalid Month!!')
     elif Month in [1,3,4,7,8,10,12]:  # Jan, Mar, May, July, Aug, Oct, Dec
@@ -505,11 +450,16 @@ def eomdays(Year,Month):
 
 def yeardays(Year):
 
-    im = int()
-    # Year = int()
+    """
+    Description: Provides system with the number of days in the current year.
+
+    :param Year: current year
+    :return: number of days in current year
+    """
+
     yeardays = 0
-    for im in range(0,12):
-        yeardays = yeardays + float(eomdays(Year,im))
+    for i in range(0,12):
+        yeardays = yeardays + float(eomdays(Year,i))
 
     if yeardays == 0 or yeardays > 366:
         print('yeardays out of bounds!!')
