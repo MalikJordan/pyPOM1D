@@ -13,49 +13,55 @@ import numpy as np
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-def analytical_profile(nlev,z,z1,v1,z2,v2,prof):
+def analytical_profile(nlev, vertical_layers, depth1, surface_layer_value, depth2, bottom_layer_value):
 
-    from pom.modules import RLEN, zero, bfm_lwp, LOGUNIT
+    """
+    Description: Creates a vertical profile with a value (surface_layer_value) in a
+                 surface layer down to depth (depth1) and a bottom layer with a value
+                 (bottom_layer_value) from depth (depth2) down to the bottom.
+                 Both layers are connected by an intermediate layer reaching from
+                 depth1 to depth2 with values varying linearly from surface_layer_value
+                 to bottom_layer_value.
 
-    # INPUT PARAMETERS
-    # nlev = int()
-    # z = np.empty(nlev,dtype=float)
-    # z1 = float()
-    # v1 = float()
-    # z2 = float()
-    # v2 = float()
+    :param nlev:
+    :param vertical_layers:
+    :param depth1:
+    :param surface_layer_value: value at the surface
+    :param depth2:
+    :param bottom_layer_value: value at bottom
+    :return: vertical profile
+    """
 
     # OUTPUT PARAMETERS
-    prof = np.empty(nlev,dtype=float)
+    vertical_profile = np.empty(nlev,dtype=float)
 
     # LOCAL VARIABLES
-    i = int()
     alpha = float()
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    if z2 - z1 > -1E-15:
-        alpha = (v2 - v1) / (z2 - z1 + 2E-15)
+    if (depth2 - depth1) > -1E-15:
+        alpha = (bottom_layer_value - surface_layer_value) / (depth2 - depth1 + 2E-15)
 
     else:
         STDERR('*************************************************')
-        STDERR('*  Error detected by analytical_profile.F90:    *')
+        STDERR('*  Error detected by analytical_profile.py:     *')
         STDERR('*  anz2 should be larger than anz1.             *')
         STDERR('*  Please edit BFM_General.nml or bio_bfm.nml.  *')
         STDERR('*************************************************')
 
     for i in range(nlev-1,0,-1):
-        if z[i] < z1:
-            prof[i] = v1
+        if vertical_layers[i] < depth1:
+            vertical_profile[i] = surface_layer_value
 
         if alpha < 1E15:
-            if z1 < z[i] < z2:
-                prof[i] = v1 + alpha*(z[i] - z1)
+            if depth1 < vertical_layers[i] < depth2:
+                vertical_profile[i] = surface_layer_value + alpha * (vertical_layers[i] - depth1)
 
-        if z[i] > z2:
-            prof[i] = v2
+        if vertical_layers[i] > depth2:
+            vertical_profile[i] = bottom_layer_value
 
-    return prof
+    return vertical_profile
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   Copyright 2013 BFM System Team (bfm_st@lists.cmcc.it)
