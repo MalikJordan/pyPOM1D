@@ -17,6 +17,15 @@ from cppdefs import *
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 def read_pom_input():
 
+    """
+    Description: Opens forcing files reading the paths specified in the pom_input namelist.
+
+    :return: data arrays for wind stress, surface salinity, solar radiation, inorganic
+             suspended matter, salinity and temperature vertical profiles, general circulation
+             for w velocity, intermediate eddy velocities, salinity and temperature initial
+             conditions, heat flux loss, and surface and bottom nutrients
+    """
+
     from main_pombfm1d import current_path
     from pom.modules import vertical_layers
     from pom.modules import path_error
@@ -233,6 +242,13 @@ def read_pom_input():
 
 
 def get_temperature_and_salinity_initial_coditions():
+
+    """
+    Description: Opens and reads files containing the initial conditions for temperature
+                 and salinity. Files are read from the pom_input namelist.
+
+    :return: temperature and salinity at the current and backward time level
+    """
 
     from main_pombfm1d import current_path
     from pom.modules import vertical_layers
