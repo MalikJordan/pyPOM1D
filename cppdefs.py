@@ -1,3 +1,7 @@
+"""
+This file is included in all files
+"""
+
 # THIS FILE IS INCLUDED IN ALL FILES
 RELEASE = 'Created by BFM v. 5.1'
 
@@ -18,7 +22,6 @@ def LEVEL0():
     STDERR('')
 
 def LEVEL1():
-    call1 = '   '
     STDERR('   ')
 
 def LEVEL2():
