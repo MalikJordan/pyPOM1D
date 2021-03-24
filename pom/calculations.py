@@ -54,31 +54,6 @@ def adverte(FB,F,FF,W):
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def CALCDEPTH(Z,ZZ,DZ,DZZ,KB,KL1,KL2):
-
-    BB = float(KL2-KL1) + 4.
-    CC = float(KL1) - 2.
-    DEL1 = 2./BB/np.exp(.693147*float(KL1-2))
-    DEL2 = 2./BB/np.exp(.693147*float(KB-KL2-1))
-    Z[0] = 0.
-    ZZ[0] = -DEL1/2.
-
-    for K in range(1,int(KL1) - 1):
-        Z[K] = -DEL1 * np.exp(.693147 * float(K - 2))
-        ZZ[K] = -DEL1 * np.exp(.693147 * (float(K) - 1.5))
-
-    for K in range(int(KL1) - 1,int(KL2) + 2):
-        Z[K] = - (float(K) - CC) / BB
-        ZZ[K] = - (float(K) - CC + 0.5) / BB
-
-    for K in range(0,int(KB) - 1):
-        DZ[K] = Z[K] - Z[K+1]
-        DZZ[K] = ZZ[K] - ZZ[K+1]
-
-
-    return Z, ZZ, DZ, DZZ
-
-
 def calculate_vertical_grid_spacing(vertical_layers, surface_layers_with_log_distribution, bottom_layers_with_log_distribution):
 
     # KL1 = surface_log_distribution
@@ -144,38 +119,6 @@ def CalcLightDistribution():
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def DENS(T, S, ZZ, DT, RHO, KB):
-
-    GRAV = 9.806
-
-    for K in range(0, KB - 1):
-        TR = T[K]
-        SR = S[K]
-
-        # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-        #   HERE, THE (APPROXIMATE) PRESSURE IS IN UNITS OF BARS
-        # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-        P = -GRAV * 1.025 * ZZ[K] * DT * 0.01
-        RHOR = 999.842594 + 6.793952E-2 * TR - 9.095290E-3 * TR ** 2 + \
-               1.001685E-4 * TR ** 3 - 1.120083E-6 * TR ** 4 + 6.536332E-9 * TR ** 5
-        RHOR = RHOR + (0.824493 - 4.0899E-3 * TR + 7.6438E-5 * TR ** 2 -
-                             8.2467E-7 * TR ** 3 + 5.3875E-9 * TR ** 4) * SR + \
-                  (-5.72466E-3 + 1.0227E-4 * TR - 1.6546E-6 * TR ** 2) * (np.abs(SR)) ** 1.5 + 4.8314E-4 * SR ** 2
-
-        # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-        #   FOR SHALLOW WATER THE PRESSURE DEPENDENCY CAN BE NEGLECTED
-        #   IN WHICH IT SHOULD ALSO BE OMITTED IN PROFQ
-        # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-        CR = 1449.1 + .0821 * P + 4.55 * TR - .045 * TR ** 2 + 1.34 * (SR - 35.)
-
-        RHO[K] = (RHOR - 1000.) * 1.E-3
-
-    RHO[KB - 1] = RHO[KB - 2]
-
-    return RHO
-
 def calculate_vertical_density_profile(temperature,salinity,vertical_spacing_staggered,timestep,vertical_layers):
 
     vertical_density_profile = np.zeros(vertical_layers,dtype=float)
@@ -229,20 +172,6 @@ def calculate_vertical_density_profile(temperature,salinity,vertical_spacing_sta
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def MLDPTH(ZZ,T,KB,ZZMLD):
-
-    ZERO = 1.E-06
-    T = T
-
-    for K in range(0,KB - 1):
-
-        if T[0] > T[K] + 0.2:
-            break
-
-        ZZMLD[K] = ZZ[K] - (T[K] + 0.2 - T[0]) * (ZZ[K] - ZZ[K + 1]) / (T[K] - T[K + 1] + ZERO)
-
-    return ZZMLD
-
 def calculate_staggered_mixed_layer_depth(vertical_coordinates_staggered,temperature,vertical_layers):
 
     staggered_mixed_layer_depth = np.zeros(vertical_layers,dtype=float)
