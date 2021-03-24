@@ -173,11 +173,11 @@ def read_pom_input():
     if not path.exists(heat_flux_loss_data_path):
         path_error(heat_flux_loss_data_path)
     heat_flux_loss_data = np.fromfile(heat_flux_loss_data_path,dtype=float)
-    surface_solar_radiation = np.zeros(array_length,dtype=float)
+    shortwave_radiation = np.zeros(array_length,dtype=float)
     surface_heat_flux_loss = np.zeros(array_length,dtype=float)
     kinetic_energy_loss = np.zeros(array_length,dtype=float)
     for i in range(0,array_length):
-        surface_solar_radiation[i]  = heat_flux_loss_data[3*i + 0]
+        shortwave_radiation[i]  = heat_flux_loss_data[3*i + 0]
         surface_heat_flux_loss[i] = heat_flux_loss_data[3*i + 1]
         kinetic_energy_loss[i]  = heat_flux_loss_data[3*i + 2]
 
@@ -216,7 +216,7 @@ def read_pom_input():
     return wind_speed_zonal, wind_speed_meridional, surface_salinity, solar_radiation, inorganic_suspended_matter, \
            salinity_climatology, temperature_climatology, w_velocity_climatology, w_eddy_velocity_1, \
            w_eddy_velocity_2, salinity_initial_profile, temperature_initial_profile, \
-           surface_solar_radiation, surface_heat_flux_loss, kinetic_energy_loss, \
+           shortwave_radiation, surface_heat_flux_loss, kinetic_energy_loss, \
            NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1
 
 
@@ -289,6 +289,105 @@ def get_temperature_and_salinity_initial_coditions():
 
 # temperature_current_time_level, temperature_backwards_time_level, \
 #     salinity_current_time_level, salinity_backwards_time_level      = get_temperature_and_salinity_initial_coditions()
+
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#
+# ROUTINE: GetDelta
+#
+# DESCRIPTION: Get the numeric timestep
+#              Transfer the integration time step to the BFM Unit conversion
+#              from seconds to days
+#
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+def get_numeric_timestep():
+
+    """
+    Description: Get the numeric timestep. Transfer the integration timestep to the BFM
+                 Unit conversion from seconds to days.
+
+    :return: numeric timestep
+    """
+
+    from modules import seconds_per_day, timestep
+
+    numeric_timestep = timestep/seconds_per_day
+
+    return numeric_timestep
+
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#
+# ROUTINE: Service
+#
+# DESCRIPTION: This routine passes the physical variables to the BFM
+#
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+def pom_to_bfm():
+
+    """
+    Description: Passes the physical variables to the BFM
+
+    :return: seawater density, temperature and salinity, suspended sediment load,
+             photosynthetically available radiation, gridpoint depth, and wind speed
+    """
+
+    # try:
+    #     import NOPOINTERS
+    #     NOPOINTERS = True
+    # except FileNotFoundError:
+    #     NOPOINTERS = False
+    # if NOPOINTERS:
+    #     from modules import seawater_temperature, seawater_salinity, photosynthetic_radiation, suspended_sediment_load, seawater_density, wind_speed, gridpoint_depth
+
+    from modules import vertical_layers, water_specific_heat_times_density, temperature_backward_time_level, \
+        salinity_backward_time_level, density, bottom_depth, vertical_spacing, shortwave_radiation, wind_stress_zonal, \
+        wind_stress_meridional, diffusion_coefficient_momentum, diffusion_coefficient_tracers, \
+        velocity_zonal_current_time_level, velocity_meridional_current_time_level, kinetic_energy_current_time_level, \
+        kinetic_energy_times_length_current_time_level, length_scale
+
+    from modules import inorganic_suspended_matter, w_velocity_interpolation, w_eddy_velocity
+
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    #   1D ARRAYS FOR BFM
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+    seawater_temperature = np.zeros(vertical_layers,dtype=float)
+    seawater_salinity = np.zeros(vertical_layers,dtype=float)
+    suspended_sediment_load = np.zeros(vertical_layers,dtype=float)
+    seawater_density = np.zeros(vertical_layers,dtype=float)
+    gridpoint_depth = np.zeros(vertical_layers,dtype=float)
+    photosynthetic_radiation = np.zeros(vertical_layers,dtype=float)
+
+    for i in range(0,vertical_layers):
+        seawater_temperature[i] = temperature_backward_time_level[i]
+        seawater_salinity[i] = salinity_backward_time_level[i]
+        seawater_density[i] = (density[i] * 1.E3) + 1.E3
+        suspended_sediment_load[i] = inorganic_suspended_matter[i]
+        gridpoint_depth[i] = vertical_spacing[i] * bottom_depth
+
+    photosynthetic_radiation[0] = -1. * shortwave_radiation * water_specific_heat_times_density
+
+    wind_stress = np.sqrt(wind_stress_zonal**2 + wind_stress_meridional**2) * 1.E3
+    wind_speed = np.sqrt(wind_stress/(1.25 * 0.0014))
+
+    return seawater_temperature, seawater_salinity, photosynthetic_radiation, \
+           suspended_sediment_load, seawater_density, wind_speed
+
+
+
+
+
+
+
+
+
 
 #   EOC
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
