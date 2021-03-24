@@ -255,30 +255,30 @@ upperH = float()
 SSRT = float()
 
 # VERTICAL COORDINATE SYSTEM
-Z = np.empty(vertical_layers, dtype=float);  vertical_coordinates_staggered = np.empty(vertical_layers, dtype=float)
+vertical_coordinates = np.empty(vertical_layers, dtype=float);  vertical_coordinates_staggered = np.empty(vertical_layers, dtype=float)
 vertical_spacing = np.empty(vertical_layers, dtype=float); vertical_spacing_staggered = np.empty(vertical_layers, dtype=float); DZR = np.empty(vertical_layers, dtype=float)
 
 # TEMPERATURE
-intermediate_temperature_profile = np.empty(vertical_layers, dtype=float); temperature = np.empty(vertical_layers, dtype=float); TB = np.empty(vertical_layers, dtype=float)
+temperature_forward_time_level = np.empty(vertical_layers, dtype=float); temperature_current_time_level = np.empty(vertical_layers, dtype=float); temperature_backward_time_level = np.empty(vertical_layers, dtype=float)
 
 # SALINITY
-intermediate_salinity_profile = np.empty(vertical_layers, dtype=float); salinity = np.empty(vertical_layers, dtype=float); SB = np.empty(vertical_layers, dtype=float)
+salinity_forward_time_level = np.empty(vertical_layers, dtype=float); salinity_current_time_level = np.empty(vertical_layers, dtype=float); salinity_backward_time_level = np.empty(vertical_layers, dtype=float)
 
 # DESITY
 density = np.empty(vertical_layers, dtype=float)
 
 # VELOCITY
-UF = np.empty(vertical_layers, dtype=float); velocity_zonal = np.empty(vertical_layers, dtype=float); UB = np.empty(vertical_layers, dtype=float)
-VF = np.empty(vertical_layers, dtype=float); velocity_meridional = np.empty(vertical_layers, dtype=float); VB = np.empty(vertical_layers, dtype=float)
+velocity_zonal_forward_time_level = np.empty(vertical_layers, dtype=float); velocity_zonal_current_time_level = np.empty(vertical_layers, dtype=float); UB = np.empty(vertical_layers, dtype=float)
+velocity_meridional_forward_time_level = np.empty(vertical_layers, dtype=float); velocity_meridional_current_time_level = np.empty(vertical_layers, dtype=float); VB = np.empty(vertical_layers, dtype=float)
 
 # TURBULENT KINETIC ENERGY (T.K.E.X2)
 kinetic_energy_forward_time_level = np.empty(vertical_layers, dtype=float); kinetic_energy_current_time_level = np.empty(vertical_layers, dtype=float); kinetic_energy_backward_time_level = np.empty(vertical_layers, dtype=float)
 
 # LENGTH SCALE
-L = np.empty(vertical_layers, dtype=float)
+length_scale = np.empty(vertical_layers, dtype=float)
 
 # (T.K.E.X2) TIMES LENGTH SCALE
-kinetic_energy_times_length_forward_time_level = np.empty(vertical_layers, dtype=float); Q2L = np.empty(vertical_layers, dtype=float); kinetic_energy_times_length_backward_time_level = np.empty(vertical_layers, dtype=float)
+kinetic_energy_times_length_forward_time_level = np.empty(vertical_layers, dtype=float); kinetic_energy_times_length_current_time_level = np.empty(vertical_layers, dtype=float); kinetic_energy_times_length_backward_time_level = np.empty(vertical_layers, dtype=float)
 
 # VERTICAL DIFFUSION COEFFICIENTS
 diffusion_coefficient_momentum = np.empty(vertical_layers, dtype=float); diffusion_coefficient_tracers = np.empty(vertical_layers, dtype=float); diffusion_coefficient_kinetic_energy = np.empty(vertical_layers, dtype=float)
@@ -293,16 +293,16 @@ VH = np.empty(vertical_layers, dtype=float); VHP = np.empty(vertical_layers, dty
 DTEF = np.empty(vertical_layers, dtype=float); D = np.empty(vertical_layers, dtype=float); DT = np.empty(vertical_layers, dtype=float)
 
 # WIND STRESS
-# wind_stress_zonal = float(); wind_stress_meridional = float()
+wind_stress_zonal = float(); wind_stress_meridional = float()
 
 # BOTTOM STRESS
-# bottom_stress_zonal = float(); bottom_stress_meridional = float()
+bottom_stress_zonal = float(); bottom_stress_meridional = float()
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   N.B.
 #   WHEN THE MODEL IS RUN IN DIAGNOSTIC MODE, THIS IS USED ONLY TO PROVIDE PAR TO THE BIOGEOCHEMICAL COMPONENT.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-# SWRAD = float()
+shortwave_radiation = float()
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   N.B.
@@ -345,8 +345,8 @@ WTADV = np.empty(vertical_layers, dtype=float); WSADV = np.empty(vertical_layers
 # PO4BOTT = float(); NO3BOTT = float(); O2BOTT  = float();  PONBOTTgrad = float()
 
 # SUSPENDED INORGANIC MATTER PROFILE
-ISM = np.empty(vertical_layers - 1, dtype=float)
-w_velocity_interpolation = np.empty(vertical_layers, dtype=float); WEDDY = np.empty(vertical_layers, dtype=float)
+inorganic_suspended_matter = np.empty(vertical_layers - 1, dtype=float)
+w_velocity_interpolation = np.empty(vertical_layers, dtype=float); w_eddy_velocity = np.empty(vertical_layers, dtype=float)
 
 # FREQUENCY OF AVERAGING FOR OUTPUTi (IN DAYS)
 savef = float(); nitend = float()
@@ -489,14 +489,14 @@ def forcing_manager():
         wind_speed_zonal1, wind_speed_meridional1, surface_salinity1, solar_radiation1, inorganic_suspended_matter1, \
             salinity_climatology1, temperature_climatology1, w_velocity_climatology1, w_eddy_velocity_1, \
             w_eddy_velocity_2, salinity_initial_profile1, temperature_initial_profile1, \
-            surface_solar_radiation1, surface_heat_flux_loss1, kinetic_energy_loss1, \
+            shortwave_radiation1, surface_heat_flux_loss1, kinetic_energy_loss1, \
             NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1                          = read_pom_input()
 
         # NOT ALL VARIABLES FROM SECOND CALLING WILL BE USED
         wind_speed_zonal2, wind_speed_meridional2, surface_salinity2, solar_radiation2, inorganic_suspended_matter2, \
             salinity_climatology2, temperature_climatology2, w_velocity_climatology2, w_eddy_velocity_3, \
             w_eddy_velocity_4, salinity_initial_profile2, temperature_initial_profile2, \
-            surface_solar_radiation2, surface_heat_flux_loss2, kinetic_energy_loss2, \
+            shortwave_radiation2, surface_heat_flux_loss2, kinetic_energy_loss2, \
             NO3_s2, NH4_s2, PO4_s2, SIO4_s2, O2_b2, NO3_b2, PO4_b2, PON_b2                          = read_pom_input()
 
         # DAY COUNTER
@@ -556,8 +556,8 @@ def forcing_manager():
         wind_speed_meridional2[:]  = -wind_speed_meridional2[:]  * 1.E-03
 
         # HEAT FLUX CONVERTED TO POM UNITS(W/m2-->deg.C*m/s)
-        surface_solar_radiation1[:] = -surface_solar_radiation1[:] / water_specific_heat_times_density
-        surface_solar_radiation2[:] = -surface_solar_radiation2[:] / water_specific_heat_times_density
+        shortwave_radiation1[:] = -shortwave_radiation1[:] / water_specific_heat_times_density
+        shortwave_radiation2[:] = -shortwave_radiation2[:] / water_specific_heat_times_density
         surface_heat_flux_loss1[:] = -surface_heat_flux_loss1[:] / water_specific_heat_times_density
         surface_heat_flux_loss2[:] = -surface_heat_flux_loss2[:] / water_specific_heat_times_density
 
@@ -585,12 +585,12 @@ def forcing_manager():
     # INTERPOLATE HEAT FLUX
     if prognostic_diagnostic_mode_switch == 0:
         surface_heat_flux_loss = surface_heat_flux_loss1 + ratio_month * (surface_heat_flux_loss2 - surface_heat_flux_loss1)
-        surface_solar_radiation = surface_solar_radiation1 + ratio_month * (surface_solar_radiation2 - surface_solar_radiation1)
+        surface_solar_radiation = shortwave_radiation1 + ratio_month * (shortwave_radiation2 - shortwave_radiation1)
     elif prognostic_diagnostic_mode_switch == 1:
         # DAILY
-        # surface_solar_radiation = surface_solar_radiation1 + ratio_day * (surface_solar_radiation2 - surface_solar_radiation1)
+        # surface_solar_radiation = shortwave_radiation1 + ratio_day * (shortwave_radiation2 - shortwave_radiation1)
         # MONTHLY
-        surface_solar_radiation = surface_solar_radiation1 + ratio_month * (surface_solar_radiation2 - surface_solar_radiation1)
+        surface_solar_radiation = shortwave_radiation1 + ratio_month * (shortwave_radiation2 - shortwave_radiation1)
 
     # INTERPOLATE T&S PROFILES
     temperature_profile_interpolation = np.zeros((array_length, vertical_layers), dtype=float)
@@ -611,8 +611,8 @@ def forcing_manager():
         surface_temperature = temperature_profile_interpolation[0]
         surface_salinity = salinity_profile_interpolation[0]
     elif prognostic_diagnostic_mode_switch == 1:
-        intermediate_temperature_profile[:] = temperature_profile_interpolation[:]
-        intermediate_salinity_profile[:] = salinity_profile_interpolation[:]
+        temperature_forward_time_level[:] = temperature_profile_interpolation[:]
+        salinity_forward_time_level[:] = salinity_profile_interpolation[:]
 
     # INTERPOLATE SUSPENDED INORGANIC MATTER
     inorganic_suspended_matter = np.zeros((array_length, vertical_layers), dtype=float)
@@ -643,7 +643,7 @@ def forcing_manager():
         # ....SHIFT THE MONTHLY DATA....
         wind_speed_zonal1 = wind_speed_zonal2
         wind_speed_meridional1 = wind_speed_meridional2
-        surface_solar_radiation1 = surface_solar_radiation2
+        shortwave_radiation1 = shortwave_radiation2
         surface_heat_flux_loss1 = surface_heat_flux_loss2
 #         SLUX1 = SLUX2
         NO3_s1 = NO3_s2
@@ -668,22 +668,22 @@ def forcing_manager():
             wind_speed_zonal1, wind_speed_meridional1, surface_salinity1, solar_radiation1, inorganic_suspended_matter1, \
                 salinity_climatology1, temperature_climatology1, w_velocity_climatology1, w_eddy_velocity_1, \
                 w_eddy_velocity_2, salinity_initial_profile1, temperature_initial_profile1, \
-                surface_solar_radiation1, surface_heat_flux_loss1, kinetic_energy_loss1, \
+                shortwave_radiation1, surface_heat_flux_loss1, kinetic_energy_loss1, \
                 NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1                       = read_pom_input()
             wind_speed_zonal1 = -wind_speed_zonal1 * 1.E-03
             wind_speed_meridional1 = -wind_speed_meridional1 * 1.E-03
-            surface_solar_radiation1 = -surface_solar_radiation1 / water_specific_heat_times_density
+            shortwave_radiation1 = -shortwave_radiation1 / water_specific_heat_times_density
             surface_heat_flux_loss1 = -surface_heat_flux_loss1 / water_specific_heat_times_density
 
             wind_speed_zonal2, wind_speed_meridional2, surface_salinity2, solar_radiation2, inorganic_suspended_matter2, \
                 salinity_climatology2, temperature_climatology2, w_velocity_climatology2, w_eddy_velocity_3, \
                 w_eddy_velocity_4, salinity_initial_profile2, temperature_initial_profile2, \
-                surface_solar_radiation2, surface_heat_flux_loss2, kinetic_energy_loss2, \
+                shortwave_radiation2, surface_heat_flux_loss2, kinetic_energy_loss2, \
                 NO3_s2, NH4_s2, PO4_s2, SIO4_s2, O2_b2, NO3_b2, PO4_b2, PON_b2                       = read_pom_input()
 
             wind_speed_zonal2 = -wind_speed_zonal2 * 1.E-03
             wind_speed_meridional2 = -wind_speed_meridional2 * 1.E-03
-            surface_solar_radiation2 = -surface_solar_radiation2 / water_specific_heat_times_density
+            shortwave_radiation2 = -shortwave_radiation2 / water_specific_heat_times_density
             surface_heat_flux_loss2 = -surface_heat_flux_loss2 / water_specific_heat_times_density
 
     return
