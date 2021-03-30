@@ -381,10 +381,140 @@ def pom_to_bfm():
            suspended_sediment_load, seawater_density, wind_speed
 
 
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# MODEL  POM - Princeton Ocean Model
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#
+# # ROUTINE: get_IC
+#
+# DESCRIPTION
+#
+# This subroutine opens and read files containing the initial conditions
+# for P2c, Z4c, R1c, R6c, N1p, N3n, N4n, and O2o
+# Files are read in direct access mode reading path
+# specified in bfm_IC_input nml
+#
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
+def get_initial_conditions():
 
+    """
+    Desription: Opens and reads data files containing the initial conditions for P2c, Z4c,
+                R1c, R6c, N1p, N3n, N4n, and O2o
 
+    :return: initial conditions for phytoplankton carbon, zooplankton carbon, particulate
+             organic carbon, dissolved organic carbon, phosphate, nitrate, ammonium,
+             and oxygen
+    """
 
+    from main_pombfm1d import current_path
+    from modules import vertical_layers, path_error
+    from inputs.namelist_input_data import phyto_input, zoop_input, poc_input, doc_input, \
+        phos_input, nit_input, am_input, oxy_input
+
+    phytoplankton_carbon_data_path = current_path + phyto_input
+    zooplankton_carbon_data_path = current_path + zoop_input
+    particulate_organic_carbon_data_path = current_path + poc_input
+    dissolved_organic_carbon_data_path = current_path + doc_input
+    phosphate_data_path = current_path + phos_input
+    nitrate_data_path = current_path + nit_input
+    ammonium_data_path = current_path + am_input
+    oxygen_data_path = current_path + oxy_input
+
+    if not path.exists(phytoplankton_carbon_data_path):
+        path_error(phytoplankton_carbon_data_path)
+    p2c = np.zeros(vertical_layers,dtype=float)
+    p2c = np.fromfile(phytoplankton_carbon_data_path,dtype=float)
+
+    if not path.exists(zooplankton_carbon_data_path):
+        path_error(zooplankton_carbon_data_path)
+    z5c = np.zeros(vertical_layers, dtype=float)
+    z5c = np.fromfile(zooplankton_carbon_data_path,dtype=float)
+
+    if not path.exists(particulate_organic_carbon_data_path):
+        path_error(particulate_organic_carbon_data_path)
+    r6c = np.zeros(vertical_layers,dtype=float)
+    r6c = np.fromfile(particulate_organic_carbon_data_path,dtype=float)
+
+    if not path.exists(dissolved_organic_carbon_data_path):
+        path_error(dissolved_organic_carbon_data_path)
+    r1c = np.zeros(vertical_layers,dtype=float)
+    r1c = np.fromfile(dissolved_organic_carbon_data_path,dtype=float)
+
+    if not path.exists(phosphate_data_path):
+        path_error(phosphate_data_path)
+    n1p = np.zeros(vertical_layers,dtype=float)
+    n1p = np.fromfile(phosphate_data_path,dtype=float)
+
+    if not path.exists(nitrate_data_path):
+        path_error(nitrate_data_path)
+    n3n = np.zeros(vertical_layers,dtype=float)
+    n3n = np.fromfile(nitrate_data_path,dtype=float)
+
+    if not path.exists(ammonium_data_path):
+        path_error(ammonium_data_path)
+    n4n = np.zeros(vertical_layers,dtype=float)
+    n4n = np.fromfile(ammonium_data_path,dtype=float)
+
+    if not path.exists(oxygen_data_path):
+        path_error(oxygen_data_path)
+    o2o = np.zeros(vertical_layers,dtype=float)
+    o2o = np.fromfile(oxygen_data_path,dtype=float)
+
+    return p2c, z5c, r6c, r1c, n1p, n3n, n4n, o2o
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# MODEL  POM - Princeton Ocean Model
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#
+# # ROUTINE: set_initial_conditions
+#
+# DESCRIPTION
+#
+# This routine assigns initial conditioons of biochemical variables in POM
+#
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+def set_initial_conditions():
+
+    """
+    Description: Assigns initial conditions of biochemical variables in POM
+
+    :return:
+    """
+
+    from modules import vertical_layers
+    from modules import zero, NML_OPEN, NML_READ, NMLUNIT, error_msg_prn
+    # from modules import photosynthetic_radiation
+
+    p_nRc = 0.0126
+    p_pRc = 0.7862E-03
+    p_sRc = 0.0118
+    p_iRc = 1./25.
+
+    try:
+        import INCLUDE_BEN
+        INCLUDE_BEN = True
+    except FileNotFoundError:
+        INCLUDE_BEN = False
+    if INCLUDE_BEN:
+        from inputs.namelist_input_data import y1c0, y2c0, y3c0, y4c0, y5c0, h1c0, h2c0, \
+            k1p0, k11p0, k21p0, k4n0, k14n0, k24n0, k3n0, k5s0, k6r0, d1m0, d2m0, d6m0, d7m0, d8m0, d9m0, \
+            q6c0, q6n0, q6p0, q6s0, q1c0, q11c0, g2o0, g3c0, g13c0, g23c0, g3h0, g13h0, g23h0
+
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    #   DEFINITION OF BIOGEOCHEMICAL GLOBAL VARIABLES
+    #   IrrOPT  in the equation of Steele and light
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    photosynthetic_radiation = np.zeros(vertical_layers,dtype=float)
+
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    #   DEFINITION OF GENERAL PELAGIC STATE VARIABLES:
+    #   PELAGIC GASES
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    p2c, z5c, r6c, r1c, n1p, n3n, n4n, o2o = get_initial_conditions()
+
+    # NEED TO FINISH TRANSLATING MODULEMEM
 
 
 
