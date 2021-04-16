@@ -4,6 +4,7 @@
 import numpy as np
 from os import path
 from cppdefs import *
+from inputs.params_POMBFM import *
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -153,9 +154,9 @@ def read_pom_input():
     if not path.exists(salinity_initial_conditions_data_path):
         path_error(salinity_initial_conditions_data_path)
     salinity_initial_conditions_data = np.fromfile(salinity_initial_conditions_data_path,dtype=float)
-    salinity_initial_profile = np.zeros(vertical_layers, dtype=float)
+    salinity_backward = np.zeros(vertical_layers, dtype=float)
     for i in range(0, vertical_layers):
-        salinity_initial_profile[i] = salinity_initial_conditions_data[i]
+        salinity_backward[i] = salinity_initial_conditions_data[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   TEMPERATURE INITIAL PROFILE
@@ -163,9 +164,9 @@ def read_pom_input():
     if not path.exists(temperature_initial_conditions_data_path):
         path_error(temperature_initial_conditions_data_path)
     temperature_initial_conditions_data = np.fromfile(temperature_initial_conditions_data_path,dtype=float)
-    temperature_initial_profile = np.zeros(vertical_layers, dtype=float)
+    temperature_backward = np.zeros(vertical_layers, dtype=float)
     for i in range(0, vertical_layers):
-        temperature_initial_profile[i] = temperature_initial_conditions_data[i]
+        temperature_backward[i] = temperature_initial_conditions_data[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   HEAT FLUX
@@ -174,11 +175,11 @@ def read_pom_input():
         path_error(heat_flux_loss_data_path)
     heat_flux_loss_data = np.fromfile(heat_flux_loss_data_path,dtype=float)
     shortwave_radiation = np.zeros(array_length,dtype=float)
-    surface_heat_flux_loss = np.zeros(array_length,dtype=float)
+    surface_heat_flux = np.zeros(array_length,dtype=float)
     kinetic_energy_loss = np.zeros(array_length,dtype=float)
     for i in range(0,array_length):
         shortwave_radiation[i]  = heat_flux_loss_data[3*i + 0]
-        surface_heat_flux_loss[i] = heat_flux_loss_data[3*i + 1]
+        surface_heat_flux[i] = heat_flux_loss_data[3*i + 1]
         kinetic_energy_loss[i]  = heat_flux_loss_data[3*i + 2]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -215,8 +216,8 @@ def read_pom_input():
 
     return wind_speed_zonal, wind_speed_meridional, surface_salinity, solar_radiation, inorganic_suspended_matter, \
            salinity_climatology, temperature_climatology, w_velocity_climatology, w_eddy_velocity_1, \
-           w_eddy_velocity_2, salinity_initial_profile, temperature_initial_profile, \
-           shortwave_radiation, surface_heat_flux_loss, kinetic_energy_loss, \
+           w_eddy_velocity_2, salinity_backward, temperature_backward, \
+           shortwave_radiation, surface_heat_flux, kinetic_energy_loss, \
            NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1
 
 
@@ -263,9 +264,9 @@ def get_temperature_and_salinity_initial_coditions():
     if not path.exists(salinity_initial_conditions_data_path):
         path_error(salinity_initial_conditions_data_path)
     salinity_initial_conditions_data = np.fromfile(salinity_initial_conditions_data_path,dtype=float)
-    salinity_backward_time_level = np.zeros(vertical_layers, dtype=float)
+    salinity_backward = np.zeros(vertical_layers, dtype=float)
     for i in range(0, vertical_layers):
-        salinity_backward_time_level[i] = salinity_initial_conditions_data[i]
+        salinity_backward[i] = salinity_initial_conditions_data[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   TEMPERATURE INITIAL PROFILE
@@ -273,18 +274,18 @@ def get_temperature_and_salinity_initial_coditions():
     if not path.exists(temperature_initial_conditions_data_path):
         path_error(temperature_initial_conditions_data_path)
     temperature_initial_conditions_data = np.fromfile(temperature_initial_conditions_data_path,dtype=float)
-    temperature_backward_time_level = np.zeros(vertical_layers, dtype=float)
+    temperature_backward = np.zeros(vertical_layers, dtype=float)
     for i in range(0, vertical_layers):
-        temperature_backward_time_level[i] = temperature_initial_conditions_data[i]
+        temperature_backward[i] = temperature_initial_conditions_data[i]
 
-    temperature_current_time_level = np.zeros(vertical_layers, dtype=float)
-    salinity_current_time_level = np.zeros(vertical_layers, dtype=float)
+    temperature = np.zeros(vertical_layers, dtype=float)
+    salinity = np.zeros(vertical_layers, dtype=float)
 
-    temperature_current_time_level[:] = temperature_backward_time_level[:]
-    salinity_current_time_level[:] = salinity_backward_time_level[:]
+    temperature[:] = temperature_backward[:]
+    salinity[:] = salinity_backward[:]
 
-    return temperature_current_time_level, temperature_backward_time_level, \
-           salinity_current_time_level, salinity_backward_time_level
+    return temperature, temperature_backward, \
+           salinity, salinity_backward
 
 
 # temperature_current_time_level, temperature_backwards_time_level, \
@@ -312,9 +313,9 @@ def get_numeric_timestep():
     :return: numeric timestep
     """
 
-    from modules import seconds_per_day, timestep
+    from modules import seconds_per_day, dti
 
-    numeric_timestep = timestep/seconds_per_day
+    numeric_timestep = dti / seconds_per_day
 
     return numeric_timestep
 
@@ -344,41 +345,41 @@ def pom_to_bfm():
     # except FileNotFoundError:
     #     NOPOINTERS = False
     # if NOPOINTERS:
-    #     from modules import seawater_temperature, seawater_salinity, photosynthetic_radiation, suspended_sediment_load, seawater_density, wind_speed, gridpoint_depth
+    #     from modules import ETW, ESW, EIR, ESS, ERHO, EWIND, Depth
 
-    from modules import vertical_layers, water_specific_heat_times_density, temperature_backward_time_level, \
-        salinity_backward_time_level, density, bottom_depth, vertical_spacing, shortwave_radiation, wind_stress_zonal, \
+    from modules import vertical_layers, water_specific_heat_times_density, temperature_backward, \
+        salinity_backward, density_profile, bottom_depth, vertical_spacing, shortwave_radiation, wind_stress_zonal, \
         wind_stress_meridional, diffusion_coefficient_momentum, diffusion_coefficient_tracers, \
-        velocity_zonal_current_time_level, velocity_meridional_current_time_level, kinetic_energy_current_time_level, \
-        kinetic_energy_times_length_current_time_level, length_scale
+        velocity_zonal, velocity_meridional, kinetic_energy, \
+        kinetic_energy_times_length, length_scale
 
-    from modules import inorganic_suspended_matter, w_velocity_interpolation, w_eddy_velocity
+    from modules import inorganic_suspended_matter, interpolated_w_velocity, w_eddy_velocity
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   1D ARRAYS FOR BFM
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    seawater_temperature = np.zeros(vertical_layers,dtype=float)
-    seawater_salinity = np.zeros(vertical_layers,dtype=float)
-    suspended_sediment_load = np.zeros(vertical_layers,dtype=float)
-    seawater_density = np.zeros(vertical_layers,dtype=float)
-    gridpoint_depth = np.zeros(vertical_layers,dtype=float)
-    photosynthetic_radiation = np.zeros(vertical_layers,dtype=float)
+    ETW = np.zeros(vertical_layers - 1, dtype=float)
+    ESW = np.zeros(vertical_layers - 1, dtype=float)
+    ESS = np.zeros(vertical_layers - 1, dtype=float)
+    ERHO = np.zeros(vertical_layers - 1, dtype=float)
+    Depth = np.zeros(vertical_layers - 1, dtype=float)
+    EIR = np.zeros(vertical_layers - 1, dtype=float)
 
-    for i in range(0,vertical_layers):
-        seawater_temperature[i] = temperature_backward_time_level[i]
-        seawater_salinity[i] = salinity_backward_time_level[i]
-        seawater_density[i] = (density[i] * 1.E3) + 1.E3
-        suspended_sediment_load[i] = inorganic_suspended_matter[i]
-        gridpoint_depth[i] = vertical_spacing[i] * bottom_depth
+    for i in range(0,vertical_layers - 1):
+        ETW[i] = temperature_backward[i]
+        ESW[i] = salinity_backward[i]
+        ERHO[i] = (density_profile[i] * 1.E3) + 1.E3
+        ESS[i] = inorganic_suspended_matter[i]
+        Depth[i] = vertical_spacing[i] * h
 
-    photosynthetic_radiation[0] = -1. * shortwave_radiation * water_specific_heat_times_density
+    EIR[0] = -1. * shortwave_radiation * water_specific_heat_times_density
 
     wind_stress = np.sqrt(wind_stress_zonal**2 + wind_stress_meridional**2) * 1.E3
-    wind_speed = np.sqrt(wind_stress/(1.25 * 0.0014))
+    EWIND = np.sqrt(wind_stress/(1.25 * 0.0014))
 
-    return seawater_temperature, seawater_salinity, photosynthetic_radiation, \
-           suspended_sediment_load, seawater_density, wind_speed
+    return ETW, ESW, EIR, \
+           ESS, ERHO, EWIND
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

@@ -141,3 +141,38 @@ g23h0 = 1192.0
 #                'sunPPY(iiP2)', 'sunPPY(iiP3)', 'sunPPY(iiP4)', 'ruPTc',
 #                'resPP', 'resZT', 'ruPTn', 'ruPTp', 'exPP', 'ruZTc', 'netZTc',
 #                'rePTp', 'reBn', 'reBp', 'ruBn', 'ruBp', 'EPR'
+
+
+# params_pombfm
+h = 150.0           # bottom_depth
+dti = 100.0         # time_step
+alat = 45.0         # latitude
+idiagn = 1          # prog_diag_switch
+idays = 3600        # length_of_run
+smoth = 0.1         # asselin_parameter
+ihotst = 0          # hot_cold_switch
+kl1 = 2             # surf_layers_log_dist
+kl2 = 150           # bot_layers_log_dist
+savef = 1
+nrt_o2o = 0.06      # relax_vel_oxygen
+nrt_n1p = 0.06      # relax_vel_phosphate
+nrt_n3n = 0.06      # relax_vel_nitrate
+nrt_n4n = 0.05      # relax_vel_ammonium
+nbct = 2            # temp_bc_flag
+nbcs = 1            # sal_bc_flag
+nbcbfm = 1          # bfm_bc_flag
+umol = 1e-06        # background_diffusion
+umolt = 1e-07       # background_diffusion_temp
+umols = 1.3e-07     # background_diffusion_sal
+umolbfm = 0.0001    # background_diffusion_bfm
+ntp = 2             # jerlov_flag
+trt = 0             # relax_time_temp
+srt = 1             # relax_time_sal
+upperh = 5.0        #
+ssrt = 5.68         # surf_sal_relaxation_vel
+
+
+
+
+
+
