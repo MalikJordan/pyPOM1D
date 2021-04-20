@@ -74,7 +74,7 @@ surface_salinity = zero                                                         
 
 # DEFINE VERTICAL COORDINATE SYSTEM
 vertical_coordinates, vertical_coordinates_staggered, \
-    vertical_spacing, vertical_spacing_staggered        = calculate_vertical_grid_spacing(vertical_layers, kl1, kl2)
+    vertical_spacing, vertical_spacing_staggered        = create_vertical_coordinate_system(vertical_layers, kl1, kl2)
 
 vertical_spacing[vertical_layers-1] = 1.E-6  # Small value to avoid division by zero for vertical_spacing_reciprocal
 vertical_spacing_reciprocal = np.zeros(vertical_layers,dtype=float)                     # DZR

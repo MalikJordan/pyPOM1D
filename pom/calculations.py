@@ -2,8 +2,10 @@
 # MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 from cppdefs import *
-# from pom.modules import *
+from pom.modules import vertical_layers, zero, one, seconds_per_day
 import numpy as np
+from inputs.params_POMBFM import *
+twice_the_timestep = 2. * dti
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -15,7 +17,7 @@ import numpy as np
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def adverte(FB,F,FF,W):
+def adverte(FB,F,FF,W,vertical_spacing_reciprocal):
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   LOCAL VARIABLES
@@ -26,18 +28,18 @@ def adverte(FB,F,FF,W):
     # DTI2 = float()
     # K = int()
 
-    F[KB-1] = F[KB-2]
-    FB[KB-1] = FB[KB-2]
+    F[vertical_layers-1] = F[vertical_layers-2]
+    FB[vertical_layers-1] = FB[vertical_layers-2]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   Calculate vertical advection. Mind downward velocities are negative
     #   Upwind scheme:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    FF[0] = DZR[0] * F[0] * W[1]
+    FF[0] = vertical_spacing_reciprocal[0] * F[0] * W[1]
 
-    for K in range(1,KB-1):
-        FF[K] = DZR[K] * (F[K]*W[K+1] - F[K-1]*W[K])
+    for i in range(1,vertical_layers-1):
+        FF[i] = vertical_spacing_reciprocal[i] * (F[i]*W[i+1] - F[i-1]*W[i])
 
     return FF
 
@@ -54,7 +56,7 @@ def adverte(FB,F,FF,W):
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def calculate_vertical_grid_spacing(vertical_layers, surface_layers_with_log_distribution, bottom_layers_with_log_distribution):
+def create_vertical_coordinate_system(vertical_layers, surface_layers_with_log_distribution, bottom_layers_with_log_distribution):
 
     # KL1 = surface_log_distribution
     # KL2 = bottom_log_distribution
@@ -209,16 +211,16 @@ def pom_dia_bfm(kt,TT):
     time_to_save = int()  # time in seconds
 
     # TIME ELLAPSED (IN SECONDS) SINCE THE BEGINNING OF THE SIMULATION
-    localtime = TIME * SEC_PER_DAY
+    localtime = TIME * seconds_per_day
 
     # SAVING FREQUENCY IN TIME MARCHING LOOP ITERATIONS
-    time_to_save = int(out_delta*SEC_PER_DAY)
+    time_to_save = int(out_delta*seconds_per_day)
 
     # SUMMING UP THE FIELDS TO BE SAVED
     calcmean_bfm(ACCUMULATE)
 
     # WRITE OUTPUT
-    if TT + (DTI/SEC_PER_DAY) > out_delta:
+    if TT + (dti/seconds_per_day) > out_delta:
 
         calcmean_bfm(MEAN)
         save_bfm(localtime)
@@ -232,7 +234,7 @@ def pom_dia_bfm(kt,TT):
     # WRITE RESTART
     if kt >= IEND:
 
-        if -TT < DTI/SEC_PER_DAY:
+        if -TT < dti/seconds_per_day:
             save_rst_bfm(localtime)
             close_ncdf(ncid_rst)
             close_ncdf(ncid_bfm)
@@ -278,61 +280,57 @@ def vdiff_SOS():
     # POCsink = float()
     # W1R6 = float()
 
-    # TWICE THE TIME STEP
-    # DTI2 = float()
     # The input general cir. vertical vel. is suppose to be in m/s
     W_ON = 1.0
     # The input eddy vertical vel. is provided in m/d
     Weddy_ON = 0.1/86400.0  # to m/s
 
-    DTI2 = DTI * 2.
-
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   LOCAL VARIABLES
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    trelax_o2o = NRT_o2o / SEC_PER_DAY
-    trelax_n1p = NRT_n1p / SEC_PER_DAY
-    trelax_n3n = NRT_n3n / SEC_PER_DAY
-    trelax_n4n = NRT_n4n
+    trelax_o2o = nrt_o2o / seconds_per_day
+    trelax_n1p = nrt_n1p / seconds_per_day
+    trelax_n3n = nrt_n3n / seconds_per_day
+    trelax_n4n = nrt_n4n
 
     # LOOP OVER BFM STATE VAR'S
     for M in range(0,NO_D3_BOX_STATES):
 
         # ZEROING
 
-        surflux = ZERO
-        botflux = ZERO
-        fbio[:] = ZERO
-        fbbio[:] = ZERO
-        ffbio[:] = ZERO
-        sink[:] = ZERO
-        POCsink = ZERO
+        surflux = zero
+        botflux = zero
+        fbio[:] = zero
+        fbbio[:] = zero
+        ffbio[:] = zero
+        sink[:] = zero
+        POCsink = zero
 
         # LOAD BFM STATE VAR.
-        for K in range(0,KB-1):
-            fbio[K] = D3STATE[M][K]
-            fbbio[K] = D3STATEB[M][K]
+        for i in range(0,vertical_layers-1):
+            fbio[i] = D3STATE[M][i]
+            fbbio[i] = D3STATEB[M][i]
 
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         #   NUTRIENTS SURFACE AND BOTTOM FLUXES
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
         if M == ppO2o:
-            surflux = -(jsurO2o[0] / SEC_PER_DAY)
-            botflux = (o2o[KB-2] - O2BOTT) * trelax_o2o
+            surflux = -(jsurO2o[0] / seconds_per_day)
+            botflux = (o2o[vertical_layers-2] - O2BOTT) * trelax_o2o
         elif M == ppO3c:
-            surflux = ZERO
+            surflux = zero
         elif M == ppN1p:
-            surflux = ZERO
-            botflux = (n1p[KB-2] - PO4BOTT) * trelax_n1p
+            surflux = zero
+            botflux = (n1p[vertical_layers-2] - PO4BOTT) * trelax_n1p
         elif M == ppN3n:
-            surflux = ZERO
-            botflux = (n3n[KB-2] - NO3BOTT) * trelax_n3n
+            surflux = zero
+            botflux = (n3n[vertical_layers-2] - NO3BOTT) * trelax_n3n
         elif M == ppN5s:
-            surflux = ZERO
+            surflux = zero
         else:
-            surflux = ZERO
+            surflux = zero
 
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         #   BOTTOM FLUX
@@ -350,11 +348,11 @@ def vdiff_SOS():
 
         if M >= ppR6c and M <= ppR6s:
 
-            for K in range(0,KB-1):
-                sink[K] = sink[K] - sediR6[K]/SEC_PER_DAY
+            for i in range(0,vertical_layers-1):
+                sink[i] = sink[i] - sediR6[i]/seconds_per_day
 
             # FINAL SINK VALUE
-            sink[KB-1] = sink[KB-2]
+            sink[vertical_layers-1] = sink[vertical_layers-2]
 
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         #   SEDIMENTATION PHYTOPLANKTON
@@ -373,11 +371,11 @@ def vdiff_SOS():
             elif M in range(ppP4c,ppP4l):
                 N = iiP4
 
-            for K in range(0,KB-1):
-                sink[K] = sink[K] - sediPPY[K]/SEC_PER_DAY
+            for i in range(0,vertical_layers-1):
+                sink[i] = sink[i] - sediPPY[i]/seconds_per_day
 
             # FINAL SINK VALUE
-            sink[KB - 1] = sink[KB - 2]
+            sink[vertical_layers - 1] = sink[vertical_layers - 2]
 
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         #   BOTTOM FLUX
@@ -390,28 +388,28 @@ def vdiff_SOS():
         adverte(fbbio,fbio,ffbio,sink)
 
         # SOURCE SPLITTING LEAPFROG INTEGRATION
-        for K in range(0,KB-1):
-            ffbio[K] = ffbio[K] + DTI2*((ffbio[K]/H) + D3SOURCE[M][K])
+        for i in range(0,vertical_layers-1):
+            ffbio[i] = ffbio[i] + twice_the_timestep*((ffbio[i]/H) + D3SOURCE[M][i])
 
         # COMPUTE VERTICAL DIFFUSION AND TERMINATE INTEGRATION
         # IMPLICIT LEAPFROGGING
-        PROFTS(ffbio,surflux,botflux,ZERO,ZERO,NBCBFM,DTI2,NTP,UMOLBFM)
+        PROFTS(ffbio,surflux,botflux,zero,zero,nbcbfm,twice_the_timestep,ntp,umolbfm)
 
         # CLIPPING......IF NEEDED
-        for K in range(0,KB-1):
-            ffbio[K] = max(p_small,ffbio[K])
+        for i in range(0,vertical_layers-1):
+            ffbio[i] = max(p_small,ffbio[i])
 
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         #   Mix the time step and restore time sequence
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-        for N in range(0,KB-1):
-            D3STATEB[M][N] = fbio[N] + Decimal(0.5)*smoth*(ffbio[N] + fbbio[N] - Decimal(2.0)*fbio[N])
+        for N in range(0,vertical_layers-1):
+            D3STATEB[M][N] = fbio[N] + 0.5*smoth*(ffbio[N] + fbbio[N] - 2.*fbio[N])
             D3STATE[M][N] = ffbio[N]
 
     if AssignAirPelFluxesInBFMFlag is False:
-        jsurO2o[:] = ZERO
-        jsurO3c[:] = ZERO
+        jsurO2o[:] = zero
+        jsurO3c[:] = zero
 
     return
 
