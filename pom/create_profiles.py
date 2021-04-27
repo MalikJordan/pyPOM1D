@@ -1,10 +1,12 @@
 from cppdefs import *
-from pom.modules import vertical_layers, zero, one
+# from pom.modules import vertical_layers, zero, one
 from inputs.params_POMBFM import *
 import numpy as np
 
 twice_the_timestep = 2. * dti
-
+vertical_layers = 151
+one = 1.
+zero = 0.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -30,7 +32,7 @@ def create_vertical_diffusivity_profile(vertical_spacing, vertical_spacing_stagg
         A[i - 1] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umolpr) / (vertical_spacing[i - 1] * vertical_spacing_staggered[i - 1] * h * h)
         C[i] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umolpr) / (vertical_spacing[i] * vertical_spacing_staggered[i - 1] * h * h)
 
-    # need condition for nb for lines 32-37
+    # need condition for nbc for VH[0] and VHP[0]
     VH[0] = A[0] / (A[0]-1.)
     VHP[0] = -twice_the_timestep * WFSURF / (-vertical_spacing[0] * h) - vertical_diffusivity[0]
     VHP[0] = VHP[0] / (A[0]-1.)
@@ -387,7 +389,7 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, verti
 
     elif nbc == 4:
         vertical_radiation_profile[:] = shortwave_radiation * (RP[ntp] * np.exp(vertical_coordinates[:] * h / AD1[ntp]) + (one - RP[ntp] * np.exp(vertical_coordinates[:] * h / AD2[ntp])))  # ***
-        vertical_radiation_profile[vertical_layers - 1] = 0
+        vertical_radiation_profile[vertical_layers - 1] = zero
 
         VH[0] = zero
         VHP[0] = FSURF
@@ -414,7 +416,7 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, verti
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
     for i in range(1, vertical_layers - 1):
-        k = vertical_layers - i
+        k = (vertical_layers - 1) - i
         FF[k] = VH[k] * FF[k + 1] + VHP[k]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

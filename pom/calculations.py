@@ -2,7 +2,7 @@
 # MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 from cppdefs import *
-from pom.modules import vertical_layers, zero, one, seconds_per_day
+# from pom.modules import vertical_layers, zero, one, seconds_per_day
 import numpy as np
 from inputs.params_POMBFM import *
 twice_the_timestep = 2. * dti
@@ -174,21 +174,21 @@ def calculate_vertical_density_profile(temperature,salinity,vertical_spacing_sta
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def calculate_staggered_mixed_layer_depth(vertical_coordinates_staggered,temperature,vertical_layers):
+def calculate_mixed_layer_depth(vertical_coordinates_staggered, temperature, vertical_layers):
 
-    staggered_mixed_layer_depth = np.zeros(vertical_layers,dtype=float)
+    mixed_layer_depth = np.zeros(vertical_layers,dtype=float)
     zero = 1.E-06
 
     for i in range(0,vertical_layers-1):
 
-        if temperature[0] > temperature[i]:
+        if temperature[0] > temperature[i]+0.2:
             break
 
-        staggered_mixed_layer_depth[i] = vertical_coordinates_staggered[i] - (temperature[i] + 0.2 - temperature[0]) * \
+        mixed_layer_depth[i] = vertical_coordinates_staggered[i] - (temperature[i] + 0.2 - temperature[0]) * \
                             (vertical_coordinates_staggered[i] - vertical_coordinates_staggered[i+1]) / \
                                (temperature[i] - temperature[i+1] + zero)
 
-    return staggered_mixed_layer_depth
+    return mixed_layer_depth
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
