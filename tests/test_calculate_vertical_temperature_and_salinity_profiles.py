@@ -193,131 +193,131 @@ print()
 # profile initialized to zero
 # flux and radiation = 1
 
-print("--------------------------------------------------------------")
-print("Test 5")
-print()
-
-vertical_layers = 151
-vertical_spacing = -0.1 * np.ones(vertical_layers)
-vertical_spacing_staggered = -0.1 * np.ones(vertical_layers)
-vertical_coordinates = np.linspace(0,-15,vertical_layers)
-vertical_coordinates_staggered = np.linspace(-0.05,-15.05,vertical_layers)
-diffusion_coefficient_tracers = 0.001 * np.ones(vertical_layers)
-
-property_forward_profile = np.zeros(vertical_layers)
-property_surface_flux = 1
-property_bottom_flux = 1
-shortwave_radiation = 1
-property_surface_value = 1
-nbc = 1
-
-property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
-                                                                                diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
-                                                                                shortwave_radiation, property_surface_value, nbc)
-
-print("Test 5: Property Foward Profile (constant diffusion profile= 0.001) = \n",property_forward_profile)
-print()
-
-diffusion_coefficient_tracers = np.ones(vertical_layers)
-property_forward_profile = np.zeros(vertical_layers)
-
-property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
-                                                                                diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
-                                                                                shortwave_radiation, property_surface_value, nbc)
-
-print("Test 5: Property Foward Profile (constant diffusion profile = 1) = \n",property_forward_profile)
-print()
-
-diffusion_coefficient_tracers = np.linspace(0,15,vertical_layers)
-property_forward_profile = np.zeros(vertical_layers)
-
-property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
-                                                                                diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
-                                                                                shortwave_radiation, property_surface_value, nbc)
-
-print("Test 5: Property Foward Profile (linear diffusion profile) = \n",property_forward_profile)
-print()
-
-diffusion_coefficient_tracers = powspace(0,15,2,vertical_layers)
-property_forward_profile = np.zeros(vertical_layers)
-
-property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
-                                                                                diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
-                                                                                shortwave_radiation, property_surface_value, nbc)
-
-print("Test 5: Property Foward Profile (quadratic diffusion profile) = \n",property_forward_profile)
-print()
-
-# Result: for constant profile, values are larger for larger diffusion coefficient
-#         for changing profile, values decrease at a faster rate for quadratic vs linear
-# ======================================================================================================================
-
-# ======================================================================================================================
-# Test 6 - nbc depandancy
-# constant vertical spacing and vertical spacing staggered --> [:] = -0.1
-# constant diffusion coefficient --> [:]= 0.001
-# profile initialized to zero
-# flux and radiation = 1
-
-print("--------------------------------------------------------------")
-print("Test 6")
-print()
-
-vertical_layers = 151
-vertical_spacing = -0.1 * np.ones(vertical_layers)
-vertical_spacing_staggered = -0.1 * np.ones(vertical_layers)
-vertical_coordinates = np.linspace(0,-15,vertical_layers)
-vertical_coordinates_staggered = np.linspace(-0.05,-15.05,vertical_layers)
-diffusion_coefficient_tracers = 0.001 * np.ones(vertical_layers)
-
-property_forward_profile = np.zeros(vertical_layers)
-property_surface_flux = 1
-property_bottom_flux = 1
-shortwave_radiation = 1
-property_surface_value = 1
-nbc = 1
-
-property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
-                                                                                diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
-                                                                                shortwave_radiation, property_surface_value, nbc)
-
-print("Test 6: Property Foward Profile (nbc = 1) = \n",property_forward_profile)
-print()
-
-property_forward_profile = np.zeros(vertical_layers)
-nbc = 2
-
-property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
-                                                                                diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
-                                                                                shortwave_radiation, property_surface_value, nbc)
-
-print("Test 6: Property Foward Profile (nbc = 2) = \n",property_forward_profile)
-print()
-
-property_forward_profile = np.zeros(vertical_layers)
-nbc = 3
-
-property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
-                                                                                diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
-                                                                                shortwave_radiation, property_surface_value, nbc)
-
-print("Test 6: Property Foward Profile (nbc = 3) = \n",property_forward_profile)
-print()
-
-property_forward_profile = np.zeros(vertical_layers)
-nbc = 4
-
-property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
-                                                                                diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
-                                                                                shortwave_radiation, property_surface_value, nbc)
-
-print("Test 6: Property Foward Profile (nbc = 4) = \n",property_forward_profile)
-print()
-
-# Result: different profiles for different nbc values
-#         nbc = 2 and nbc = 4 return nearly identical profiles
-# ======================================================================================================================
-
-
-
-
+# print("--------------------------------------------------------------")
+# print("Test 5")
+# print()
+#
+# vertical_layers = 151
+# vertical_spacing = -0.1 * np.ones(vertical_layers)
+# vertical_spacing_staggered = -0.1 * np.ones(vertical_layers)
+# vertical_coordinates = np.linspace(0,-15,vertical_layers)
+# vertical_coordinates_staggered = np.linspace(-0.05,-15.05,vertical_layers)
+# diffusion_coefficient_tracers = 0.001 * np.ones(vertical_layers)
+#
+# property_forward_profile = np.zeros(vertical_layers)
+# property_surface_flux = 1
+# property_bottom_flux = 1
+# shortwave_radiation = 1
+# property_surface_value = 1
+# nbc = 1
+#
+# property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
+#                                                                                 diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
+#                                                                                 shortwave_radiation, property_surface_value, nbc)
+#
+# print("Test 5: Property Foward Profile (constant diffusion profile= 0.001) = \n",property_forward_profile)
+# print()
+#
+# diffusion_coefficient_tracers = np.ones(vertical_layers)
+# property_forward_profile = np.zeros(vertical_layers)
+#
+# property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
+#                                                                                 diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
+#                                                                                 shortwave_radiation, property_surface_value, nbc)
+#
+# print("Test 5: Property Foward Profile (constant diffusion profile = 1) = \n",property_forward_profile)
+# print()
+#
+# diffusion_coefficient_tracers = np.linspace(0,15,vertical_layers)
+# property_forward_profile = np.zeros(vertical_layers)
+#
+# property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
+#                                                                                 diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
+#                                                                                 shortwave_radiation, property_surface_value, nbc)
+#
+# print("Test 5: Property Foward Profile (linear diffusion profile) = \n",property_forward_profile)
+# print()
+#
+# diffusion_coefficient_tracers = powspace(0,15,2,vertical_layers)
+# property_forward_profile = np.zeros(vertical_layers)
+#
+# property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
+#                                                                                 diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
+#                                                                                 shortwave_radiation, property_surface_value, nbc)
+#
+# print("Test 5: Property Foward Profile (quadratic diffusion profile) = \n",property_forward_profile)
+# print()
+#
+# # Result: for constant profile, values are larger for larger diffusion coefficient
+# #         for changing profile, values decrease at a faster rate for quadratic vs linear
+# # ======================================================================================================================
+#
+# # ======================================================================================================================
+# # Test 6 - nbc depandancy
+# # constant vertical spacing and vertical spacing staggered --> [:] = -0.1
+# # constant diffusion coefficient --> [:]= 0.001
+# # profile initialized to zero
+# # flux and radiation = 1
+#
+# print("--------------------------------------------------------------")
+# print("Test 6")
+# print()
+#
+# vertical_layers = 151
+# vertical_spacing = -0.1 * np.ones(vertical_layers)
+# vertical_spacing_staggered = -0.1 * np.ones(vertical_layers)
+# vertical_coordinates = np.linspace(0,-15,vertical_layers)
+# vertical_coordinates_staggered = np.linspace(-0.05,-15.05,vertical_layers)
+# diffusion_coefficient_tracers = 0.001 * np.ones(vertical_layers)
+#
+# property_forward_profile = np.zeros(vertical_layers)
+# property_surface_flux = 1
+# property_bottom_flux = 1
+# shortwave_radiation = 1
+# property_surface_value = 1
+# nbc = 1
+#
+# property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
+#                                                                                 diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
+#                                                                                 shortwave_radiation, property_surface_value, nbc)
+#
+# print("Test 6: Property Foward Profile (nbc = 1) = \n",property_forward_profile)
+# print()
+#
+# property_forward_profile = np.zeros(vertical_layers)
+# nbc = 2
+#
+# property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
+#                                                                                 diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
+#                                                                                 shortwave_radiation, property_surface_value, nbc)
+#
+# print("Test 6: Property Foward Profile (nbc = 2) = \n",property_forward_profile)
+# print()
+#
+# property_forward_profile = np.zeros(vertical_layers)
+# nbc = 3
+#
+# property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
+#                                                                                 diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
+#                                                                                 shortwave_radiation, property_surface_value, nbc)
+#
+# print("Test 6: Property Foward Profile (nbc = 3) = \n",property_forward_profile)
+# print()
+#
+# property_forward_profile = np.zeros(vertical_layers)
+# nbc = 4
+#
+# property_forward_profile = calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
+#                                                                                 diffusion_coefficient_tracers, property_forward_profile, property_surface_flux, property_bottom_flux,
+#                                                                                 shortwave_radiation, property_surface_value, nbc)
+#
+# print("Test 6: Property Foward Profile (nbc = 4) = \n",property_forward_profile)
+# print()
+#
+# # Result: different profiles for different nbc values
+# #         nbc = 2 and nbc = 4 return nearly identical profiles
+# # ======================================================================================================================
+#
+#
+#
+#

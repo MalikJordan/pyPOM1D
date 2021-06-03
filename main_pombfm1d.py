@@ -11,8 +11,6 @@ from pom.create_profiles import *
 # pyPOM1D DIRECTORY, USED FOR READING INPUTS (TO BE CHANGED BY USER)
 current_path = '/Users/malikjordan/Desktop/pyPOM1D'
 
-
-
 earth_angular_velocity = 7.29E-5                                                        # OMEGA
 
 # GENERAL INITIALIZATION
@@ -81,7 +79,8 @@ vertical_spacing_reciprocal = np.zeros(vertical_layers,dtype=float)             
 for i in range(0,vertical_layers):
     vertical_spacing_reciprocal[i] = one / vertical_spacing[i]
 
-vertical_spacing[vertical_layers] = zero
+print(vertical_spacing,vertical_spacing_staggered)
+vertical_spacing[vertical_layers-1] = zero
 
 # CORIOLIS PARAMETER
 coriolis_parameter = 2. * earth_angular_velocity * np.sin(alat * 2. * pi / 360.)        # COR
@@ -95,31 +94,31 @@ iterations_needed = idays * seconds_per_day / dti                               
 # READ  T&S INITIAL CONDITIONS (IHOTST=0) OR RESTART FILE (IHOTST=1)
 if ihotst == 0:
     time0 = zero
-    get_temperature_and_salinity_initial_coditions()
+    temperature, temperature_backward, salinity, salinity_backward = get_temperature_and_salinity_initial_coditions()
 elif ihotst == 1:
     # get_rst()
     pass
 
 try:
-    import POM_only
-    POM_only = True
-except FileNotFoundError:
+    POM_only
+except NameError:
     POM_only = False
+else:
+    POM_only = True
 if not POM_only:
     # INITIALIZATION OF BFM
     # pom_ini_bfm_1d()
     pass
 
-# BEGIN THE TIME MARCH
-print('ICOUNT befor time march loop = ')
-# print(icountf)
+# # BEGIN THE TIME MARCH
+# print('ICOUNT before time march loop = ')
+# # print(icountf)
 
 
 interpolated_temperature = np.zeros(vertical_layers,dtype=float)                        # TSTAR, from ModuleForcing.F90, line 78
 interpolated_salinity = np.zeros(vertical_layers,dtype=float)                           # SSTAR, from ModuleForcing.F90, line 78
 # BEGIN THE TIME MARCH
-
-for i in range(0, iterations_needed):
+for i in range(int(0), int(iterations_needed)):
     time = time0 + (dti * i * DAYI)
 
     # TURBULENCE CLOSURE
@@ -128,7 +127,7 @@ for i in range(0, iterations_needed):
         kinetic_energy_times_length_forward[j] = kinetic_energy_times_length_backward[j]
 
         # DEFINE ALL FORCINGS
-        forcing_manager()
+        forcing_manager(i)
 
     # T&S COMPUTATION
     if idiagn == zero:
@@ -171,13 +170,13 @@ for i in range(0, iterations_needed):
     # COMPUTE VELOCITY
     for j in range(0, vertical_layers):
         velocity_zonal_forward[j] = velocity_zonal_backward[j] + twice_the_timestep * coriolis_parameter * velocity_meridional[j]
-    calculate_vertical_zonal_velocity_profile(twice_the_timestep, bottom_depth, diffusion_coefficient_momentum, background_diffusion_momentum,
-                                              vertical_spacing, vertical_spacing_staggered, wind_stress_zonal)
+    calculate_vertical_zonal_velocity_profile(vertical_spacing, vertical_spacing_staggered, wind_stress_zonal,
+                                              diffusion_coefficient_momentum, velocity_zonal_forward)
 
     for j in range(0, vertical_layers):
         velocity_meridional_forward[j] = velocity_meridional_backward[j] - twice_the_timestep * coriolis_parameter * velocity_zonal[j]
-    calculate_vertical_meridional_velocity_profile(twice_the_timestep, bottom_depth, diffusion_coefficient_momentum, background_diffusion_momentum,
-                                                   vertical_spacing, vertical_spacing_staggered, wind_stress_meridional)
+    calculate_vertical_meridional_velocity_profile(vertical_spacing, vertical_spacing_staggered, wind_stress_meridional,
+                                                   diffusion_coefficient_momentum, velocity_meridional_forward)
 
     # MIX TIME STEL (ASSELIN FILTER)
     for j in range(0, vertical_layers):
@@ -210,10 +209,11 @@ for i in range(0, iterations_needed):
     create_vertical_diffusivity_profile(temperature, salinity, vertical_spacing_staggered, dti, vertical_layers)
 
 try:
-    import POM_only
-    POM_only = True
-except FileNotFoundError:
+    POM_only
+except NameError:
     POM_only = False
+else:
+    POM_only = True
 if not POM_only:
     # INITIALIZATION OF BFM
     # pom_ini_bfm_1d()
@@ -231,10 +231,11 @@ print(density_profile)
 
 #BFM RESTART
 try:
-    import POM_only
-    POM_only = True
-except FileNotFoundError:
+    POM_only
+except NameError:
     POM_only = False
+else:
+    POM_only = True
 if not POM_only:
     # INITIALIZATION OF BFM
     # restart_BFM_inPOM()

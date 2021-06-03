@@ -2,7 +2,7 @@
 # MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 from cppdefs import *
-# from pom.modules import vertical_layers, zero, one, seconds_per_day
+from pom.modules import vertical_layers, zero, one, seconds_per_day, no_d3_box_states
 import numpy as np
 from inputs.params_POMBFM import *
 twice_the_timestep = 2. * dti
@@ -256,6 +256,19 @@ def pom_dia_bfm(kt,TT):
 def vdiff_SOS():
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    #   GLOBAL DEFINITION OF PELAGIC (D3/D2) STATE VARIABLES (From ModuleMem)
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    ppO2o = 1; ppN1p = 2; ppN3n = 3
+    ppN4n = 4; ppO4n = 5; ppN5s = 6; ppN6r = 7; ppB1c = 8; ppB1n = 9; ppB1p = 10; ppP1c = 11
+    ppP1n = 12; ppP1p = 13; ppP1l = 14; ppP1s = 15; ppP2c = 16; ppP2n = 17; ppP2p = 18
+    ppP2l = 19; ppP2s = 0; ppP3c = 20; ppP3n = 21; ppP3p = 22; ppP3l = 23; ppP3s = 0
+    ppP4c = 24; ppP4n = 25; ppP4p = 26; ppP4l = 27; ppP4s = 0; ppZ3c = 28; ppZ3n = 29
+    ppZ3p = 30; ppZ4c = 31; ppZ4n = 32; ppZ4p = 33; ppZ5c = 34; ppZ5n = 35; ppZ5p = 36
+    ppZ6c = 37; ppZ6n = 38; ppZ6p = 39; ppR1c = 40; ppR1n = 41; ppR1p = 42; ppR1s = 0
+    ppR2c = 43; ppR2n = 0; ppR2p = 0; ppR2s = 0; ppR3c = 44; ppR3n = 0; ppR3p = 0; ppR3s = 0
+    ppR6c = 45; ppR6n = 46; ppR6p = 47; ppR6s = 48; ppO3c = 49; ppO3h = 50
+
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   LOCAL VARIABLES
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -263,7 +276,7 @@ def vdiff_SOS():
     # K, M, N, NBC = float()
 
     # BFM STATE VAR. @ time t-DTI, t, T+DTI RESPECTIVELY
-    # fbio, ffbio, fbbio = np.empty(KB,dtype=float)
+    fbio, ffbio, fbbio = np.zeros(vertical_layers,dtype=float)
 
     # SURFACE FLUX STORAGE FOR NUT'S O2 & CO2
     # surflux = float()
@@ -276,7 +289,7 @@ def vdiff_SOS():
     # trelax_n4n = float()
 
     # SEDIMENTATION VELOCITY
-    # sink = np.empty(KB,dtype=float)
+    sink = np.zeros(vertical_layers,dtype=float)
     # POCsink = float()
     # W1R6 = float()
 
@@ -295,7 +308,7 @@ def vdiff_SOS():
     trelax_n4n = nrt_n4n
 
     # LOOP OVER BFM STATE VAR'S
-    for M in range(0,NO_D3_BOX_STATES):
+    for M in range(0,no_d3_box_states):
 
         # ZEROING
 
@@ -389,7 +402,7 @@ def vdiff_SOS():
 
         # SOURCE SPLITTING LEAPFROG INTEGRATION
         for i in range(0,vertical_layers-1):
-            ffbio[i] = ffbio[i] + twice_the_timestep*((ffbio[i]/H) + D3SOURCE[M][i])
+            ffbio[i] = ffbio[i] + twice_the_timestep*((ffbio[i]/h) + D3SOURCE[M][i])
 
         # COMPUTE VERTICAL DIFFUSION AND TERMINATE INTEGRATION
         # IMPLICIT LEAPFROGGING

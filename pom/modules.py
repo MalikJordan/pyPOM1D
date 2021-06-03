@@ -5,6 +5,8 @@ import numpy as np
 from cppdefs import *
 from pom.initialize_variables import read_pom_input
 
+
+array_length = 13
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #
@@ -346,7 +348,7 @@ WTADV = np.empty(vertical_layers, dtype=float); WSADV = np.empty(vertical_layers
 
 # SUSPENDED INORGANIC MATTER PROFILE
 inorganic_suspended_matter = np.empty(vertical_layers - 1, dtype=float)
-interpolated_w_velocity = np.empty(vertical_layers, dtype=float); w_eddy_velocity = np.empty(vertical_layers, dtype=float)
+interpolated_w_velocity = np.empty((array_length, vertical_layers), dtype=float); w_eddy_velocity = np.empty(vertical_layers, dtype=float)
 
 # FREQUENCY OF AVERAGING FOR OUTPUTi (IN DAYS)
 savef = float(); nitend = float()
@@ -468,8 +470,8 @@ oxy_input = ''
 #
 # RATIOF = float(); RATIOD = float()
 
-
-def forcing_manager():
+from inputs.params_POMBFM import *
+def forcing_manager(time_loop_counter):
 
     # LENGTH OF INPUT ARRAYS
     array_length = 13
@@ -483,7 +485,7 @@ def forcing_manager():
     # RLENGTH = float()
 
     # INITIALISATION AND FIRST FORCING READING
-    if time_loop_counter == 1:
+    if time_loop_counter == 0:
 
         # DOUBLE READING OF DATA (NEEDED TO CARRY OUT THE TIME LINEAR INTERPOLATION)
         wind_speed_zonal1, wind_speed_meridional1, surface_salinity1, solar_radiation1, inorganic_suspended_matter1, \
@@ -787,12 +789,19 @@ no_d3_box_states   = 50
 no_d3_box_diagnoss = 91
 no_d2_box_diagnoss = 162
 no_d3_box_flux     = 30
+#
+# try:
+#     import INCLUDE_SEAICE
+#     INCLUDE_SEAICE = True
+# except FileNotFoundError:
+#     INCLUDE_SEAICE = False
 
 try:
-    import INCLUDE_SEAICE
-    INCLUDE_SEAICE = True
-except FileNotFoundError:
+    INCLUDE_SEAICE
+except NameError:
     INCLUDE_SEAICE = False
+else:
+    INCLUDE_SEAICE = True
 if INCLUDE_SEAICE:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GLOBAL SYSTEM CONSTANTS (ICE)
@@ -801,11 +810,17 @@ if INCLUDE_SEAICE:
     no_d2_box_diagnoss_ice = 0
     no_d2_box_flux_ice     = 0
 
+# try:
+#     import INCLUDE_BEN
+#     INCLUDE_BEN = True
+# except FileNotFoundError:
+#     INCLUDE_BEN = False
 try:
-    import INCLUDE_BEN
-    INCLUDE_BEN = True
-except FileNotFoundError:
+    INCLUDE_BEN
+except NameError:
     INCLUDE_BEN = False
+else:
+    INCLUDE_BEN = True
 if INCLUDE_BEN:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GLOBAL SYSTEM CONSTANTS (BEN)
@@ -1038,11 +1053,17 @@ pptotsysn = 9; pptotsysp      = 10; pptotsyss    = 11; ppEICE  = 12
 #     ppPelDetritus, PelDetritus, ppInorganic, Inorganic
 
 
+# try:
+#     import INCLUDE_SEAICE
+#     INCLUDE_SEAICE = True
+# except FileNotFoundError:
+#     INCLUDE_SEAICE = False
 try:
-    import INCLUDE_SEAICE
-    INCLUDE_SEAICE = True
-except FileNotFoundError:
+    INCLUDE_SEAICE
+except NameError:
     INCLUDE_SEAICE = False
+else:
+    INCLUDE_SEAICE = True
 if INCLUDE_SEAICE:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SHARED GLOBAL FUNCTIONS (ICE) (MUST BE BELOW CONTAINS)
@@ -1050,11 +1071,17 @@ if INCLUDE_SEAICE:
     # Source_D2_vector_ice
     pass
 
+# try:
+#     import INCLUDE_BEN
+#     INCLUDE_BEN = True
+# except FileNotFoundError:
+#     INCLUDE_BEN = False
 try:
-    import INCLUDE_BEN
-    INCLUDE_BEN = True
-except FileNotFoundError:
+    INCLUDE_BEN
+except NameError:
     INCLUDE_BEN = False
+else:
+    INCLUDE_BEN = True
 if INCLUDE_BEN:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SHARED GLOBAL FUNCTIONS (ICE) (MUST BE BELOW CONTAINS)
@@ -1291,11 +1318,17 @@ p_d_tot     = 0.30
 p_poro0     = 0.4
 
 # 1D-PARAMETERS
+# try:
+#     import INCLUDE_BEN
+#     INCLUDE_BEN = True
+# except FileNotFoundError:
+#     INCLUDE_BEN = False
 try:
-    import INCLUDE_BEN
-    INCLUDE_BEN = True
-except FileNotFoundError:
+    INCLUDE_BEN
+except NameError:
     INCLUDE_BEN = False
+else:
+    INCLUDE_BEN = True
 if INCLUDE_BEN:
     p_InitSink = 100.0
     p_q10diff  = 1.49

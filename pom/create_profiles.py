@@ -30,6 +30,7 @@ def create_vertical_diffusivity_profile(vertical_spacing, vertical_spacing_stagg
 
     for i in range(1, vertical_layers - 1):
         A[i - 1] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umolpr) / (vertical_spacing[i - 1] * vertical_spacing_staggered[i - 1] * h * h)
+        print(A[i-1])
         C[i] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umolpr) / (vertical_spacing[i] * vertical_spacing_staggered[i - 1] * h * h)
 
     # need condition for nbc for VH[0] and VHP[0]
@@ -415,9 +416,9 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, verti
     #   APPLY A NON ADIABATIC BOTTOM BOUNDARY CONDITION
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    for i in range(1, vertical_layers - 1):
-        k = (vertical_layers - 1) - i
-        FF[k] = VH[k] * FF[k + 1] + VHP[k]
+    for i in range(vertical_layers-2, 0, -1):
+        # k = (vertical_layers) - i
+        FF[i] = VH[i] * FF[i+1] + VHP[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   ZEROING
@@ -480,8 +481,8 @@ def calculate_vertical_zonal_velocity_profile(vertical_spacing, vertical_spacing
     velocity_zonal_forward[vertical_layers - 2] = (C[vertical_layers - 2] * VHP[vertical_layers - 3] - velocity_zonal_forward[vertical_layers - 2]) / (
             CBC * twice_the_timestep / (-vertical_spacing[vertical_layers - 2] * h) - 1. - (VH[vertical_layers - 3] - 1.) * C[vertical_layers - 2])
     for i in range(1, vertical_layers - 1):
-        KI = vertical_layers - i
-        velocity_zonal_forward[KI - 1] = VH[KI - 1] * velocity_zonal_forward[KI] + VHP[KI - 1]
+        k = vertical_layers - 1 - i
+        velocity_zonal_forward[k - 1] = VH[k - 1] * velocity_zonal_forward[k] + VHP[k - 1]
 
     # WUBOT = -CBC * UF[KB - 2]  # 92
     for i in range(0, vertical_layers):
@@ -541,8 +542,8 @@ def calculate_vertical_meridional_velocity_profile(vertical_spacing, vertical_sp
             CBC * twice_the_timestep / (-vertical_spacing[vertical_layers - 2] * h) - 1. - (VH[vertical_layers - 3] - 1.) * C[vertical_layers - 2])
 
     for i in range(1, vertical_layers - 1):
-        k = vertical_layers - i
-        velocity_meridional_forward[k] = VH[k] * velocity_meridional_forward[k + 1] + VHP[k]
+        k = vertical_layers - 1 - i
+        velocity_meridional_forward[k - 1] = VH[k - 1] * velocity_meridional_forward[k] + VHP[k - 1]
 
     # WVBOT = -CBC * VF[KB - 2]  # 92
     for i in range(0, vertical_layers):
