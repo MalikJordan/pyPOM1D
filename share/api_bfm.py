@@ -1,6 +1,6 @@
 from cppdefs import *
 import numpy as np
-from pom.modules import RLEN, zero, bfm_lwp, LOGUNIT, no_d3_box_states
+from pom.modules_old import RLEN, zero, bfm_lwp, LOGUNIT, no_d3_box_states
 
 dim = int()
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

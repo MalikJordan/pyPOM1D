@@ -1,7 +1,7 @@
 from cppdefs import *
 import numpy as np
-from pom.modules import zero, one, pi
-from pom.modules import *
+from pom.modules_old import zero, one, pi
+from pom.modules_old import *
 from inputs.params_POMBFM import *
 from pom.calculations import *
 from inputs.params_POMBFM import *  # Parameters read from params_POMBFM.nml, from main_pombfm1d.F90 lines 147-149
@@ -204,7 +204,7 @@ for i in range(int(0), int(iterations_needed)):
         temperature[j] = temperature_forward[j]
         salinity_backward[j] = salinity[j]
         salinity[j] = salinity_forward[j]
-
+    print(vertical_spacing_staggered)
     # UPDATE DENSITY
     create_vertical_diffusivity_profile(temperature, salinity, vertical_spacing_staggered, dti, vertical_layers)
 

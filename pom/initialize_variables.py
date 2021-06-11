@@ -28,8 +28,8 @@ def read_pom_input():
     """
 
     from main_pombfm1d import current_path
-    from pom.modules import vertical_layers
-    from pom.modules import path_error
+    from pom.modules_old import vertical_layers
+    from pom.modules_old import path_error
 
     # PATHS TO INPUT DATA FILES
     wind_stress_data_path = current_path + '/inputs/POM_BFM17/monthly_surf_wind_stress_bermuda_killworth2.da'
@@ -252,8 +252,8 @@ def get_temperature_and_salinity_initial_coditions():
     """
 
     from main_pombfm1d import current_path
-    from pom.modules import vertical_layers
-    from pom.modules import path_error
+    from pom.modules_old import vertical_layers
+    from pom.modules_old import path_error
 
     salinity_initial_conditions_data_path = current_path + '/inputs/POM_BFM17/init_prof_S_150m_bermuda_killworth2.da'
     temperature_initial_conditions_data_path = current_path + '/inputs/POM_BFM17/init_prof_T_150m_bermuda_killworth2.da'
@@ -313,7 +313,7 @@ def get_numeric_timestep():
     :return: numeric timestep
     """
 
-    from modules import seconds_per_day, dti
+    from modules_old import seconds_per_day, dti
 
     numeric_timestep = dti / seconds_per_day
 
@@ -347,13 +347,13 @@ def pom_to_bfm():
     # if NOPOINTERS:
     #     from modules import ETW, ESW, EIR, ESS, ERHO, EWIND, Depth
 
-    from modules import vertical_layers, water_specific_heat_times_density, temperature_backward, \
+    from modules_old import vertical_layers, water_specific_heat_times_density, temperature_backward, \
         salinity_backward, density_profile, bottom_depth, vertical_spacing, shortwave_radiation, wind_stress_zonal, \
         wind_stress_meridional, diffusion_coefficient_momentum, diffusion_coefficient_tracers, \
         velocity_zonal, velocity_meridional, kinetic_energy, \
         kinetic_energy_times_length, length_scale
 
-    from modules import inorganic_suspended_matter, interpolated_w_velocity, w_eddy_velocity
+    from modules_old import inorganic_suspended_matter, interpolated_w_velocity, w_eddy_velocity
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   1D ARRAYS FOR BFM
@@ -409,7 +409,7 @@ def get_initial_conditions():
     """
 
     from main_pombfm1d import current_path
-    from modules import vertical_layers, path_error
+    from modules_old import vertical_layers, path_error
     from inputs.namelist_input_data import phyto_input, zoop_input, poc_input, doc_input, \
         phos_input, nit_input, am_input, oxy_input
 
@@ -484,8 +484,8 @@ def set_initial_conditions():
     :return:
     """
 
-    from modules import vertical_layers
-    from modules import zero, NML_OPEN, NML_READ, NMLUNIT, error_msg_prn
+    from modules_old import vertical_layers
+    from modules_old import zero, NML_OPEN, NML_READ, NMLUNIT, error_msg_prn
     # from modules import photosynthetic_radiation
 
     p_nRc = 0.0126

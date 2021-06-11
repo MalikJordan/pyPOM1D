@@ -1,6 +1,6 @@
 import numpy as np
 from cppdefs import *
-from pom.modules import RLEN, bfm_lwp, LOGUNIT, seconds_per_day
+from pom.modules_old import RLEN, bfm_lwp, LOGUNIT, seconds_per_day
 
 
 class TimeInfo:

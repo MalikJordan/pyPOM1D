@@ -2,7 +2,7 @@
 # MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 from cppdefs import *
-from pom.modules import vertical_layers, zero, one, seconds_per_day, no_d3_box_states
+from pom.modules_old import vertical_layers, zero, one, seconds_per_day, no_d3_box_states
 import numpy as np
 from inputs.params_POMBFM import *
 twice_the_timestep = 2. * dti
