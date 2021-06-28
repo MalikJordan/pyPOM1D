@@ -1,12 +1,9 @@
 from cppdefs import *
-# from pom.modules import vertical_layers, zero, one
+from pom.modules import vertical_layers
+from main_pombfm1d import twice_the_timestep
 from inputs.params_POMBFM import *
 import numpy as np
 
-twice_the_timestep = 2. * dti
-vertical_layers = 151
-one = 1.
-zero = 0.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -62,12 +59,6 @@ def create_vertical_diffusivity_profile(vertical_spacing, vertical_spacing_stagg
     for i in range(1, vertical_layers - 1):
         j = vertical_layers - i
         vertical_diffusivity[j] = VH[j] * vertical_diffusivity[j + 1] + VHP[j]
-
-    for i in range(0, vertical_layers):
-        VH[i] = 0.0
-        VHP[i] = 0.0
-        A[i] = 0.0
-        C[i] = 0.0
 
     return vertical_diffusivity
 
@@ -363,7 +354,7 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, verti
         A[i - 1] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umol) / (vertical_spacing[i - 1] * vertical_spacing_staggered[i - 1] * h * h)
         C[i] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umol) / (vertical_spacing[i] * vertical_spacing_staggered[i - 1] * h * h)
 
-    vertical_radiation_profile[:] = zero
+    vertical_radiation_profile[:] = 0.
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SURFACE BOUNDARY CONDITION
@@ -372,27 +363,27 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, verti
     # *** PENETRATIVE RADIATION CALCULATION. AT THE BOTTOM ANY UNATTENUATED IS DEPOSITED IN THE BOTTOM LAYER.
 
     if nbc == 1:
-        VH[0] = A[0] / (A[0] - one)
+        VH[0] = A[0] / (A[0] - 1.)
         VHP[0] = -twice_the_timestep * (WFSURF + shortwave_radiation) / (-vertical_spacing[0] * h) - FF[0]
-        VHP[0] = VHP[0] / (A[0] - one)
+        VHP[0] = VHP[0] / (A[0] - 1.)
 
     elif nbc == 2:
-        vertical_radiation_profile[:] = shortwave_radiation * (RP[ntp] * np.exp(vertical_coordinates[:] * h / AD1[ntp]) + (one - RP[ntp] * np.exp(vertical_coordinates[:] * h / AD2[ntp])))  # ***
-        vertical_radiation_profile[vertical_layers - 1] = zero
+        vertical_radiation_profile[:] = shortwave_radiation * (RP[ntp] * np.exp(vertical_coordinates[:] * h / AD1[ntp]) + (1. - RP[ntp] * np.exp(vertical_coordinates[:] * h / AD2[ntp])))  # ***
+        vertical_radiation_profile[vertical_layers - 1] = 0.
 
-        VH[0] = A[0] / (A[0] - one)
+        VH[0] = A[0] / (A[0] - 1.)
         VHP[0] = twice_the_timestep * (WFSURF + vertical_radiation_profile[0] - vertical_radiation_profile[1]) / (vertical_spacing[0] * h) - FF[0]
-        VHP[0] = VHP[0] / (A[0] - one)
+        VHP[0] = VHP[0] / (A[0] - 1.)
 
     elif nbc == 3:
-        VH[0] = zero
+        VH[0] = 0.
         VHP[0] = FSURF
 
     elif nbc == 4:
-        vertical_radiation_profile[:] = shortwave_radiation * (RP[ntp] * np.exp(vertical_coordinates[:] * h / AD1[ntp]) + (one - RP[ntp] * np.exp(vertical_coordinates[:] * h / AD2[ntp])))  # ***
-        vertical_radiation_profile[vertical_layers - 1] = zero
+        vertical_radiation_profile[:] = shortwave_radiation * (RP[ntp] * np.exp(vertical_coordinates[:] * h / AD1[ntp]) + (1. - RP[ntp] * np.exp(vertical_coordinates[:] * h / AD2[ntp])))  # ***
+        vertical_radiation_profile[vertical_layers - 1] = 0.
 
-        VH[0] = zero
+        VH[0] = 0.
         VHP[0] = FSURF
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -420,14 +411,6 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, verti
         # k = (vertical_layers) - i
         FF[i] = VH[i] * FF[i+1] + VHP[i]
 
-    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    #   ZEROING
-    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-    VH[:] = zero
-    VHP[:] = zero
-    A[:] = zero
-    C[:] = zero
 
     return FF
 
@@ -485,11 +468,6 @@ def calculate_vertical_zonal_velocity_profile(vertical_spacing, vertical_spacing
         velocity_zonal_forward[k - 1] = VH[k - 1] * velocity_zonal_forward[k] + VHP[k - 1]
 
     # WUBOT = -CBC * UF[KB - 2]  # 92
-    for i in range(0, vertical_layers):
-        VH[i] = 0.
-        VHP[i] = 0.
-        A[i] = 0.
-        C[i] = 0.
 
     return velocity_zonal_forward
 
@@ -546,11 +524,6 @@ def calculate_vertical_meridional_velocity_profile(vertical_spacing, vertical_sp
         velocity_meridional_forward[k - 1] = VH[k - 1] * velocity_meridional_forward[k] + VHP[k - 1]
 
     # WVBOT = -CBC * VF[KB - 2]  # 92
-    for i in range(0, vertical_layers):
-        VH[i] = 0.
-        VHP[i] = 0.
-        A[i] = 0.
-        C[i] = 0.
 
     return velocity_meridional_forward
 

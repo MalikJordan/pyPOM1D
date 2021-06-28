@@ -1,10 +1,8 @@
 from cppdefs import *
 import numpy as np
-from pom.modules_old import zero, one, pi
-from pom.modules_old import *
-from inputs.params_POMBFM import *
+from pom.modules import vertical_layers, DAYI
+from inputs import params_POMBFM
 from pom.calculations import *
-from inputs.params_POMBFM import *  # Parameters read from params_POMBFM.nml, from main_pombfm1d.F90 lines 147-149
 from pom.initialize_variables import *
 from pom.create_profiles import *
 
@@ -13,89 +11,80 @@ current_path = '/Users/malikjordan/Desktop/pyPOM1D'
 
 earth_angular_velocity = 7.29E-5                                                        # OMEGA
 
+# VARIABLE NAMES (FORTRAN --> PYTHON)
+# Z = vertical_coordinates
+# ZZ = vertical_coordinates_staggered
+# DZ = vertical_spacing
+# DZZ = vertical_spacing_staggered
+# DZR = vertical_spacing_reciprocal
+# T = temperature
+# TF = temperature_forward
+# TB = temperature_backward
+# TSTAR = interpolated_temperature
+# S = salinity
+# SF = salinity_forward
+# SB = salinity_backward
+# SSTAR = interpolated_salinity
+# RHO = density_profile
+# U = velocity_zonal
+# UF = velocity_zonal_forward
+# UB = velocity_zonal_backward
+# V = velocity_meridional
+# VF = velocity_meridional_forward
+# VB = velocity_meridional_backward
+# Q2 = kinetic_energy
+# Q2F = kinetic_energy_forward
+# Q2B = kinetic_energy_backward
+# Q2L = kinetic_energy_times_length
+# Q2LF = kinetic_energy_times_length_forward
+# Q2LB = kinetic_energy_times_length_backward
+# L = length_scale
+# KM = diffusion_coefficient_momentum
+# KH = diffusion_coefficient_tracers
+# KQ = diffusion_coefficient_kinetic_energy
+# WTADV = temperature_lateral_advection
+# WSADV = salinity_lateral_advection
+# WUSURF = wind_stress_zonal
+# WVSURF = wind_stress_meridional
+# WUBOT = bottom_stress_zonal
+# WVBOT = bottom_stress_meridional
+# WTSURF = surface_heat_flux
+# SWRAD = shortwave_radiation
+# WSSURF = surface_salinity_flux
+# TSURF = surface_temperature
+# SSURF = surface_salinity
+
 # GENERAL INITIALIZATION
-vertical_coordinates = np.zeros(vertical_layers, dtype=float)                           # Z
-vertical_coordinates_staggered = np.zeros(vertical_layers, dtype=float)                 # ZZ
-vertical_spacing = np.zeros(vertical_layers,dtype=float)                                # DZ
-vertical_spacing_staggered = np.zeros(vertical_layers,dtype=float)                      # DZZ
-temperature_forward = np.zeros(vertical_layers,dtype=float)                             # TF
-temperature = np.zeros(vertical_layers,dtype=float)                                     # T
-temperature_backward = np.zeros(vertical_layers,dtype=float)                            # TB
-salinity_forward = np.zeros(vertical_layers,dtype=float)                                # SF
-salinity = np.zeros(vertical_layers,dtype=float)                                        # S
-salinity_backward = np.zeros(vertical_layers,dtype=float)                               # SB
-density_profile = np.zeros(vertical_layers,dtype=float)                                 # RHO
-velocity_zonal_forward = np.zeros(vertical_layers,dtype=float)                          # UF
-velocity_zonal = np.zeros(vertical_layers,dtype=float)                                  # U
-velocity_zonal_backward = np.zeros(vertical_layers,dtype=float)                         # UB
-velocity_meridional_forward = np.zeros(vertical_layers,dtype=float)                     # VF
-velocity_meridional = np.zeros(vertical_layers,dtype=float)                             # V
-velocity_meridional_backward = np.zeros(vertical_layers,dtype=float)                    # VB
-kinetic_energy_forward = np.ones(vertical_layers,dtype=float) * 1.E-07                  # Q2F
-kinetic_energy = np.ones(vertical_layers,dtype=float) * 1.E-07                          # Q2
-kinetic_energy_backward = np.ones(vertical_layers,dtype=float) * 1.E-07                 # Q2B
-kinetic_energy_times_length_forward = np.ones(vertical_layers,dtype=float) * 1.E-07     # Q2LF
-kinetic_energy_times_length = np.ones(vertical_layers,dtype=float) * 1.E-07             # Q2L
-kinetic_energy_times_length_backward = np.ones(vertical_layers,dtype=float) * 1.E-07    # Q2LB
-length_scale = np.ones(vertical_layers,dtype=float)                                     # L
-length_scale[0] = zero                                                                  # L(1)
-length_scale[vertical_layers-1] = zero                                                  # L(KB)
-diffusion_coefficient_momentum = np.zeros(vertical_layers,dtype=float)                  # KM
-diffusion_coefficient_tracers = np.zeros(vertical_layers,dtype=float)                   # KH
-diffusion_coefficient_kinetic_energy = np.zeros(vertical_layers,dtype=float)            # KQ
-GM = np.zeros(vertical_layers,dtype=float)
-GH = np.zeros(vertical_layers, dtype=float)
-SM = np.zeros(vertical_layers,dtype=float)
-SH = np.zeros(vertical_layers,dtype=float)
-KN = np.zeros(vertical_layers,dtype=float)
-SPROD = np.zeros(vertical_layers,dtype=float)
-BPROD = np.zeros(vertical_layers,dtype=float)
-PROD = np.zeros(vertical_layers,dtype=float)
-VH = np.zeros(vertical_layers,dtype=float)
-VHP = np.zeros(vertical_layers,dtype=float)
-DTEF = np.zeros(vertical_layers,dtype=float)
-D = np.zeros(vertical_layers,dtype=float)
-DT = np.zeros(vertical_layers,dtype=float)
-A = np.zeros(vertical_layers,dtype=float)
-C = np.zeros(vertical_layers,dtype=float)
-temperature_lateral_advection = np.zeros(vertical_layers, dtype=float)                  # WTADV
-salinity_lateral_advection = np.zeros(vertical_layers, dtype=float)                     # WSADV
-wind_stress_zonal = zero                                                                # WUSURF
-wind_stress_meridional = zero                                                           # WVSURF
-bottom_stress_zonal = zero                                                              # WUBOT
-bottom_stress_meridional = zero                                                         # WVBOT
-surface_heat_flux = zero                                                                # WTSURF
-shortwave_radiation = zero                                                              # SWRAD
-surface_salinity_flux = zero                                                            # WSSURF
-surfave_temperature = zero                                                              # TSURF
-surface_salinity = zero                                                                 # SSURF
+vertical_spacing_reciprocal = np.zeros(vertical_layers)                     # DZR
+interpolated_temperature = np.zeros(vertical_layers)                        # TSTAR, from ModuleForcing.F90, line 78
+interpolated_salinity = np.zeros(vertical_layers)                           # SSTAR, from ModuleForcing.F90, line 78
+temperature_lateral_advection = np.zeros(vertical_layers)                   # WTADV
+salinity_lateral_advection = np.zeros(vertical_layers)                      # WSADV
+
 
 # DEFINE VERTICAL COORDINATE SYSTEM
 vertical_coordinates, vertical_coordinates_staggered, \
-    vertical_spacing, vertical_spacing_staggered        = create_vertical_coordinate_system(vertical_layers, kl1, kl2)
+    vertical_spacing, vertical_spacing_staggered        = create_vertical_coordinate_system(vertical_layers, params_POMBFM.kl1, params_POMBFM.kl2)
 
+# VERTICAL SPACING RECIROCAL (DZR)
 vertical_spacing[vertical_layers-1] = 1.E-6  # Small value to avoid division by zero for vertical_spacing_reciprocal
-vertical_spacing_reciprocal = np.zeros(vertical_layers,dtype=float)                     # DZR
-for i in range(0,vertical_layers):
-    vertical_spacing_reciprocal[i] = one / vertical_spacing[i]
-
-print(vertical_spacing,vertical_spacing_staggered)
-vertical_spacing[vertical_layers-1] = zero
+vertical_spacing_reciprocal[:] = 1. / vertical_spacing[:]
+vertical_spacing[vertical_layers-1] = 0.
 
 # CORIOLIS PARAMETER
-coriolis_parameter = 2. * earth_angular_velocity * np.sin(alat * 2. * pi / 360.)        # COR
+coriolis_parameter = 2. * earth_angular_velocity * np.sin(alat * 2. * np.pi / 360.)        # COR
 
 # TWICE THE TIMESTEP
-twice_the_timestep = 2. * dti                                                           # DT2
+twice_the_timestep = 2. * params_POMBFM.dti                                                # DT2
 
 # ITERATIONS NEEDED TO CARRY OUT AN"IDAYS" SIMULATION
-iterations_needed = idays * seconds_per_day / dti                                       # iend
+iterations_needed = idays * seconds_per_day / params_POMBFM.dti                            # iend
 
 # READ  T&S INITIAL CONDITIONS (IHOTST=0) OR RESTART FILE (IHOTST=1)
-if ihotst == 0:
-    time0 = zero
+if params_POMBFM.ihotst == 0:
+    time0 = 0.
     temperature, temperature_backward, salinity, salinity_backward = get_temperature_and_salinity_initial_coditions()
-elif ihotst == 1:
+elif params_POMBFM.ihotst == 1:
     # get_rst()
     pass
 
@@ -115,61 +104,50 @@ if not POM_only:
 # # print(icountf)
 
 
-interpolated_temperature = np.zeros(vertical_layers,dtype=float)                        # TSTAR, from ModuleForcing.F90, line 78
-interpolated_salinity = np.zeros(vertical_layers,dtype=float)                           # SSTAR, from ModuleForcing.F90, line 78
 # BEGIN THE TIME MARCH
-for i in range(int(0), int(iterations_needed)):
+for i in range(0, int(iterations_needed)):
     time = time0 + (dti * i * DAYI)
 
     # TURBULENCE CLOSURE
-    for j in range(0, vertical_layers):
-        kinetic_energy_forward[j] = kinetic_energy_backward[j]
-        kinetic_energy_times_length_forward[j] = kinetic_energy_times_length_backward[j]
+    kinetic_energy_forward[:] = kinetic_energy_backward[:]
+    kinetic_energy_times_length_forward[:] = kinetic_energy_times_length_backward[:]
 
-        # DEFINE ALL FORCINGS
-        forcing_manager(i)
+    PROFQ()
+    # DEFINE ALL FORCINGS
+    forcing_manager(i)
 
     # T&S COMPUTATION
-    if idiagn == zero:
+    if params_POMBFM.idiagn == 0:
         # PROGNOSTIC MODE
         # T&S FULLY COMPUTED BY MODEL
 
-        # COMPUTE LATERAL ADVECTION TERM FOR T&S
-        # for j in range(0, vertical_layers):
-        #     temperature_lateral_advection[j] = zero
-        #     salinity_lateral_advection[j] = zero
-
-        if trt == zero:
+        if params_POMBFM.trt != 0:
             for j in range(0, vertical_layers):
-                if (-vertical_coordinates_staggered * bottom_depth) >= upperh:
-                    temperature_lateral_advection[j] = (interpolated_temperature[j] - temperature[j]) / (trt * seconds_per_day)
+                if (-vertical_coordinates_staggered[j] * params_POMBFM.h) >= params_POMBFM.upperh:
+                    temperature_lateral_advection[j] = (interpolated_temperature[j] - temperature[j]) / (params_POMBFM.trt * seconds_per_day)
 
-        if srt == zero:
+        if params_POMBFM.srt != 0:
             for j in range(0, vertical_layers):
-                if (-vertical_coordinates_staggered * bottom_depth) >= upperh:
-                    salinity_lateral_advection[j] = (interpolated_salinity[j] - salinity[j]) / (srt * seconds_per_day)
+                if (-vertical_coordinates_staggered[j] * params_POMBFM.h) >= params_POMBFM.upperh:
+                    salinity_lateral_advection[j] = (interpolated_salinity[j] - salinity[j]) / (params_POMBFM.srt * seconds_per_day)
 
         # COMPUTE SURFACE SALINITY FLUX
-        surface_salinity_flux = -(surface_salinity - salinity[0]) * srt / seconds_per_day
+        surface_salinity_flux = -(surface_salinity - salinity[0]) * params_POMBFM.srt / seconds_per_day
 
         # COMPUTE TEMPREATURE
-        for j in range(0, vertical_layers):
-            temperature_forward[j] = temperature_backward[j] + (temperature_lateral_advection[j] * twice_the_timestep)
-            calculate_vertical_temperature_and_salinity_profiles()
+        temperature_forward[:] = temperature_backward[:] + (temperature_lateral_advection[:] * twice_the_timestep)
+        calculate_vertical_temperature_and_salinity_profiles()
 
         # CALCULATE SALINITY
-        for j in range(0, vertical_layers):
-            salinity_forward[j] = salinity_backward[j] + (salinity_lateral_advection[j] * twice_the_timestep)
-            calculate_vertical_temperature_and_salinity_profiles()
+        salinity_forward[:] = salinity_backward[:] + (salinity_lateral_advection[:] * twice_the_timestep)
+        calculate_vertical_temperature_and_salinity_profiles()
 
         # MIXING THE TIMESTEP (ASSELIN)
-        for j in range(0, vertical_layers):
-            temperature[j] = temperature[j] + 0.5 * smoth * (temperature_forward[j] + temperature_backward[j] - 2. * temperature_forward[j])
-            salinity[j] = salinity[j] + 0.5 * smoth * (salinity_forward[j] + salinity_backward[j] - 2. * salinity[j])
+        temperature[:] = temperature[:] + 0.5 * params_POMBFM.smoth * (temperature_forward[:] + temperature_backward[:] - 2. * temperature_forward[:])
+        salinity[:] = salinity[:] + 0.5 * params_POMBFM.smoth * (salinity_forward[:] + salinity_backward[:] - 2. * salinity[:])
 
     # COMPUTE VELOCITY
-    for j in range(0, vertical_layers):
-        velocity_zonal_forward[j] = velocity_zonal_backward[j] + twice_the_timestep * coriolis_parameter * velocity_meridional[j]
+    velocity_zonal_forward[:] = velocity_zonal_backward[:] + twice_the_timestep * coriolis_parameter * velocity_meridional[:]
     calculate_vertical_zonal_velocity_profile(vertical_spacing, vertical_spacing_staggered, wind_stress_zonal,
                                               diffusion_coefficient_momentum, velocity_zonal_forward)
 
@@ -180,31 +158,28 @@ for i in range(int(0), int(iterations_needed)):
 
     # MIX TIME STEL (ASSELIN FILTER)
     for j in range(0, vertical_layers):
-        kinetic_energy[j] = kinetic_energy[j] + 0.5 * smoth * (kinetic_energy_forward[j] + kinetic_energy_backward[j] - 2. * kinetic_energy[j])
-        kinetic_energy_times_length[j] = kinetic_energy_times_length[j] * smoth * (kinetic_energy_times_length_forward[j] + kinetic_energy_times_length_backward[j] - 2. * kinetic_energy_times_length[j])
+        kinetic_energy[j] = kinetic_energy[j] + 0.5 * params_POMBFM.smoth * (kinetic_energy_forward[j] + kinetic_energy_backward[j] - 2. * kinetic_energy[j])
+        kinetic_energy_times_length[j] = kinetic_energy_times_length[j] * params_POMBFM.smoth * (kinetic_energy_times_length_forward[j] + kinetic_energy_times_length_backward[j] - 2. * kinetic_energy_times_length[j])
 
-        velocity_zonal[j] = velocity_zonal[j] + 0.5 * smoth * (velocity_zonal_forward[j] + velocity_zonal_backward[j] - 2. * velocity_zonal[j])
-        velocity_meridional[j] = velocity_meridional[j] + 0.5 * smoth * (velocity_meridional_forward[j] + velocity_meridional_backward[j] - 2. * velocity_meridional[j])
+        velocity_zonal[j] = velocity_zonal[j] + 0.5 * params_POMBFM.smoth * (velocity_zonal_forward[j] + velocity_zonal_backward[j] - 2. * velocity_zonal[j])
+        velocity_meridional[j] = velocity_meridional[j] + 0.5 * params_POMBFM.smoth * (velocity_meridional_forward[j] + velocity_meridional_backward[j] - 2. * velocity_meridional[j])
 
     # RESTORE TIME SEQUENCE
-    for j in range(0, vertical_layers):
-        kinetic_energy_backward[j] = kinetic_energy[j]
-        kinetic_energy[j] = kinetic_energy_forward[j]
-        kinetic_energy_times_length_backward[j] = kinetic_energy_times_length[j]
-        kinetic_energy_times_length[j] = kinetic_energy_times_length_forward[j]
+    kinetic_energy_backward[:] = kinetic_energy[:]
+    kinetic_energy[:] = kinetic_energy_forward[:]
+    kinetic_energy_times_length_backward[:] = kinetic_energy_times_length[:]
+    kinetic_energy_times_length[:] = kinetic_energy_times_length_forward[:]
 
-    for j in range(0, vertical_layers):
-        velocity_zonal_backward[j] = velocity_zonal[j]
-        velocity_zonal[j] = velocity_zonal_forward[j]
-        velocity_meridional_backward[j] = velocity_meridional[j]
-        velocity_meridional[j] = velocity_meridional_forward[j]
+    velocity_zonal_backward[:] = velocity_zonal[:]
+    velocity_zonal[:] = velocity_zonal_forward[:]
+    velocity_meridional_backward[:] = velocity_meridional[:]
+    velocity_meridional[:] = velocity_meridional_forward[:]
 
-    for j in range(0, vertical_layers):
-        temperature_backward[j] = temperature[j]
-        temperature[j] = temperature_forward[j]
-        salinity_backward[j] = salinity[j]
-        salinity[j] = salinity_forward[j]
-    print(vertical_spacing_staggered)
+    temperature_backward[:] = temperature[:]
+    temperature[:] = temperature_forward[:]
+    salinity_backward[:] = salinity[:]
+    salinity[:] = salinity_forward[:]
+
     # UPDATE DENSITY
     create_vertical_diffusivity_profile(temperature, salinity, vertical_spacing_staggered, dti, vertical_layers)
 

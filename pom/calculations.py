@@ -70,9 +70,11 @@ def create_vertical_coordinate_system(vertical_layers, surface_layers_with_log_d
     surface_logspace_layers = surface_layers_with_log_distribution - 2.
     bottom_logspace_layers = vertical_layers - bottom_layers_with_log_distribution - 1.
 
-    initial_spacing = (bottom_layers_with_log_distribution - surface_layers_with_log_distribution + 4.) * 2 ** (-6.3)
+    BB = (bottom_layers_with_log_distribution - surface_layers_with_log_distribution) + 4.
+    CC = surface_layers_with_log_distribution - 2.
+    initial_spacing = 2. / BB / np.exp(.693147 * (surface_layers_with_log_distribution - 2))
 
-    vertical_coordinates_staggered[0] = 0.5 * initial_spacing
+    vertical_coordinates_staggered[0] = -0.5 * initial_spacing
 
     for i in range(1, int(surface_layers_with_log_distribution) - 1):
         vertical_coordinates[i] = -initial_spacing * 2**(i-2)
