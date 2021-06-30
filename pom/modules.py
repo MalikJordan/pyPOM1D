@@ -4,6 +4,7 @@ from pom.initialize_variables import read_pom_input
 from bfm.bfm_constants import seconds_per_day
 from inputs import params_POMBFM
 from inputs.pom_forcing_data import write_forcing_data
+from pom.data_classes import MonthlyForcingData, Stresses
 
 # From ModulePom
 
@@ -17,28 +18,25 @@ DAYI = 1. / seconds_per_day
 vertical_layers = 151
 
 
-def forcing_manager(time_loop_counter):
-
-    # LENGTH OF INPUT ARRAYS
-    array_length = 13
+def forcing_manager(time_loop_counter,counters,month1_data,month2_data):
 
     # INITIALISATION AND FIRST FORCING READING
     if time_loop_counter == 0:
 
         # DAY COUNTER
-        day_counter = 1
+        counters.day_counter = 1
 
         # MONTH COUNTER
-        month_counter = 0
+        counters.month_counter = 0
 
         # TIME STEPS TO COVER ONE DAY
-        timesteps_per_day = seconds_per_day / params_POMBFM.dti
+        counters.timesteps_per_day = seconds_per_day / params_POMBFM.dti
 
         # TIME STEPS TO COVER ONE MONTH
-        timesteps_per_month = 30 * timesteps_per_day
+        counters.timesteps_per_month = 30 * counters.timesteps_per_day
 
         # DAY INTERPOLATOR
-        day_interpolator = -1
+        counters.day_interpolator = -1
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
         # **                                                                   **
@@ -51,7 +49,7 @@ def forcing_manager(time_loop_counter):
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 
         # MONTH INTERPOLATOR
-        month_interpolator = (timesteps_per_month / 2.) - 1
+        counters.month_interpolator = (counters.timesteps_per_month / 2.) - 1
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
         # **                                                                   **
@@ -72,39 +70,38 @@ def forcing_manager(time_loop_counter):
         # ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 
         # READING FOR FIRST MONTH
-        sclim1, tclim1, wclim1, weddy1, weddy2, ism1, wsu1, wsv1, swrad1, wtsurf1, qcorr1, \
-            NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1 = write_forcing_data(month_counter)
+        month1_data = write_forcing_data(counters.month_counter)
 
         # UPDATE THE DAY COUNTER
-        day_counter = day_counter + 1
+        counters.day_counter = counters.day_counter + 1
 
         # UPDATE THE MONTH COUNTER
-        month_counter = month_counter + 1
+        counters.month_counter = counters.month_counter + 1
 
         # READING FOR SECOND MONTH
-        sclim2, tclim2, wclim2, weddy3, weddy4, ism2, wsu2, wsv2, swrad2, wtsurf2, qcorr2, \
-            NO3_s2, NH4_s2, PO4_s2, SIO4_s2, O2_b2, NO3_b2, PO4_b2, PON_b2 = write_forcing_data(month_counter)
+        month2_data = write_forcing_data(counters.month_counter)
 
     # UPDATE INTERPOLATION COUNTERS
-    day_interpolator = day_interpolator + 1
-    ratio_day = day_interpolator / timesteps_per_day
+    counters.day_interpolator = counters.day_interpolator + 1
+    counters.ratio_day = counters.day_interpolator / counters.timesteps_per_day
 
-    month_interpolator = month_interpolator + 1
-    ratio_month = month_interpolator / timesteps_per_month
+    counters.month_interpolator = counters.month_interpolator + 1
+    counters.ratio_month = counters.month_interpolator / counters.timesteps_per_month
 
     # INTERPOLATE WIND STRESS
-    wusurf = wsu1 + ratio_month * (wsu2 - wsu1)
-    wvsurf = wsv1 + ratio_month * (wsv2 - wsv1)
+    wusurf = month1_data.wsu + counters.ratio_month * (month2_data.wsu - month1_data.wsu)
+    wvsurf = month1_data.wsv + counters.ratio_month * (month2_data.wsv - month1_data.wsv)
+    wind_stress = Stresses(wusurf,wvsurf)
 
     # INTERPOLATE HEAT FLUX
     if params_POMBFM.idiagn == 0:
-        wtsurf = wtsurf1 + ratio_month * (wtsurf2 - wtsurf1)
-        swrad = swrad1 + ratio_month * (swrad2 - swrad1)
-    elif params_POMBFM.idiagn == 1:
-        # DAILY
-        # surface_solar_radiation = shortwave_radiation1 + ratio_day * (shortwave_radiation2 - shortwave_radiation1)
-        # MONTHLY
-        swrad = swrad1 + ratio_month * (swrad2 - swrad1)
+        wtsurf = month1_data.wtsurf + counters.ratio_month * (month2_data.wtsurf - month1_data.wtsurf)
+        swrad = month1_data.swrad + counters.ratio_month * (month2_data.swrad - month1_data.swrad)
+    else:
+        wtsurf = 0  # not needed for diagnostic mode (idiagn = 1), see 4.6.5 in manual
+        swrad = month1_data.swrad + counters.ratio_month * (month2_data.swrad - month1_data.swrad)
+
+
 
     # INTERPOLATE T&S PROFILES
     tstar = np.zeros(vertical_layers)
@@ -114,14 +111,14 @@ def forcing_manager(time_loop_counter):
     tf    = np.zeros(vertical_layers)
     sf    = np.zeros(vertical_layers)
 
-    tstar[:] = tclim1[:] + ratio_month * (tclim2[:] - tclim1[:])
-    sstar[:] = sclim1[:] + ratio_month * (sclim2[:] - sclim1[:])
-    wgen[:]  = wclim1[:] + ratio_month * (wclim2[:] - wclim1[:])
+    tstar[:] = month1_data.tclim[:] + counters.ratio_month * (month2_data.tclim[:] - month1_data.tclim[:])
+    sstar[:] = month1_data.sclim[:] + counters.ratio_month * (month2_data.sclim[:] - month1_data.sclim[:])
+    wgen[:]  = month1_data.wclim[:] + counters.ratio_month * (month2_data.wclim[:] - month1_data.wclim[:])
 
-    if ratio_month <= 0.5:
-        weddy[:] = weddy1[:]
+    if counters.ratio_month <= 0.5:
+        weddy[:] = month1_data.weddy1[:]
     else:
-        weddy[:] = weddy2[:]
+        weddy[:] = month1_data.weddy2[:]
 
     if params_POMBFM.idiagn == 0:
         tsurf = tstar[0]
@@ -132,62 +129,42 @@ def forcing_manager(time_loop_counter):
 
     # INTERPOLATE SUSPENDED INORGANIC MATTER
     ism = np.zeros(vertical_layers-1)
-    ism[:] = ism1[:] + ratio_month * (ism2[:] - ism1[:])
+    ism[:] = month1_data.ism[:] + counters.ratio_month * (month2_data.ism[:] - month1_data.ism[:])
 
     # INTERPOLATE SURFACE NUTRIENTS
-    NO3surf = NO3_s1 + ratio_month * (NO3_s2 - NO3_s1)
-    NH4surf = NH4_s1 + ratio_month * (NH4_s2 - NH4_s1)
-    PO4surf = PO4_s1 + ratio_month * (PO4_s2 - PO4_s1)
-    SIO4surf = SIO4_s1 + ratio_month * (SIO4_s2 - SIO4_s1)
+    NO3surf = month1_data.NO3_s + counters.ratio_month * (month2_data.NO3_s - month1_data.NO3_s)
+    NH4surf = month1_data.NH4_s + counters.ratio_month * (month2_data.NH4_s - month1_data.NH4_s)
+    PO4surf = month1_data.PO4_s + counters.ratio_month * (month2_data.PO4_s - month1_data.PO4_s)
+    SIO4surf = month1_data.SIO4_s + counters.ratio_month * (month2_data.SIO4_s - month1_data.SIO4_s)
 
     # INTERPOLATE BOTTOM NUTRIENTS
-    O2bott = O2_b1 + ratio_month * (O2_b2 - O2_b1)
-    NO3bott = NO3_b1 + ratio_month * (NO3_b2 - NO3_b1)
-    PO4bott = PO4_b1 + ratio_month * (PO4_b2 - PO4_b1)
-    PONbott_grad = PON_b1 + ratio_month * (PON_b2 - PON_b1)
+    O2bott = month1_data.O2_b + counters.ratio_month * (month2_data.O2_b - month1_data.O2_b)
+    NO3bott = month1_data.NO3_b + counters.ratio_month * (month2_data.NO3_b - month1_data.NO3_b)
+    PO4bott = month1_data.PO4_b + counters.ratio_month * (month2_data.PO4_b - month1_data.PO4_b)
+    PONbott_grad = month1_data.PON_b + counters.ratio_month * (month2_data.PON_b - month1_data.PON_b)
 
-    if month_interpolator == timesteps_per_month:
+    if counters.month_interpolator == counters.timesteps_per_month:
 
         # A MONTH HAS GONE...IT IS NECESSARY TO...
         # ....UPDATE MONTH COUNTER....
-        month_counter = month_counter + 1
-        print('month_counter = ',month_counter)
+        counters.month_counter = counters.month_counter + 1
+        print('month_counter = ',counters.month_counter)
 
         # ....RESET INTERPOLATOR....
-        month_interpolator = 0
+        counters.month_interpolator = 0
 
         # ....SHIFT THE MONTHLY DATA....
-        wsu1 = wsu2
-        wsv1 = wsv2
-        swrad1 = swrad2
-        wtsurf1 = wtsurf2
-#         SLUX1 = SLUX2
-        NO3_s1 = NO3_s2
-        NH4_s1 = NH4_s2
-        PO4_s1 = PO4_s2
-        SIO4_s1 = SIO4_s2
-        NO3_b1 = NO3_b2
-        O2_b1 = O2_b2
-        PO4_b1 = PO4_b2
-        PON_b1 = PON_b2
-        ism1[:]     = ism2[:]
-        tclim1[:]   = tclim2[:]
-        sclim1[:]   = sclim2[:]
-        wclim1[:]   = wclim2[:]
-        weddy1[:]   = weddy3[:]
-        weddy2[:]   = weddy4[:]
+        month1_data = month2_data
 
         # IF 12 MONTHS HAVE GONE, RESTART THE READING SEQUENCE
-        if month_counter > 12:
-            month_counter = 0
-            sclim1, tclim1, wclim1, weddy1, weddy2, ism1, wsu1, wsv1, swrad1, wtsurf1, qcorr1, \
-                NO3_s1, NH4_s1, PO4_s1, SIO4_s1, O2_b1, NO3_b1, PO4_b1, PON_b1 = write_forcing_data(month_counter)
+        if counters.month_counter > 12:
+            counters.month_counter = 0
+            month1_data = write_forcing_data(counters.month_counter)
 
-            month_counter = month_counter + 1
+            counters.month_counter = counters.month_counter + 1
 
         # READ FOLLOWING MONTH
-        sclim2, tclim2, wclim2, weddy3, weddy4, ism2, wsu2, wsv2, swrad2, wtsurf2, qcorr2, \
-            NO3_s2, NH4_s2, PO4_s2, SIO4_s2, O2_b2, NO3_b2, PO4_b2, PON_b2 = write_forcing_data(month_counter + 1)
+        month2_data = write_forcing_data(counters.month_counter)
 
-    return
+    return tf, tstar, sf, sstar, swrad, wtsurf, wind_stress, month1_data, month2_data, counters
 

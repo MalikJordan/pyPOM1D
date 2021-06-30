@@ -4,7 +4,10 @@
 import numpy as np
 from os import path
 from cppdefs import *
-from inputs.params_POMBFM import *
+from inputs import params_POMBFM
+from inputs.namelist_input_data import phyto_input, zoop_input, poc_input, doc_input, phos_input, nit_input, am_input, oxy_input
+from main_pombfm1d import current_path
+from pom.modules import vertical_layers, seconds_per_day
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -26,10 +29,6 @@ def read_pom_input():
              for w velocity, intermediate eddy velocities, salinity and temperature initial
              conditions, heat flux loss, and surface and bottom nutrients
     """
-
-    from main_pombfm1d import current_path
-    from pom.modules_old import vertical_layers
-    from pom.modules_old import path_error
 
     # PATHS TO INPUT DATA FILES
     wind_stress_data_path = current_path + '/inputs/POM_BFM17/monthly_surf_wind_stress_bermuda_killworth2.da'
@@ -53,9 +52,8 @@ def read_pom_input():
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   WIND SPEED (u,v)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(wind_stress_data_path):
-        path_error(wind_stress_data_path)
-    wind_speed_data = np.fromfile(wind_stress_data_path)
+    if path.exists(wind_stress_data_path):
+        wind_speed_data = np.fromfile(wind_stress_data_path)
     wind_speed_zonal   = np.zeros(array_length)
     wind_speed_meridional   = np.zeros(array_length)
     for i in range(0,array_length):
@@ -65,103 +63,92 @@ def read_pom_input():
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SURFACE SALINITY
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(surface_salinity_data_path):
-        path_error(surface_salinity_data_path)
-    surface_salinity = np.fromfile(surface_salinity_data_path)
+    if path.exists(surface_salinity_data_path):
+        surface_salinity = np.fromfile(surface_salinity_data_path)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   RADIANCE
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(shortwave_solar_radiation_data_path):
-        path_error(shortwave_solar_radiation_data_path)
-    solar_radiation = np.fromfile(shortwave_solar_radiation_data_path)
+    if path.exists(shortwave_solar_radiation_data_path):
+        solar_radiation = np.fromfile(shortwave_solar_radiation_data_path)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   INORGANIC SUSPENDED MATTER
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(inorganic_suspended_matter_data_path):
-        path_error(inorganic_suspended_matter_data_path)
-    inorganic_suspended_matter_data = np.fromfile(inorganic_suspended_matter_data_path)
+    if path.exists(inorganic_suspended_matter_data_path):
+        inorganic_suspended_matter_data = np.fromfile(inorganic_suspended_matter_data_path)
     inorganic_suspended_matter   = np.zeros((vertical_layers,array_length))
     for i in range(0,array_length):
         for x in range(0, vertical_layers):
-            inorganic_suspended_matter[x][i] = inorganic_suspended_matter_data[vertical_layers * i + x]
+            inorganic_suspended_matter[x,i] = inorganic_suspended_matter_data[vertical_layers * i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SALINITY CLIMATOLOGY (DIAGNOSTIC MODE)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(salinity_vertical_profile_data_path):
-        path_error(salinity_vertical_profile_data_path)
-    salinity_vertical_profile_data = np.fromfile(salinity_vertical_profile_data_path)
+    if path.exists(salinity_vertical_profile_data_path):
+        salinity_vertical_profile_data = np.fromfile(salinity_vertical_profile_data_path)
     salinity_climatology = np.zeros((vertical_layers,array_length))
     for i in range(0,array_length):
         for x in range(0, vertical_layers):
-            salinity_climatology[x][i] = salinity_vertical_profile_data[vertical_layers * i + x]
+            salinity_climatology[x,i] = salinity_vertical_profile_data[vertical_layers * i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   TEMPERATURE CLIMATOLOGY (DIAGNOSTIC MODE)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(temperature_vertical_profile_data_path):
-        path_error(temperature_vertical_profile_data_path)
-    temperature_vertical_profile_data = np.fromfile(temperature_vertical_profile_data_path)
+    if path.exists(temperature_vertical_profile_data_path):
+        temperature_vertical_profile_data = np.fromfile(temperature_vertical_profile_data_path)
     temperature_climatology = np.zeros((vertical_layers,array_length))
     for i in range(0,array_length):
         for x in range(0, vertical_layers):
-            temperature_climatology[x][i] = temperature_vertical_profile_data[vertical_layers * i + x]
+            temperature_climatology[x,i] = temperature_vertical_profile_data[vertical_layers * i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GENERAL CIRCULATION W VELOITY CLIMATOLOGY
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(general_circulation_w_velocity_data_path):
-        path_error(general_circulation_w_velocity_data_path)
-    general_circulation_w_velocity_data = np.fromfile(general_circulation_w_velocity_data_path)
+    if path.exists(general_circulation_w_velocity_data_path):
+        general_circulation_w_velocity_data = np.fromfile(general_circulation_w_velocity_data_path)
     w_velocity_climatology  = np.zeros((vertical_layers,array_length))
     for i in range(0,array_length):
         for x in range(0, vertical_layers):
-            w_velocity_climatology[x][i] = general_circulation_w_velocity_data[vertical_layers * i + x]
+            w_velocity_climatology[x,i] = general_circulation_w_velocity_data[vertical_layers * i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   INTERMITTANT EDDY W VELOCITY 1
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(intermediate_eddy_w_velocity_1_data_path):
-        path_error(intermediate_eddy_w_velocity_1_data_path)
-    intermediate_eddy_w_velocity_1_data = np.fromfile(intermediate_eddy_w_velocity_1_data_path)
+    if path.exists(intermediate_eddy_w_velocity_1_data_path):
+        intermediate_eddy_w_velocity_1_data = np.fromfile(intermediate_eddy_w_velocity_1_data_path)
     w_eddy_velocity_1  = np.zeros((vertical_layers,array_length))
     for i in range(0,array_length):
         for x in range(0, vertical_layers):
-            w_eddy_velocity_1[x][i] = intermediate_eddy_w_velocity_1_data[vertical_layers * i + x]
+            w_eddy_velocity_1[x,i] = intermediate_eddy_w_velocity_1_data[vertical_layers * i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   INTERMITTANT EDDY W VELOCITY 2
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(intermediate_eddy_w_velocity_2_data_path):
-        path_error(intermediate_eddy_w_velocity_2_data_path)
-    intermediate_eddy_w_velocity_2_data = np.fromfile(intermediate_eddy_w_velocity_2_data_path)
+    if path.exists(intermediate_eddy_w_velocity_2_data_path):
+        intermediate_eddy_w_velocity_2_data = np.fromfile(intermediate_eddy_w_velocity_2_data_path)
     w_eddy_velocity_2 = np.zeros((vertical_layers,array_length))
     for i in range(0,array_length):
         for x in range(0, vertical_layers):
-            w_eddy_velocity_2[x][i] = intermediate_eddy_w_velocity_2_data[vertical_layers * i + x]
+            w_eddy_velocity_2[x,i] = intermediate_eddy_w_velocity_2_data[vertical_layers * i + x]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SALINITY INITIAL PROFILE
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(salinity_initial_conditions_data_path):
-        path_error(salinity_initial_conditions_data_path)
-    salinity_backward = np.fromfile(salinity_initial_conditions_data_path)
+    if path.exists(salinity_initial_conditions_data_path):
+        salinity_backward = np.fromfile(salinity_initial_conditions_data_path)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   TEMPERATURE INITIAL PROFILE
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(temperature_initial_conditions_data_path):
-        path_error(temperature_initial_conditions_data_path)
-    temperature_backward = np.fromfile(temperature_initial_conditions_data_path)
+    if path.exists(temperature_initial_conditions_data_path):
+        temperature_backward = np.fromfile(temperature_initial_conditions_data_path)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   HEAT FLUX
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(heat_flux_loss_data_path):
-        path_error(heat_flux_loss_data_path)
-    heat_flux_loss_data = np.fromfile(heat_flux_loss_data_path)
+    if path.exists(heat_flux_loss_data_path):
+        heat_flux_loss_data = np.fromfile(heat_flux_loss_data_path)
     shortwave_radiation = np.zeros(array_length)
     surface_heat_flux = np.zeros(array_length)
     kinetic_energy_loss = np.zeros(array_length)
@@ -173,9 +160,8 @@ def read_pom_input():
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SURFACE NUTRIENTS
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(surface_nutrients_data_path):
-        path_error(surface_nutrients_data_path)
-    surface_nutrients_data  = np.fromfile(surface_nutrients_data_path)
+    if path.exists(surface_nutrients_data_path):
+        surface_nutrients_data  = np.fromfile(surface_nutrients_data_path)
     NO3_s1  = np.zeros(array_length)
     NH4_s1  = np.zeros(array_length)
     PO4_s1  = np.zeros(array_length)
@@ -189,9 +175,8 @@ def read_pom_input():
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   BOTTOM NUTRIENTS
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(bottom_nutrients_data_path):
-        path_error(bottom_nutrients_data_path)
-    bottom_nutrients_data = np.fromfile(bottom_nutrients_data_path)
+    if path.exists(bottom_nutrients_data_path):
+        bottom_nutrients_data = np.fromfile(bottom_nutrients_data_path)
     O2_b1   = np.zeros(array_length)
     NO3_b1  = np.zeros(array_length)
     PO4_b1  = np.zeros(array_length)
@@ -239,32 +224,20 @@ def get_temperature_and_salinity_initial_coditions():
     :return: temperature and salinity at the current and backward time level
     """
 
-    from main_pombfm1d import current_path
-    from pom.modules_old import vertical_layers
-    from pom.modules_old import path_error
-
     salinity_initial_conditions_data_path = current_path + '/inputs/POM_BFM17/init_prof_S_150m_bermuda_killworth2.da'
     temperature_initial_conditions_data_path = current_path + '/inputs/POM_BFM17/init_prof_T_150m_bermuda_killworth2.da'
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SALINITY INITIAL PROFILE
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(salinity_initial_conditions_data_path):
-        path_error(salinity_initial_conditions_data_path)
-    salinity_initial_conditions_data = np.fromfile(salinity_initial_conditions_data_path)
-    salinity_backward = np.zeros(vertical_layers)
-    for i in range(0, vertical_layers):
-        salinity_backward[i] = salinity_initial_conditions_data[i]
+    if path.exists(salinity_initial_conditions_data_path):
+        salinity_backward = np.fromfile(salinity_initial_conditions_data_path)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   TEMPERATURE INITIAL PROFILE
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if not path.exists(temperature_initial_conditions_data_path):
-        path_error(temperature_initial_conditions_data_path)
-    temperature_initial_conditions_data = np.fromfile(temperature_initial_conditions_data_path)
-    temperature_backward = np.zeros(vertical_layers)
-    for i in range(0, vertical_layers):
-        temperature_backward[i] = temperature_initial_conditions_data[i]
+    if path.exists(temperature_initial_conditions_data_path):
+        temperature_backward = np.fromfile(temperature_initial_conditions_data_path)
 
     temperature = np.zeros(vertical_layers)
     salinity = np.zeros(vertical_layers)
@@ -301,9 +274,7 @@ def get_numeric_timestep():
     :return: numeric timestep
     """
 
-    from modules_old import seconds_per_day, dti
-
-    numeric_timestep = dti / seconds_per_day
+    numeric_timestep = params_POMBFM.dti / seconds_per_day
 
     return numeric_timestep
 
@@ -359,7 +330,7 @@ def pom_to_bfm():
         ESW[i] = salinity_backward[i]
         ERHO[i] = (density_profile[i] * 1.E3) + 1.E3
         ESS[i] = inorganic_suspended_matter[i]
-        Depth[i] = vertical_spacing[i] * h
+        Depth[i] = vertical_spacing[i] * params_POMBFM.h
 
     EIR[0] = -1. * shortwave_radiation * water_specific_heat_times_density
 
@@ -396,11 +367,6 @@ def get_initial_conditions():
              and oxygen
     """
 
-    from main_pombfm1d import current_path
-    from modules_old import vertical_layers, path_error
-    from inputs.namelist_input_data import phyto_input, zoop_input, poc_input, doc_input, \
-        phos_input, nit_input, am_input, oxy_input
-
     phytoplankton_carbon_data_path = current_path + phyto_input
     zooplankton_carbon_data_path = current_path + zoop_input
     particulate_organic_carbon_data_path = current_path + poc_input
@@ -410,37 +376,29 @@ def get_initial_conditions():
     ammonium_data_path = current_path + am_input
     oxygen_data_path = current_path + oxy_input
 
-    if not path.exists(phytoplankton_carbon_data_path):
-        path_error(phytoplankton_carbon_data_path)
-    p2c = np.fromfile(phytoplankton_carbon_data_path)
+    if path.exists(phytoplankton_carbon_data_path):
+        p2c = np.fromfile(phytoplankton_carbon_data_path)
 
-    if not path.exists(zooplankton_carbon_data_path):
-        path_error(zooplankton_carbon_data_path)
-    z5c = np.fromfile(zooplankton_carbon_data_path)
+    if path.exists(zooplankton_carbon_data_path):
+        z5c = np.fromfile(zooplankton_carbon_data_path)
 
-    if not path.exists(particulate_organic_carbon_data_path):
-        path_error(particulate_organic_carbon_data_path)
-    r6c = np.fromfile(particulate_organic_carbon_data_path)
+    if path.exists(particulate_organic_carbon_data_path):
+        r6c = np.fromfile(particulate_organic_carbon_data_path)
 
-    if not path.exists(dissolved_organic_carbon_data_path):
-        path_error(dissolved_organic_carbon_data_path)
-    r1c = np.fromfile(dissolved_organic_carbon_data_path)
+    if path.exists(dissolved_organic_carbon_data_path):
+        r1c = np.fromfile(dissolved_organic_carbon_data_path)
 
-    if not path.exists(phosphate_data_path):
-        path_error(phosphate_data_path)
-    n1p = np.fromfile(phosphate_data_path)
+    if path.exists(phosphate_data_path):
+        n1p = np.fromfile(phosphate_data_path)
 
-    if not path.exists(nitrate_data_path):
-        path_error(nitrate_data_path)
-    n3n = np.fromfile(nitrate_data_path)
+    if path.exists(nitrate_data_path):
+        n3n = np.fromfile(nitrate_data_path)
 
-    if not path.exists(ammonium_data_path):
-        path_error(ammonium_data_path)
-    n4n = np.fromfile(ammonium_data_path)
+    if path.exists(ammonium_data_path):
+        n4n = np.fromfile(ammonium_data_path)
 
-    if not path.exists(oxygen_data_path):
-        path_error(oxygen_data_path)
-    o2o = np.fromfile(oxygen_data_path)
+    if path.exists(oxygen_data_path):
+        o2o = np.fromfile(oxygen_data_path)
 
     return p2c, z5c, r6c, r1c, n1p, n3n, n4n, o2o
 

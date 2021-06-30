@@ -1,7 +1,7 @@
 from cppdefs import *
 from pom.modules import vertical_layers
 from main_pombfm1d import twice_the_timestep
-from inputs.params_POMBFM import *
+from inputs import params_POMBFM
 import numpy as np
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -13,26 +13,26 @@ import numpy as np
 # DESCRIPTION:  This subroutine solves for vertical diffusivity.
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def create_vertical_diffusivity_profile(vertical_spacing, vertical_spacing_staggered, WFSURF, FSURF, nbc):
+def create_vertical_diffusivity_profile(vertical_grid, WFSURF, FSURF, nbc):
 
-    A = np.zeros(vertical_layers, dtype=float)
-    C = np.zeros(vertical_layers, dtype=float)
-    VH = np.zeros(vertical_layers, dtype=float)
-    VHP = np.zeros(vertical_layers, dtype=float)
-    diffusion_coefficient_tracers = np.zeros(vertical_layers, dtype=float)                      # KH
+    A = np.zeros(vertical_layers)
+    C = np.zeros(vertical_layers)
+    VH = np.zeros(vertical_layers)
+    VHP = np.zeros(vertical_layers)
+    diffusion_coefficient_tracers = np.zeros(vertical_layers)                      # KH
 
-    vertical_diffusivity = np.zeros(vertical_layers, dtype=float)                               # FF
+    vertical_diffusivity = np.zeros(vertical_layers)                               # FF
 
     umolpr = 1.E-05
 
     for i in range(1, vertical_layers - 1):
-        A[i - 1] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umolpr) / (vertical_spacing[i - 1] * vertical_spacing_staggered[i - 1] * h * h)
+        A[i - 1] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umolpr) / (vertical_grid.vertical_spacing[i - 1] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
         print(A[i-1])
-        C[i] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umolpr) / (vertical_spacing[i] * vertical_spacing_staggered[i - 1] * h * h)
+        C[i] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umolpr) / (vertical_grid.vertical_spacing[i] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
 
     # need condition for nbc for VH[0] and VHP[0]
     VH[0] = A[0] / (A[0]-1.)
-    VHP[0] = -twice_the_timestep * WFSURF / (-vertical_spacing[0] * h) - vertical_diffusivity[0]
+    VHP[0] = -twice_the_timestep * WFSURF / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - vertical_diffusivity[0]
     VHP[0] = VHP[0] / (A[0]-1.)
 
     VH[0] = 0.
@@ -74,37 +74,30 @@ def create_vertical_diffusivity_profile(vertical_spacing, vertical_spacing_stagg
 #               Turbulent length scale (Q2l)
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def PROFQ(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
-          length_scale, temperature, salinity, density_profile, velocity_zonal, velocity_meridional,
-          kinetic_energy_backward, kinetic_energy, kinetic_energy_forward,
-          kinetic_energy_times_length_backward, kinetic_energy_times_length, kinetic_energy_times_length_forward,
-          wind_stress_zonal, wind_stress_meridional, bottom_stress_zonal, bottom_stress_meridional):
+def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinity, density_profile, velocity_zonal, velocity_meridional,
+                                  kinetic_energy, kinetic_energy_times_length, wind_stress, bottom_stress):
 
     # INITIALIZE VARIABLES
-    diffusion_coefficient_momentum = np.zeros(vertical_layers,dtype=float)
-    diffusion_coefficient_tracers = np.zeros(vertical_layers,dtype=float)
-    diffusion_coefficient_kinetic_energy = np.zeros(vertical_layers,dtype=float)
+    A = np.zeros(vertical_layers)
+    C = np.zeros(vertical_layers)
+    VH = np.zeros(vertical_layers)
+    VHP = np.zeros(vertical_layers)
 
-    A = np.zeros(vertical_layers, dtype=float)
-    C = np.zeros(vertical_layers, dtype=float)
-    VH = np.zeros(vertical_layers, dtype=float)
-    VHP = np.zeros(vertical_layers, dtype=float)
+    KN = np.zeros(vertical_layers)
+    GH = np.zeros(vertical_layers)
+    SH = np.zeros(vertical_layers)
+    SM = np.zeros(vertical_layers)
 
-    KN = np.zeros(vertical_layers, dtype=float)
-    GH = np.zeros(vertical_layers, dtype=float)
-    SH = np.zeros(vertical_layers, dtype=float)
-    SM = np.zeros(vertical_layers, dtype=float)
-
-    DTEF = np.zeros(vertical_layers, dtype=float)
-    BPROD = np.zeros(vertical_layers, dtype=float)
-    PROD = np.zeros(vertical_layers, dtype=float)
-    SPROD = np.zeros(vertical_layers, dtype=float)
+    DTEF = np.zeros(vertical_layers)
+    BPROD = np.zeros(vertical_layers)
+    PROD = np.zeros(vertical_layers)
+    SPROD = np.zeros(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   LOCAL ARRAYS
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    BOYGR = np.empty(vertical_layers, dtype=float); CC = np.empty(vertical_layers, dtype=float)
-    TEMP1 = np.empty(vertical_layers, dtype=float); TEMP2 = np.empty(vertical_layers, dtype=float); TEMP3 = np.empty(vertical_layers, dtype=float)
+    BOYGR = np.empty(vertical_layers); CC = np.empty(vertical_layers)
+    TEMP1 = np.empty(vertical_layers); TEMP2 = np.empty(vertical_layers); TEMP3 = np.empty(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   DATA STATEMENTS
@@ -126,14 +119,13 @@ def PROFQ(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, ve
     # GM = KB*0.154
     # GH = KB*0.154
 
-    DH = h
     for i in range(1, vertical_layers - 1):
-        A[i] = -twice_the_timestep * (diffusion_coefficient_kinetic_energy[i + 1] +
-                                      diffusion_coefficient_kinetic_energy[i] + 2 * umol) * \
-               0.5 / (vertical_spacing_staggered[i - 1] * vertical_spacing[i] * h * h)
-        C[i] = -twice_the_timestep * (diffusion_coefficient_kinetic_energy[i - 1] +
-                                      diffusion_coefficient_kinetic_energy[i] + 2 * umol) * \
-               0.5 / (vertical_spacing_staggered[i - 1] * vertical_spacing[i - 1] * h * h)
+        A[i] = -twice_the_timestep * (diffusion.kinetic_energy[i + 1] +
+                                      diffusion.kinetic_energy[i] + 2 * params_POMBFM.umol) * \
+               0.5 / (vertical_grid.vertical_spacing_staggered[i - 1] * vertical_grid.vertical_spacing[i] * params_POMBFM.h * params_POMBFM.h)
+        C[i] = -twice_the_timestep * (diffusion.kinetic_energy[i - 1] +
+                                      diffusion.kinetic_energy[i] + 2 * params_POMBFM.umol) * \
+               0.5 / (vertical_grid.vertical_spacing_staggered[i - 1] * vertical_grid.vertical_spacing[i - 1] * params_POMBFM.h * params_POMBFM.h)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   THE FOLLOWING SECTION SOLVES FOR THE EQUATION
@@ -146,39 +138,38 @@ def PROFQ(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, ve
     #   BOUNDARY CONDITIONS
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     VH[0] = 0.0
-    VHP[0] = np.sqrt(wind_stress_zonal ** 2 + wind_stress_meridional ** 2) * CONST1
-    kinetic_energy_forward[vertical_layers - 1] = \
-        0.5 * np.sqrt((bottom_stress_zonal + bottom_stress_zonal) ** 2 +
-                      (bottom_stress_meridional + bottom_stress_meridional) ** 2) * CONST1
+    VHP[0] = np.sqrt(wind_stress.zonal ** 2 + wind_stress.meridional ** 2) * CONST1
+    kinetic_energy.forward[vertical_layers - 1] = 0.5 * np.sqrt((bottom_stress.zonal + bottom_stress.zonal) ** 2 +
+                                                                (bottom_stress.meridional + bottom_stress.meridional) ** 2) * CONST1
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   CALCULATE PRESSURE IN UNITS OF DECIBARS
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     for i in range(0, vertical_layers - 1):
-        pressure = -gravity * 1.025 * vertical_coordinates_staggered[i] * h * .1
-        CC[i] = 1449.2 + 1.34 * (salinity[i] - 35.) + 4.55 * temperature[i] - 0.045 * temperature[i] ** 2 + \
+        pressure = -gravity * 1.025 * vertical_grid.vertical_coordinates_staggered[i] * params_POMBFM.h * .1
+        CC[i] = 1449.2 + 1.34 * (salinity.current[i] - 35.) + 4.55 * temperature.current[i] - 0.045 * temperature.current[i] ** 2 + \
                 0.00821 * pressure + (15.0 ** 1.e-9 * pressure ** 2)
         TEMP1[i] = 2./CC[i]
         TEMP2[i] = (0.00821*pressure)
         TEMP3[i] = (1.-0.40 * (pressure/CC[i]**2))
 
     for i in range(0, vertical_layers - 1):
-        pressure = -gravity * 1.025 * vertical_coordinates_staggered[i] * h * .1
+        pressure = -gravity * 1.025 * vertical_grid.vertical_coordinates_staggered[i] * params_POMBFM.h * .1
         CC[i] = CC[i] * (1. - TEMP1[i] * (TEMP2[i] + 15. * 1.e-9 * pressure ** 2) * TEMP3[i]) ** (-0.5)
-        CC[i] = 1449.1 + .00821 * pressure + 4.55 * temperature[i] - .045 * temperature[i] ** 2 + 1.34 * (salinity[i] - 35.)
+        CC[i] = 1449.1 + .00821 * pressure + 4.55 * temperature.current[i] - .045 * temperature.current[i] ** 2 + 1.34 * (salinity.current[i] - 35.)
         CC[i] = CC[i] / np.sqrt((1. - .01642 * pressure / CC[i]) * (1. - 0.40 * pressure / CC[i] ** 2))
 
     for i in range(1, vertical_layers - 1):
-        kinetic_energy_backward[i] = np.abs(kinetic_energy_backward[i])
-        kinetic_energy_times_length_backward[i] = np.abs(kinetic_energy_times_length_backward[i])
-        BOYGR[i] = gravity * (density_profile[i - 1] - density_profile[i]) / (vertical_spacing_staggered[i - 1] * h)
-        DTEF[i] = kinetic_energy_backward[i] * np.sqrt(kinetic_energy_backward[i]) / \
-                  (B1 * kinetic_energy_times_length_backward[i] + SMALL)
-        SPROD[i] = .25 * diffusion_coefficient_momentum[i] * \
-                   ((velocity_zonal[i] + velocity_zonal[i] - velocity_zonal[i - 1] - velocity_zonal[i - 1]) ** 2
-                    + (velocity_meridional[i] + velocity_meridional[i] - velocity_meridional[i - 1] - velocity_meridional[i - 1]) ** 2) / \
-                   (vertical_spacing_staggered[i - 1] * h) ** 2 * CIWC ** 2
-        BPROD[i] = diffusion_coefficient_tracers[i] * BOYGR[i]
+        kinetic_energy.backward[i] = np.abs(kinetic_energy.backward[i])
+        kinetic_energy_times_length.backward[i] = np.abs(kinetic_energy_times_length.backward[i])
+        BOYGR[i] = gravity * (density_profile[i - 1] - density_profile[i]) / (vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h)
+        DTEF[i] = kinetic_energy.backward[i] * np.sqrt(kinetic_energy.backward[i]) / \
+                  (B1 * kinetic_energy_times_length.backward[i] + SMALL)
+        SPROD[i] = .25 * diffusion.momentum[i] * \
+                   ((velocity_zonal.current[i] + velocity_zonal.current[i] - velocity_zonal.current[i - 1] - velocity_zonal.current[i - 1]) ** 2
+                    + (velocity_meridional.current[i] + velocity_meridional.current[i] - velocity_meridional.current[i - 1] - velocity_meridional.current[i - 1]) ** 2) / \
+                   (vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h) ** 2 * CIWC ** 2
+        BPROD[i] = diffusion.tracers[i] * BOYGR[i]
         PROD[i] = SPROD[i] + BPROD[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -188,7 +179,7 @@ def PROFQ(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, ve
     for i in range(1, vertical_layers - 1):
         VHP[i] = 1. / (A[i] + C[i] * (1. - VH[i - 1]) - (2. * twice_the_timestep * DTEF[i] + 1.))
         VH[i] = A[i] * VHP[i]
-        VHP[i] = (-2. * twice_the_timestep * PROD[i] + C[i] * VHP[i - 1] - kinetic_energy_backward[i]) * VHP[i]
+        VHP[i] = (-2. * twice_the_timestep * PROD[i] + C[i] * VHP[i - 1] - kinetic_energy.backward[i]) * VHP[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SWEEP UPWARD
@@ -196,7 +187,7 @@ def PROFQ(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, ve
 
     for i in range(0, vertical_layers - 1):  # 104
         k = vertical_layers - i
-        kinetic_energy_forward[k] = VH[k] * kinetic_energy_forward[k + 1] + VHP[k]
+        kinetic_energy.forward[k] = VH[k] * kinetic_energy.forward[k + 1] + VHP[k]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   THE FOLLOWING SEECTION SOLVES FOR TEH EQUATION
@@ -209,18 +200,20 @@ def PROFQ(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, ve
 
     VH[0] = 0.
     VHP[0] = 0.
-    kinetic_energy_times_length_forward[vertical_layers - 1] = 0.
+    kinetic_energy_times_length.forward[vertical_layers - 1] = 0.
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SWEEP DOWNWARD
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
     for i in range(1, vertical_layers - 1):
-        DTEF[i] = DTEF[i] * (1. + E2 * ((1. / np.abs(vertical_coordinates[i] - vertical_coordinates[0]) + 1. / np.abs(vertical_coordinates[i] - vertical_coordinates[vertical_layers])) * length_scale[i] / (h * von_karman_constant)) ** 2)
+        DTEF[i] = DTEF[i] * (1. + E2 * ((1. / np.abs(vertical_grid.vertical_coordinates[i] - vertical_grid.vertical_coordinates[0])
+                                         + 1. / np.abs(vertical_grid.vertical_coordinates[i] - vertical_grid.vertical_coordinates[vertical_layers]))
+                                        * vertical_grid.length_scale[i] / (params_POMBFM.h * von_karman_constant)) ** 2)
         VHP[i] = 1. / (A[i] + C[i] * (1. - VH[i - 1]) - (twice_the_timestep * DTEF[i] + 1.))
         VH[i] = A[i] * VHP[i]
-        VHP[i] = (twice_the_timestep * (- (SPROD[i] + E3 * BPROD[i]) * length_scale[i] * E1)
-                  + C[i] * VHP[i - 1] - kinetic_energy_times_length_backward[i]) * VHP[i]
+        VHP[i] = (twice_the_timestep * (- (SPROD[i] + E3 * BPROD[i]) * vertical_grid.length_scale[i] * E1)
+                  + C[i] * VHP[i - 1] - kinetic_energy_times_length.backward[i]) * VHP[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SWEEP UPWARD
@@ -228,17 +221,17 @@ def PROFQ(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, ve
 
     for i in range(0, vertical_layers - 1):
         k = vertical_layers - i
-        kinetic_energy_times_length_forward[k] = VH[k] * kinetic_energy_times_length_forward[k + 1] + VHP[k]
+        kinetic_energy_times_length.forward[k] = VH[k] * kinetic_energy_times_length.forward[k + 1] + VHP[k]
 
     for i in range(1, vertical_layers - 1):
-        if kinetic_energy_forward[i] > SMALL or kinetic_energy_times_length_forward[i] > SMALL:
+        if kinetic_energy.forward[i] > SMALL or kinetic_energy_times_length.forward[i] > SMALL:
             break
-        kinetic_energy_forward[i] = SMALL
-        kinetic_energy_times_length_forward[i] = SMALL
+        kinetic_energy.forward[i] = SMALL
+        kinetic_energy_times_length.forward[i] = SMALL
 
     for i in range(0, vertical_layers - 1):
-        kinetic_energy_forward[i] = np.abs(kinetic_energy_forward[i])
-        kinetic_energy_times_length_forward[i] = np.abs(kinetic_energy_times_length_forward[i])
+        kinetic_energy.forward[i] = np.abs(kinetic_energy.forward[i])
+        kinetic_energy_times_length.forward[i] = np.abs(kinetic_energy_times_length.forward[i])
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   THE FOLLOWING SECTION SOLVES FOR KM AND KH
@@ -254,14 +247,14 @@ def PROFQ(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, ve
     #   NOTE THAT SM AND SH LIMIT TO INFINITY WHEN GH APPROACHES 0.0288
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    length_scale[0] = 0.
-    length_scale[vertical_layers - 1] = 0.
+    vertical_grid.length_scale[0] = 0.
+    vertical_grid.length_scale[vertical_layers - 1] = 0.
     GH[0] = 0.
     GH[vertical_layers - 1] = 0.
 
     for i in range(1, vertical_layers - 1):
-        length_scale[i] = kinetic_energy_times_length_forward[i] / kinetic_energy_forward[i]
-        GH[i] = length_scale[i] ** 2 / kinetic_energy_forward[i] * BOYGR[i]
+        vertical_grid.length_scale[i] = kinetic_energy_times_length.forward[i] / kinetic_energy.forward[i]
+        GH[i] = vertical_grid.length_scale[i] ** 2 / kinetic_energy.forward[i] * BOYGR[i]
 
     for i in range(0, vertical_layers):
         GH[i] = np.mininimum(GH[i], .028)
@@ -270,14 +263,13 @@ def PROFQ(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, ve
         SM[i] = SM[i] / (1. - COEF5 * GH[i])
 
     for i in range(0, vertical_layers):
-        KN[i] = length_scale[i] * np.sqrt(np.abs(kinetic_energy[i]))
-        diffusion_coefficient_kinetic_energy[i] = (KN[i] * .41 * SM[i] + diffusion_coefficient_kinetic_energy[i]) * .5
+        KN[i] = vertical_grid.length_scale[i] * np.sqrt(np.abs(kinetic_energy.current[i]))
+        diffusion.kinetic_energy[i] = (KN[i] * .41 * SM[i] + diffusion.kinetic_energy[i]) * .5
         #   KQ[K]= (KN[K] * .41 * SH[K] + KQ[K]) * .5
-        diffusion_coefficient_momentum[i] = (KN[i] * SM[i] + diffusion_coefficient_momentum[i]) * .5
-        diffusion_coefficient_tracers[i] = (KN[i] * SH[i] + diffusion_coefficient_tracers[i]) * .5
+        diffusion.momentum[i] = (KN[i] * SM[i] + diffusion.momentum[i]) * .5
+        diffusion.tracers[i] = (KN[i] * SH[i] + diffusion.tracers[i]) * .5
 
-    return kinetic_energy_forward, kinetic_energy_times_length_forward, \
-           diffusion_coefficient_momentum, diffusion_coefficient_tracers, diffusion_coefficient_kinetic_energy
+    return kinetic_energy, kinetic_energy_times_length, diffusion
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -312,8 +304,7 @@ def PROFQ(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, ve
 #               UMOL:   Background diffusivity.
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, vertical_spacing_staggered, vertical_coordinates, vertical_coordinates_staggered,
-                                                         diffusion_coefficient_tracers, FF, WFSURF, WFBOT, shortwave_radiation, FSURF, nbc):
+def calculate_vertical_temperature_and_salinity_profiles(vertical_grid,diffusion, property, shortwave_radiation, nbc):
 
     # FLAG FOR BOUNDARY CONDITION DEFINITION
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -330,13 +321,13 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, verti
     #   JERLOV WATER TYPE CHOICE IS RELEVANT ONLY WHEN NBC = 2 OR NBC = 4.
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    A = np.zeros(vertical_layers, dtype=float)
-    C = np.zeros(vertical_layers, dtype=float)
-    VH = np.zeros(vertical_layers, dtype=float)
-    VHP = np.zeros(vertical_layers, dtype=float)
+    A = np.zeros(vertical_layers)
+    C = np.zeros(vertical_layers)
+    VH = np.zeros(vertical_layers)
+    VHP = np.zeros(vertical_layers)
 
     # SW PROFILE
-    vertical_radiation_profile = np.empty(vertical_layers, dtype=float)
+    vertical_radiation_profile = np.empty(vertical_layers)
 
     # IRRADIANCE PARAMETERS AFTER PAULSON & SIMPSON JPO 1977, 952-956
     RP = [0.58, 0.62, 0.67, 0.77, 0.78]
@@ -351,8 +342,8 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, verti
     #   START COMPUTATION OF VERTICAL PROFILE
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     for i in range(1, vertical_layers - 1):
-        A[i - 1] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umol) / (vertical_spacing[i - 1] * vertical_spacing_staggered[i - 1] * h * h)
-        C[i] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umol) / (vertical_spacing[i] * vertical_spacing_staggered[i - 1] * h * h)
+        A[i - 1] = -twice_the_timestep * (diffusion.tracers[i] + params_POMBFM.umol) / (vertical_grid.vertical_spacing[i - 1] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
+        C[i] = -twice_the_timestep * (diffusion.tracers[i] + params_POMBFM.umol) / (vertical_grid.vertical_spacing[i] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
 
     vertical_radiation_profile[:] = 0.
 
@@ -364,27 +355,27 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, verti
 
     if nbc == 1:
         VH[0] = A[0] / (A[0] - 1.)
-        VHP[0] = -twice_the_timestep * (WFSURF + shortwave_radiation) / (-vertical_spacing[0] * h) - FF[0]
+        VHP[0] = -twice_the_timestep * (property.surface_flux + shortwave_radiation) / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - property.forward[0]
         VHP[0] = VHP[0] / (A[0] - 1.)
 
     elif nbc == 2:
-        vertical_radiation_profile[:] = shortwave_radiation * (RP[ntp] * np.exp(vertical_coordinates[:] * h / AD1[ntp]) + (1. - RP[ntp] * np.exp(vertical_coordinates[:] * h / AD2[ntp])))  # ***
+        vertical_radiation_profile[:] = shortwave_radiation * (RP[params_POMBFM.ntp] * np.exp(vertical_grid.vertical_coordinates[:] * params_POMBFM.h / AD1[params_POMBFM.ntp]) + (1. - RP[params_POMBFM.ntp] * np.exp(vertical_grid.vertical_coordinates[:] * params_POMBFM.h / AD2[params_POMBFM.ntp])))  # ***
         vertical_radiation_profile[vertical_layers - 1] = 0.
 
         VH[0] = A[0] / (A[0] - 1.)
-        VHP[0] = twice_the_timestep * (WFSURF + vertical_radiation_profile[0] - vertical_radiation_profile[1]) / (vertical_spacing[0] * h) - FF[0]
+        VHP[0] = twice_the_timestep * (property.surface_flux + vertical_radiation_profile[0] - vertical_radiation_profile[1]) / (vertical_grid.vertical_spacing[0] * params_POMBFM.h) - property.forward[0]
         VHP[0] = VHP[0] / (A[0] - 1.)
 
     elif nbc == 3:
         VH[0] = 0.
-        VHP[0] = FSURF
+        VHP[0] = property.surface_value
 
     elif nbc == 4:
-        vertical_radiation_profile[:] = shortwave_radiation * (RP[ntp] * np.exp(vertical_coordinates[:] * h / AD1[ntp]) + (1. - RP[ntp] * np.exp(vertical_coordinates[:] * h / AD2[ntp])))  # ***
+        vertical_radiation_profile[:] = shortwave_radiation * (RP[params_POMBFM.ntp] * np.exp(vertical_grid.vertical_coordinates[:] * params_POMBFM.h / AD1[params_POMBFM.ntp]) + (1. - RP[params_POMBFM.ntp] * np.exp(vertical_grid.vertical_coordinates[:] * params_POMBFM.h / AD2[params_POMBFM.ntp])))  # ***
         vertical_radiation_profile[vertical_layers - 1] = 0.
 
         VH[0] = 0.
-        VHP[0] = FSURF
+        VHP[0] = property.surface_value
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   THE FOLLOWING SECTION SOLVES THE EQUATION
@@ -394,13 +385,13 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, verti
     for i in range(1, vertical_layers - 2):
         VHP[i] = 1 / (A[i] + C[i] * (1 - VH[i - 1]) - 1)
         VH[i] = A[i] * VHP[i]
-        VHP[i] = (C[i] * VHP[i - 1] - FF[i] + twice_the_timestep * (vertical_radiation_profile[i] - vertical_radiation_profile[i + 1]) / (h * vertical_spacing[i])) * VHP[i]
+        VHP[i] = (C[i] * VHP[i - 1] - property.forward[i] + twice_the_timestep * (vertical_radiation_profile[i] - vertical_radiation_profile[i + 1]) / (params_POMBFM.h * vertical_grid.vertical_spacing[i])) * VHP[i]
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   APPLY A NON ADIABATIC BOTTOM BOUNDARY CONDITION
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    FF[vertical_layers - 2] = (C[vertical_layers - 2] * VHP[vertical_layers - 3] - FF[vertical_layers - 2] + (WFBOT * twice_the_timestep / (vertical_spacing[vertical_layers - 2] * h))) / (
+    property.forward[vertical_layers - 2] = (C[vertical_layers - 2] * VHP[vertical_layers - 3] - property.forward[vertical_layers - 2] + (property.bottom_flux * twice_the_timestep / (vertical_grid.vertical_spacing[vertical_layers - 2] * params_POMBFM.h))) / (
             C[vertical_layers - 2] * (1 - VH[vertical_layers - 3]) - 1)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -409,10 +400,10 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, verti
 
     for i in range(vertical_layers-2, 0, -1):
         # k = (vertical_layers) - i
-        FF[i] = VH[i] * FF[i+1] + VHP[i]
+        property.forward[i] = VH[i] * property.forward[i+1] + VHP[i]
 
 
-    return FF
+    return property
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -425,31 +416,30 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_spacing, verti
 #               DT2*(KM*U')' - U= -UB
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def calculate_vertical_zonal_velocity_profile(vertical_spacing, vertical_spacing_staggered, wind_stress_zonal,
-                                              diffusion_coefficient_momentum, velocity_zonal_forward):
+def calculate_vertical_zonal_velocity_profile(vertical_grid, wind_stress, bottom_stress, diffusion, velocity_zonal):
 
-    A = np.zeros(vertical_layers, dtype=float)
-    C = np.zeros(vertical_layers, dtype=float)
-    VH = np.zeros(vertical_layers, dtype=float)
-    VHP = np.zeros(vertical_layers, dtype=float)
+    A = np.zeros(vertical_layers)
+    C = np.zeros(vertical_layers)
+    VH = np.zeros(vertical_layers)
+    VHP = np.zeros(vertical_layers)
     # UMOL1 = 0.0007
 
     for i in range(1, vertical_layers - 1):
-        A[i - 1] = -twice_the_timestep * (diffusion_coefficient_momentum[i] + umol) / \
-                   (vertical_spacing[i - 1] * vertical_spacing_staggered[i - 1] * h * h)
-        C[i] = -twice_the_timestep * (diffusion_coefficient_momentum[i] + umol) / \
-               (vertical_spacing[i] * vertical_spacing_staggered[i - 1] * h * h)
+        A[i - 1] = -twice_the_timestep * (diffusion.momentum[i] + params_POMBFM.umol) / \
+                   (vertical_grid.vertical_spacing[i - 1] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
+        C[i] = -twice_the_timestep * (diffusion.momentum[i] + params_POMBFM.umol) / \
+               (vertical_grid.vertical_spacing[i] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
 
     VH[0] = A[0] / (A[0] - 1.)
-    VHP[0] = (-twice_the_timestep * wind_stress_zonal / (-vertical_spacing[0] * h) - velocity_zonal_forward[0]) / (A[0] - 1.)
+    VHP[0] = (-twice_the_timestep * wind_stress.zonal / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - velocity_zonal.forward[0]) / (A[0] - 1.)
 
     for i in range(1, vertical_layers - 2):
         VHP[i] = 1. / (A[i] + C[i] * (1. - VH[i - 1]) - 1.)
         VH[i] = A[i] * VHP[i]
-        VHP[i] = (C[i] * VHP[i - 1] - velocity_zonal_forward[i]) * VHP[i]
+        VHP[i] = (C[i] * VHP[i - 1] - velocity_zonal.forward[i]) * VHP[i]
 
     VH[0] = A[0] / (A[0] - 1.)
-    VHP[0] = (-twice_the_timestep * wind_stress_zonal / (-vertical_spacing[0] * h) - velocity_zonal_forward[0]) / (A[0] - 1.)
+    VHP[0] = (-twice_the_timestep * wind_stress.zonal / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - velocity_zonal.forward[0]) / (A[0] - 1.)
 
     # IF(NO_BOT_STRESS)THEN
     CBC = 0.0
@@ -461,15 +451,15 @@ def calculate_vertical_zonal_velocity_profile(vertical_spacing, vertical_spacing
     #
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    velocity_zonal_forward[vertical_layers - 2] = (C[vertical_layers - 2] * VHP[vertical_layers - 3] - velocity_zonal_forward[vertical_layers - 2]) / (
-            CBC * twice_the_timestep / (-vertical_spacing[vertical_layers - 2] * h) - 1. - (VH[vertical_layers - 3] - 1.) * C[vertical_layers - 2])
+    velocity_zonal.forward[vertical_layers - 2] = (C[vertical_layers - 2] * VHP[vertical_layers - 3] - velocity_zonal.forward[vertical_layers - 2]) / (
+            CBC * twice_the_timestep / (-vertical_grid.vertical_spacing[vertical_layers - 2] * params_POMBFM.h) - 1. - (VH[vertical_layers - 3] - 1.) * C[vertical_layers - 2])
     for i in range(1, vertical_layers - 1):
         k = vertical_layers - 1 - i
-        velocity_zonal_forward[k - 1] = VH[k - 1] * velocity_zonal_forward[k] + VHP[k - 1]
+        velocity_zonal.forward[k - 1] = VH[k - 1] * velocity_zonal.forward[k] + VHP[k - 1]
 
-    # WUBOT = -CBC * UF[KB - 2]  # 92
+    bottom_stress.zonal = -CBC * velocity_zonal.forward[vertical_layers - 2]  # 92
 
-    return velocity_zonal_forward
+    return velocity_zonal, bottom_stress
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -482,29 +472,28 @@ def calculate_vertical_zonal_velocity_profile(vertical_spacing, vertical_spacing
 #               DT2*(KM*V')' - V= -VB
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def calculate_vertical_meridional_velocity_profile(vertical_spacing, vertical_spacing_staggered, wind_stress_meridional,
-                                                   diffusion_coefficient_momentum, velocity_meridional_forward):
+def calculate_vertical_meridional_velocity_profile(vertical_grid, wind_stress, bottom_stress, diffusion, velocity_meridional):
 
-    A = np.zeros(vertical_layers, dtype=float)
-    C = np.zeros(vertical_layers, dtype=float)
-    VH = np.zeros(vertical_layers, dtype=float)
-    VHP = np.zeros(vertical_layers, dtype=float)
+    A = np.zeros(vertical_layers)
+    C = np.zeros(vertical_layers)
+    VH = np.zeros(vertical_layers)
+    VHP = np.zeros(vertical_layers)
 
     for i in range(1, vertical_layers - 1):
-        A[i - 1] = -twice_the_timestep * (diffusion_coefficient_momentum[i] + umol) / \
-                   (vertical_spacing[i - 1] * vertical_spacing_staggered[i - 1] * h * h)
-        C[i] = -twice_the_timestep * (diffusion_coefficient_momentum[i] + umol) / \
-               (vertical_spacing[i] * vertical_spacing_staggered[i - 1] * h * h)
+        A[i - 1] = -twice_the_timestep * (diffusion.momentum[i] + params_POMBFM.umol) / \
+                   (vertical_grid.vertical_spacing[i - 1] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
+        C[i] = -twice_the_timestep * (diffusion.momentum[i] + params_POMBFM.umol) / \
+               (vertical_grid.vertical_spacing[i] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
 
     VH[0] = A[0] / (A[0] - 1.)
-    VHP[0] = (-twice_the_timestep * wind_stress_meridional / (-vertical_spacing[0] * h) - velocity_meridional_forward[0]) / (A[0] - 1.)
+    VHP[0] = (-twice_the_timestep * wind_stress.meridional / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - velocity_meridional.forward[0]) / (A[0] - 1.)
 
     # 98 CONTINUE
 
     for i in range(1, vertical_layers - 2):
         VHP[i] = 1. / (A[i] + C[i] * (1. - VH[i - 1]) - 1.)
         VH[i] = A[i] * VHP[i]
-        VHP[i] = (C[i] * VHP[i - 1] - velocity_meridional_forward[i]) * VHP[i]
+        VHP[i] = (C[i] * VHP[i - 1] - velocity_meridional.forward[i]) * VHP[i]
 
     # IF(NO_BOT_STRESS)THEN
     CBC = 0.0
@@ -516,16 +505,16 @@ def calculate_vertical_meridional_velocity_profile(vertical_spacing, vertical_sp
     #   TO RESTORE BOTTOM B.L. DELETE NEXT LINE
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    velocity_meridional_forward[vertical_layers - 2] = (C[vertical_layers - 1] * VHP[vertical_layers - 3] - velocity_meridional_forward[vertical_layers - 2]) / (
-            CBC * twice_the_timestep / (-vertical_spacing[vertical_layers - 2] * h) - 1. - (VH[vertical_layers - 3] - 1.) * C[vertical_layers - 2])
+    velocity_meridional.forward[vertical_layers - 2] = (C[vertical_layers - 1] * VHP[vertical_layers - 3] - velocity_meridional.forward[vertical_layers - 2]) / (
+            CBC * twice_the_timestep / (-vertical_grid.vertical_spacing[vertical_layers - 2] * params_POMBFM.h) - 1. - (VH[vertical_layers - 3] - 1.) * C[vertical_layers - 2])
 
     for i in range(1, vertical_layers - 1):
         k = vertical_layers - 1 - i
-        velocity_meridional_forward[k - 1] = VH[k - 1] * velocity_meridional_forward[k] + VHP[k - 1]
+        velocity_meridional.forward[k - 1] = VH[k - 1] * velocity_meridional.forward[k] + VHP[k - 1]
 
-    # WVBOT = -CBC * VF[KB - 2]  # 92
+    bottom_stress.meridional = -CBC * velocity_meridional.forward[vertical_layers - 2]  # 92
 
-    return velocity_meridional_forward
+    return velocity_meridional, bottom_stress
 
 
 # EOC
