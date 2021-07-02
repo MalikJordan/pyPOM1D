@@ -1,5 +1,5 @@
 import numpy as np
-from pom.modules import vertical_layers
+from pom.pom_constants import vertical_layers
 
 class DiffusionCoefficients:
     def __init__(self, tracers=np.zeros(vertical_layers), momentum=np.zeros(vertical_layers), kinetic_energy=np.zeros(vertical_layers)):

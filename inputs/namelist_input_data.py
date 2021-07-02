@@ -1,6 +1,5 @@
 from cppdefs import *
 import numpy as np
-from main_pombfm1d import current_path
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # BFM_General.nml

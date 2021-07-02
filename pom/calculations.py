@@ -2,11 +2,10 @@
 # MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 from cppdefs import *
-from pom.modules import vertical_layers, seconds_per_day
 import numpy as np
 from inputs import params_POMBFM
-from main_pombfm1d import twice_the_timestep
-from data_classes import VerticalGridData
+from pom.pom_constants import twice_the_timestep, vertical_layers, seconds_per_day
+from pom.data_classes import VerticalGridData
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

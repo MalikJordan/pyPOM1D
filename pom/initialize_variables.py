@@ -6,8 +6,7 @@ from os import path
 from cppdefs import *
 from inputs import params_POMBFM
 from inputs.namelist_input_data import phyto_input, zoop_input, poc_input, doc_input, phos_input, nit_input, am_input, oxy_input
-from main_pombfm1d import current_path
-from pom.modules import vertical_layers, seconds_per_day
+from pom.pom_constants import current_path, seconds_per_day, vertical_layers
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

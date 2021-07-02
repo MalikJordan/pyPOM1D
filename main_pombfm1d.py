@@ -7,10 +7,10 @@ from pom.initialize_variables import get_temperature_and_salinity_initial_coditi
 from pom.create_profiles import create_kinetic_energy_profile, create_vertical_diffusivity_profile, \
     calculate_vertical_temperature_and_salinity_profiles, calculate_vertical_zonal_velocity_profile, calculate_vertical_meridional_velocity_profile
 from pom.data_classes import DiffusionCoefficients, ForcingManagerCounters, LeapFrogTimeLevels, MonthlyForcingData, Stresses, TemperatureSalinityData
-from bfm.bfm_constants import seconds_per_day
+from pom.pom_constants import earth_angular_velocity, DAYI, water_specific_heat_times_density, vertical_layers, seconds_per_day
 
 # pyPOM1D DIRECTORY, USED FOR READING INPUTS (TO BE CHANGED BY USER)
-current_path = '/Users/malikjordan/Desktop/pyPOM1D'
+# current_path = '/Users/malikjordan/Desktop/pyPOM1D'
 
 # VARIABLE NAMES (FORTRAN --> PYTHON)
 # Z = vertical_coordinates
@@ -55,9 +55,10 @@ current_path = '/Users/malikjordan/Desktop/pyPOM1D'
 # TSURF = surface_temperature
 # SSURF = surface_salinity
 
-earth_angular_velocity = 7.29E-5                                                        # OMEGA
-vertical_layers = 151
-DAYI = 1. / seconds_per_day
+# earth_angular_velocity = 7.29E-5                                                        # OMEGA
+# vertical_layers = 151
+# DAYI = 1. / seconds_per_day
+# water_specific_heat_times_density = 4.187E6
 # GENERAL INITIALIZATION
 length_scale = np.ones(vertical_layers)
 length_scale[0] = 0.
@@ -191,7 +192,7 @@ for i in range(0, int(iterations_needed)):
     salinity.current[:] = salinity.forward[:]
 
     # UPDATE DENSITY
-    create_vertical_diffusivity_profile(temperature, salinity, vertical_grid.vertical_spacing_staggered, params_POMBFM.dti)
+    vertical_density_profile = calculate_vertical_density_profile(temperature,salinity,vertical_grid)
 
 try:
     POM_only

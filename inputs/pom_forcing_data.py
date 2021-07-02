@@ -1,6 +1,6 @@
 import numpy as np
 from pom.initialize_variables import read_pom_input
-from pom.modules import vertical_layers, water_specific_heat_times_density
+from pom.pom_constants import vertical_layers, water_specific_heat_times_density
 from pom.data_classes import MonthlyForcingData
 
 wind_speed_zonal, wind_speed_meridional, surface_salinity, solar_radiation, inorganic_suspended_matter, \

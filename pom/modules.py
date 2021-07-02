@@ -1,7 +1,7 @@
 import numpy as np
 import cppdefs
 from pom.initialize_variables import read_pom_input
-from bfm.bfm_constants import seconds_per_day
+from pom.pom_constants import seconds_per_day
 from inputs import params_POMBFM
 from inputs.pom_forcing_data import write_forcing_data
 from pom.data_classes import MonthlyForcingData, Stresses

@@ -1,8 +1,7 @@
 from cppdefs import *
-from pom.modules import vertical_layers
-from main_pombfm1d import twice_the_timestep
 from inputs import params_POMBFM
 import numpy as np
+from pom.pom_constants import vertical_layers, twice_the_timestep
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # MODEL  POM - Princeton Ocean Model
@@ -13,30 +12,29 @@ import numpy as np
 # DESCRIPTION:  This subroutine solves for vertical diffusivity.
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def create_vertical_diffusivity_profile(vertical_grid, WFSURF, FSURF, nbc):
+def create_vertical_diffusivity_profile(vertical_grid, diffusion, property):
 
     A = np.zeros(vertical_layers)
     C = np.zeros(vertical_layers)
     VH = np.zeros(vertical_layers)
     VHP = np.zeros(vertical_layers)
-    diffusion_coefficient_tracers = np.zeros(vertical_layers)                      # KH
 
     vertical_diffusivity = np.zeros(vertical_layers)                               # FF
 
     umolpr = 1.E-05
 
     for i in range(1, vertical_layers - 1):
-        A[i - 1] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umolpr) / (vertical_grid.vertical_spacing[i - 1] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
+        A[i - 1] = -twice_the_timestep * (diffusion.tracers[i] + umolpr) / (vertical_grid.vertical_spacing[i - 1] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
         print(A[i-1])
-        C[i] = -twice_the_timestep * (diffusion_coefficient_tracers[i] + umolpr) / (vertical_grid.vertical_spacing[i] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
+        C[i] = -twice_the_timestep * (diffusion.tracers[i] + umolpr) / (vertical_grid.vertical_spacing[i] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
 
     # need condition for nbc for VH[0] and VHP[0]
     VH[0] = A[0] / (A[0]-1.)
-    VHP[0] = -twice_the_timestep * WFSURF / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - vertical_diffusivity[0]
+    VHP[0] = -twice_the_timestep * property.surface_flux / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - vertical_diffusivity[0]
     VHP[0] = VHP[0] / (A[0]-1.)
 
     VH[0] = 0.
-    VHP[0] = FSURF
+    VHP[0] = property.surface_value
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   THE FOLLOWING SECTION SOLVES THE EQUATION
@@ -185,7 +183,7 @@ def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinit
     #   SWEEP UPWARD
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    for i in range(0, vertical_layers - 1):  # 104
+    for i in range(2, vertical_layers):  # 104
         k = vertical_layers - i
         kinetic_energy.forward[k] = VH[k] * kinetic_energy.forward[k + 1] + VHP[k]
 
@@ -208,7 +206,7 @@ def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinit
 
     for i in range(1, vertical_layers - 1):
         DTEF[i] = DTEF[i] * (1. + E2 * ((1. / np.abs(vertical_grid.vertical_coordinates[i] - vertical_grid.vertical_coordinates[0])
-                                         + 1. / np.abs(vertical_grid.vertical_coordinates[i] - vertical_grid.vertical_coordinates[vertical_layers]))
+                                         + 1. / np.abs(vertical_grid.vertical_coordinates[i] - vertical_grid.vertical_coordinates[vertical_layers-1]))
                                         * vertical_grid.length_scale[i] / (params_POMBFM.h * von_karman_constant)) ** 2)
         VHP[i] = 1. / (A[i] + C[i] * (1. - VH[i - 1]) - (twice_the_timestep * DTEF[i] + 1.))
         VH[i] = A[i] * VHP[i]
@@ -219,15 +217,16 @@ def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinit
     #   SWEEP UPWARD
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    for i in range(0, vertical_layers - 1):
+    for i in range(2, vertical_layers):
         k = vertical_layers - i
         kinetic_energy_times_length.forward[k] = VH[k] * kinetic_energy_times_length.forward[k + 1] + VHP[k]
 
     for i in range(1, vertical_layers - 1):
         if kinetic_energy.forward[i] > SMALL or kinetic_energy_times_length.forward[i] > SMALL:
-            break
-        kinetic_energy.forward[i] = SMALL
-        kinetic_energy_times_length.forward[i] = SMALL
+            continue
+        else:
+            kinetic_energy.forward[i] = SMALL
+            kinetic_energy_times_length.forward[i] = SMALL
 
     for i in range(0, vertical_layers - 1):
         kinetic_energy.forward[i] = np.abs(kinetic_energy.forward[i])
@@ -257,7 +256,7 @@ def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinit
         GH[i] = vertical_grid.length_scale[i] ** 2 / kinetic_energy.forward[i] * BOYGR[i]
 
     for i in range(0, vertical_layers):
-        GH[i] = np.mininimum(GH[i], .028)
+        GH[i] = min(GH[i], .028)
         SH[i] = COEF1 / (1. - COEF2 * GH[i])
         SM[i] = COEF3 + SH[i] * COEF4 * GH[i]
         SM[i] = SM[i] / (1. - COEF5 * GH[i])
