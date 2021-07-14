@@ -3,6 +3,7 @@ from inputs import params_POMBFM
 import numpy as np
 from pom.pom_constants import vertical_layers, twice_the_timestep
 
+np.set_printoptions(precision=16)
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # MODEL  POM - Princeton Ocean Model
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -90,6 +91,7 @@ def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinit
     BPROD = np.zeros(vertical_layers)
     PROD = np.zeros(vertical_layers)
     SPROD = np.zeros(vertical_layers)
+    pressure = 0.
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   LOCAL ARRAYS
@@ -112,6 +114,7 @@ def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinit
     SQ = 0.2
     CIWC = 1.0
     gravity = 9.806
+    SMALL = 1.E-08
     # SM = KB*0.39
     # SH = KB*0.49
     # GM = KB*0.154
@@ -143,17 +146,17 @@ def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinit
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   CALCULATE PRESSURE IN UNITS OF DECIBARS
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    # for i in range(0, vertical_layers - 1):
+    #     pressure = -gravity * 1.025 * vertical_grid.vertical_coordinates_staggered[i] * params_POMBFM.h * .1
+    #     CC[i] = 1449.2 + 1.34 * (salinity.current[i] - 35.) + 4.55 * temperature.current[i] - 0.045 * temperature.current[i] ** 2 + \
+    #             0.00821 * pressure + (15.0 ** 1.e-9 * pressure ** 2)
+    #     TEMP1[i] = 2./CC[i]
+    #     TEMP2[i] = (0.00821*pressure)
+    #     TEMP3[i] = (1.-0.40 * (pressure/CC[i]**2))
+    #
     for i in range(0, vertical_layers - 1):
+        CC[i] = CC[i] * (1. - TEMP1[i] * (TEMP2[i] + 15. * 1.E-9 * pressure ** 2) * TEMP3[i]) ** (-0.5)
         pressure = -gravity * 1.025 * vertical_grid.vertical_coordinates_staggered[i] * params_POMBFM.h * .1
-        CC[i] = 1449.2 + 1.34 * (salinity.current[i] - 35.) + 4.55 * temperature.current[i] - 0.045 * temperature.current[i] ** 2 + \
-                0.00821 * pressure + (15.0 ** 1.e-9 * pressure ** 2)
-        TEMP1[i] = 2./CC[i]
-        TEMP2[i] = (0.00821*pressure)
-        TEMP3[i] = (1.-0.40 * (pressure/CC[i]**2))
-
-    for i in range(0, vertical_layers - 1):
-        pressure = -gravity * 1.025 * vertical_grid.vertical_coordinates_staggered[i] * params_POMBFM.h * .1
-        CC[i] = CC[i] * (1. - TEMP1[i] * (TEMP2[i] + 15. * 1.e-9 * pressure ** 2) * TEMP3[i]) ** (-0.5)
         CC[i] = 1449.1 + .00821 * pressure + 4.55 * temperature.current[i] - .045 * temperature.current[i] ** 2 + 1.34 * (salinity.current[i] - 35.)
         CC[i] = CC[i] / np.sqrt((1. - .01642 * pressure / CC[i]) * (1. - 0.40 * pressure / CC[i] ** 2))
 
@@ -178,12 +181,13 @@ def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinit
         VHP[i] = 1. / (A[i] + C[i] * (1. - VH[i - 1]) - (2. * twice_the_timestep * DTEF[i] + 1.))
         VH[i] = A[i] * VHP[i]
         VHP[i] = (-2. * twice_the_timestep * PROD[i] + C[i] * VHP[i - 1] - kinetic_energy.backward[i]) * VHP[i]
-
+    # print(velocity_meridional.current[1])
+    # print()
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SWEEP UPWARD
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    for i in range(2, vertical_layers):  # 104
+    for i in range(2, vertical_layers+1):  # 104
         k = vertical_layers - i
         kinetic_energy.forward[k] = VH[k] * kinetic_energy.forward[k + 1] + VHP[k]
 
@@ -217,10 +221,10 @@ def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinit
     #   SWEEP UPWARD
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    for i in range(2, vertical_layers):
+    for i in range(2, vertical_layers+1):
         k = vertical_layers - i
         kinetic_energy_times_length.forward[k] = VH[k] * kinetic_energy_times_length.forward[k + 1] + VHP[k]
-
+    # print(kinetic_energy_times_length.forward[1])
     for i in range(1, vertical_layers - 1):
         if kinetic_energy.forward[i] > SMALL or kinetic_energy_times_length.forward[i] > SMALL:
             continue
@@ -268,7 +272,7 @@ def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinit
         diffusion.momentum[i] = (KN[i] * SM[i] + diffusion.momentum[i]) * .5
         diffusion.tracers[i] = (KN[i] * SH[i] + diffusion.tracers[i]) * .5
 
-    return kinetic_energy, kinetic_energy_times_length, diffusion
+    return kinetic_energy, kinetic_energy_times_length, diffusion, vertical_grid
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -455,7 +459,7 @@ def calculate_vertical_zonal_velocity_profile(vertical_grid, wind_stress, bottom
     for i in range(1, vertical_layers - 1):
         k = vertical_layers - 1 - i
         velocity_zonal.forward[k - 1] = VH[k - 1] * velocity_zonal.forward[k] + VHP[k - 1]
-
+    # print(diffusion.momentum[1])
     bottom_stress.zonal = -CBC * velocity_zonal.forward[vertical_layers - 2]  # 92
 
     return velocity_zonal, bottom_stress

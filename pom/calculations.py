@@ -78,14 +78,14 @@ def create_vertical_coordinate_system(surface_layers_with_log_distribution, bott
     vertical_coordinates_staggered[0] = -0.5 * initial_spacing
 
     for i in range(1, int(surface_layers_with_log_distribution) - 1):
-        vertical_coordinates[i] = -initial_spacing * 2**(i-2)
-        vertical_coordinates_staggered[i] = -initial_spacing * 2**(i-1.5)
+        vertical_coordinates[i-1] = -initial_spacing * 2**(i-2)
+        vertical_coordinates_staggered[i-1] = -initial_spacing * 2**(i-1.5)
 
-    for i in range(int(surface_layers_with_log_distribution) - 1, vertical_layers):
-        vertical_coordinates[i]  = -(i - surface_logspace_layers) / (bottom_layers_with_log_distribution
-                                                                     - surface_layers_with_log_distribution + 4.)
-        vertical_coordinates_staggered[i] = -(i - surface_logspace_layers + 0.5) / (bottom_layers_with_log_distribution
-                                                                                    - surface_layers_with_log_distribution + 4.)
+    for i in range(int(surface_layers_with_log_distribution) - 1, vertical_layers+1):
+        vertical_coordinates[i-1]  = -(i - surface_logspace_layers) / (bottom_layers_with_log_distribution
+                                                                       - surface_layers_with_log_distribution + 4.)
+        vertical_coordinates_staggered[i-1] = -(i - surface_logspace_layers + 0.5) / (bottom_layers_with_log_distribution
+                                                                                      - surface_layers_with_log_distribution + 4.)
 
     for i in range(0,vertical_layers-1):
         vertical_spacing[i] = vertical_coordinates[i] - vertical_coordinates[i+1]
@@ -100,7 +100,7 @@ def create_vertical_coordinate_system(surface_layers_with_log_distribution, bott
     vertical_grid.vertical_coordinates = vertical_coordinates
     vertical_grid.vertical_coordinates_staggered = vertical_coordinates_staggered
     vertical_grid.vertical_spacing = vertical_spacing
-    vertical_grid.vertical_spacing_staggered = vertical_coordinates_staggered
+    vertical_grid.vertical_spacing_staggered = vertical_spacing_staggered
     vertical_grid.vertical_spacing_reciprocal = vertical_spacing_reciprocal
 
     return vertical_grid
