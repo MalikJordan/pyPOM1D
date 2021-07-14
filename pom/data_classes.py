@@ -74,6 +74,19 @@ class TemperatureSalinityData:
         self.lateral_advection = lateral_advection
 
 
+class VelocityData:
+    def __init__(self, zonal_current=np.zeros(vertical_layers), meridional_current=np.zeros(vertical_layers),
+                 zonal_forward=np.zeros(vertical_layers), meridional_forward=np.zeros(vertical_layers),
+                 zonal_backward=np.zeros(vertical_layers), meridional_backward=np.zeros(vertical_layers)):
+        self.zonal_current = zonal_current
+        self.meridional_current = meridional_current
+        self.zonal_forward = zonal_forward
+        self.meridional_forward = meridional_forward
+        self.zonal_backward = zonal_backward
+        self.meridional_backward = meridional_backward
+
+
+
 class VerticalGridData:
     def __init__(self, length_scale=np.zeros(vertical_layers), vertical_coordinates=np.zeros(vertical_layers),
                  vertical_coordinates_staggered=np.zeros(vertical_layers), vertical_spacing=np.zeros(vertical_layers),

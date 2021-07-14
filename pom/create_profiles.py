@@ -73,7 +73,7 @@ def create_vertical_diffusivity_profile(vertical_grid, diffusion, property):
 #               Turbulent length scale (Q2l)
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinity, density_profile, velocity_zonal, velocity_meridional,
+def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinity, density_profile, velocity,
                                   kinetic_energy, kinetic_energy_times_length, wind_stress, bottom_stress):
 
     # INITIALIZE VARIABLES
@@ -167,8 +167,8 @@ def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinit
         DTEF[i] = kinetic_energy.backward[i] * np.sqrt(kinetic_energy.backward[i]) / \
                   (B1 * kinetic_energy_times_length.backward[i] + SMALL)
         SPROD[i] = .25 * diffusion.momentum[i] * \
-                   ((velocity_zonal.current[i] + velocity_zonal.current[i] - velocity_zonal.current[i - 1] - velocity_zonal.current[i - 1]) ** 2
-                    + (velocity_meridional.current[i] + velocity_meridional.current[i] - velocity_meridional.current[i - 1] - velocity_meridional.current[i - 1]) ** 2) / \
+                   ((velocity.zonal_current[i] + velocity.zonal_current[i] - velocity.zonal_current[i - 1] - velocity.zonal_current[i - 1]) ** 2
+                    + (velocity.meridional_current[i] + velocity.meridional_current[i] - velocity.meridional_current[i - 1] - velocity.meridional_current[i - 1]) ** 2) / \
                    (vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h) ** 2 * CIWC ** 2
         BPROD[i] = diffusion.tracers[i] * BOYGR[i]
         PROD[i] = SPROD[i] + BPROD[i]
@@ -419,7 +419,7 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_grid,diffusion
 #               DT2*(KM*U')' - U= -UB
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def calculate_vertical_zonal_velocity_profile(vertical_grid, wind_stress, bottom_stress, diffusion, velocity_zonal):
+def calculate_vertical_zonal_velocity_profile(vertical_grid, wind_stress, bottom_stress, diffusion, velocity):
 
     A = np.zeros(vertical_layers)
     C = np.zeros(vertical_layers)
@@ -434,15 +434,15 @@ def calculate_vertical_zonal_velocity_profile(vertical_grid, wind_stress, bottom
                (vertical_grid.vertical_spacing[i] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
 
     VH[0] = A[0] / (A[0] - 1.)
-    VHP[0] = (-twice_the_timestep * wind_stress.zonal / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - velocity_zonal.forward[0]) / (A[0] - 1.)
+    VHP[0] = (-twice_the_timestep * wind_stress.zonal / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - velocity.zonal_forward[0]) / (A[0] - 1.)
 
     for i in range(1, vertical_layers - 2):
         VHP[i] = 1. / (A[i] + C[i] * (1. - VH[i - 1]) - 1.)
         VH[i] = A[i] * VHP[i]
-        VHP[i] = (C[i] * VHP[i - 1] - velocity_zonal.forward[i]) * VHP[i]
+        VHP[i] = (C[i] * VHP[i - 1] - velocity.zonal_forward[i]) * VHP[i]
 
     VH[0] = A[0] / (A[0] - 1.)
-    VHP[0] = (-twice_the_timestep * wind_stress.zonal / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - velocity_zonal.forward[0]) / (A[0] - 1.)
+    VHP[0] = (-twice_the_timestep * wind_stress.zonal / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - velocity.zonal_forward[0]) / (A[0] - 1.)
 
     # IF(NO_BOT_STRESS)THEN
     CBC = 0.0
@@ -454,15 +454,15 @@ def calculate_vertical_zonal_velocity_profile(vertical_grid, wind_stress, bottom
     #
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    velocity_zonal.forward[vertical_layers - 2] = (C[vertical_layers - 2] * VHP[vertical_layers - 3] - velocity_zonal.forward[vertical_layers - 2]) / (
+    velocity.zonal_forward[vertical_layers - 2] = (C[vertical_layers - 2] * VHP[vertical_layers - 3] - velocity.zonal_forward[vertical_layers - 2]) / (
             CBC * twice_the_timestep / (-vertical_grid.vertical_spacing[vertical_layers - 2] * params_POMBFM.h) - 1. - (VH[vertical_layers - 3] - 1.) * C[vertical_layers - 2])
     for i in range(1, vertical_layers - 1):
         k = vertical_layers - 1 - i
-        velocity_zonal.forward[k - 1] = VH[k - 1] * velocity_zonal.forward[k] + VHP[k - 1]
+        velocity.zonal_forward[k - 1] = VH[k - 1] * velocity.zonal_forward[k] + VHP[k - 1]
     # print(diffusion.momentum[1])
-    bottom_stress.zonal = -CBC * velocity_zonal.forward[vertical_layers - 2]  # 92
+    bottom_stress.zonal = -CBC * velocity.zonal_forward[vertical_layers - 2]  # 92
 
-    return velocity_zonal, bottom_stress
+    return velocity, bottom_stress
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -475,7 +475,7 @@ def calculate_vertical_zonal_velocity_profile(vertical_grid, wind_stress, bottom
 #               DT2*(KM*V')' - V= -VB
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def calculate_vertical_meridional_velocity_profile(vertical_grid, wind_stress, bottom_stress, diffusion, velocity_meridional):
+def calculate_vertical_meridional_velocity_profile(vertical_grid, wind_stress, bottom_stress, diffusion, velocity):
 
     A = np.zeros(vertical_layers)
     C = np.zeros(vertical_layers)
@@ -489,14 +489,14 @@ def calculate_vertical_meridional_velocity_profile(vertical_grid, wind_stress, b
                (vertical_grid.vertical_spacing[i] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
 
     VH[0] = A[0] / (A[0] - 1.)
-    VHP[0] = (-twice_the_timestep * wind_stress.meridional / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - velocity_meridional.forward[0]) / (A[0] - 1.)
+    VHP[0] = (-twice_the_timestep * wind_stress.meridional / (-vertical_grid.vertical_spacing[0] * params_POMBFM.h) - velocity.meridional_forward[0]) / (A[0] - 1.)
 
     # 98 CONTINUE
 
     for i in range(1, vertical_layers - 2):
         VHP[i] = 1. / (A[i] + C[i] * (1. - VH[i - 1]) - 1.)
         VH[i] = A[i] * VHP[i]
-        VHP[i] = (C[i] * VHP[i - 1] - velocity_meridional.forward[i]) * VHP[i]
+        VHP[i] = (C[i] * VHP[i - 1] - velocity.meridional_forward[i]) * VHP[i]
 
     # IF(NO_BOT_STRESS)THEN
     CBC = 0.0
@@ -508,16 +508,16 @@ def calculate_vertical_meridional_velocity_profile(vertical_grid, wind_stress, b
     #   TO RESTORE BOTTOM B.L. DELETE NEXT LINE
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    velocity_meridional.forward[vertical_layers - 2] = (C[vertical_layers - 1] * VHP[vertical_layers - 3] - velocity_meridional.forward[vertical_layers - 2]) / (
+    velocity.meridional_forward[vertical_layers - 2] = (C[vertical_layers - 1] * VHP[vertical_layers - 3] - velocity.meridional_forward[vertical_layers - 2]) / (
             CBC * twice_the_timestep / (-vertical_grid.vertical_spacing[vertical_layers - 2] * params_POMBFM.h) - 1. - (VH[vertical_layers - 3] - 1.) * C[vertical_layers - 2])
 
     for i in range(1, vertical_layers - 1):
         k = vertical_layers - 1 - i
-        velocity_meridional.forward[k - 1] = VH[k - 1] * velocity_meridional.forward[k] + VHP[k - 1]
+        velocity.meridional_forward[k - 1] = VH[k - 1] * velocity.meridional_forward[k] + VHP[k - 1]
 
-    bottom_stress.meridional = -CBC * velocity_meridional.forward[vertical_layers - 2]  # 92
+    bottom_stress.meridional = -CBC * velocity.meridional_forward[vertical_layers - 2]  # 92
 
-    return velocity_meridional, bottom_stress
+    return velocity, bottom_stress
 
 
 # EOC
