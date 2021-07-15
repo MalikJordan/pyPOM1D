@@ -1,7 +1,7 @@
 # params_pombfm
 h = 150.0           # Depth [m]
-dti = 100.0         # timestep [s]
-# dti = 3600.
+# dti = 100.0         # timestep [s]
+dti = 3600.
 alat = 45.0         # latitude [degrees]
 idiagn = 1          # switch between prognostic (idiagn = 0) and diagnostic (idiagn = 1) mode
 idays = 3600        # length of run [days]

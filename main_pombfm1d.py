@@ -113,8 +113,8 @@ if not POM_only:
 counters = ForcingManagerCounters()
 month1_data = MonthlyForcingData()
 month2_data = MonthlyForcingData()
-# for i in range(0, int(iterations_needed)):
-for i in range(0, 10000):
+
+for i in range(0, int(iterations_needed)+1):
     time = time0 + (params_POMBFM.dti * i * DAYI)
 
     # TURBULENCE CLOSURE
