@@ -1,12 +1,11 @@
 import numpy as np
-from pom.pom_constants import vertical_layers
+from pom.constants import vertical_layers
 
 class DiffusionCoefficients:
     def __init__(self, tracers=np.zeros(vertical_layers), momentum=np.zeros(vertical_layers), kinetic_energy=np.zeros(vertical_layers)):
         self.tracers = tracers
         self.momentum = momentum
         self.kinetic_energy = kinetic_energy
-
 
 class ForcingManagerCounters:
     def __init__(self, day_counter=0, day_interpolator=0, ratio_day=0, month_counter=0,
@@ -20,13 +19,11 @@ class ForcingManagerCounters:
         self.timesteps_per_day = timesteps_per_day
         self.timesteps_per_month = timesteps_per_month
 
-
 class LeapFrogTimeLevels:
     def __init__(self, current=np.zeros(vertical_layers), forward=np.zeros(vertical_layers), backward=np.zeros(vertical_layers)):
         self.current = current
         self.forward = forward
         self.backward = backward
-
 
 class MonthlyForcingData:
     def __init__(self, sclim=np.zeros(vertical_layers), tclim=np.zeros(vertical_layers), wclim=np.zeros(vertical_layers),
@@ -53,12 +50,10 @@ class MonthlyForcingData:
         self.PO4_b = PO4_b
         self.PON_b = PON_b
 
-
 class Stresses:
     def __init__(self, zonal=0, meridional=0):
         self.zonal = zonal
         self.meridional = meridional
-
 
 class TemperatureSalinityData:
     def __init__(self, current=np.zeros(vertical_layers), forward=np.zeros(vertical_layers), backward=np.zeros(vertical_layers),
@@ -73,7 +68,6 @@ class TemperatureSalinityData:
         self.bottom_flux = bottom_flux
         self.lateral_advection = lateral_advection
 
-
 class VelocityData:
     def __init__(self, zonal_current=np.zeros(vertical_layers), meridional_current=np.zeros(vertical_layers),
                  zonal_forward=np.zeros(vertical_layers), meridional_forward=np.zeros(vertical_layers),
@@ -84,8 +78,6 @@ class VelocityData:
         self.meridional_forward = meridional_forward
         self.zonal_backward = zonal_backward
         self.meridional_backward = meridional_backward
-
-
 
 class VerticalGridData:
     def __init__(self, length_scale=np.zeros(vertical_layers), vertical_coordinates=np.zeros(vertical_layers),

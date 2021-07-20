@@ -95,3 +95,38 @@ FOR_ALL_LAYERS = -1
 NUMBER_OF_PROFILES = 12
 NCOEFF = 22
 NLAYER = 8
+
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# Might put this stuff in a separate file, we'll see
+num_d3_box_states   = 50
+num_d3_box_diagnoss = 91
+num_d2_box_diagnoss = 162
+num_d3_box_flux     = 30
+
+try:
+    INCLUDE_BEN
+except NameError:
+    INCLUDE_BEN = False
+else:
+    INCLUDE_BEN = True
+if INCLUDE_BEN:
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    #   GLOBAL SYSTEM CONSTANTS (BEN)
+    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    num_d2_box_states_ben   = 0
+    num_d2_box_diagnoss_ben = 0
+    num_d2_box_flux_ben     = 0
+
+
+
+
+
+
+
+
+
+
+
+
+

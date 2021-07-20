@@ -1,13 +1,13 @@
 from cppdefs import *
 import numpy as np
-from pom.modules import forcing_manager
+from pom.forcing import forcing_manager
 from inputs import params_POMBFM
 from pom.calculations import calculate_vertical_density_profile, create_vertical_coordinate_system
 from pom.initialize_variables import get_temperature_and_salinity_initial_coditions
 from pom.create_profiles import create_kinetic_energy_profile, create_vertical_diffusivity_profile, \
     calculate_vertical_temperature_and_salinity_profiles, calculate_vertical_zonal_velocity_profile, calculate_vertical_meridional_velocity_profile
 from pom.data_classes import DiffusionCoefficients, ForcingManagerCounters, LeapFrogTimeLevels, MonthlyForcingData, Stresses, TemperatureSalinityData, VelocityData
-from pom.pom_constants import earth_angular_velocity, DAYI, water_specific_heat_times_density, vertical_layers, seconds_per_day
+from pom.constants import earth_angular_velocity, DAYI, water_specific_heat_times_density, vertical_layers, seconds_per_day, twice_the_timestep
 
 np.set_printoptions(precision=16)
 # pyPOM1D DIRECTORY, USED FOR READING INPUTS (TO BE CHANGED BY USER)
@@ -79,9 +79,6 @@ vertical_grid.length_scale = length_scale
 # CORIOLIS PARAMETER
 coriolis_parameter = 2. * earth_angular_velocity * np.sin(params_POMBFM.alat * 2. * np.pi / 360.)        # COR
 
-# TWICE THE TIMESTEP
-twice_the_timestep = 2. * params_POMBFM.dti                                                              # DT2
-
 # ITERATIONS NEEDED TO CARRY OUT AN "IDAYS" SIMULATION
 iterations_needed = params_POMBFM.idays * seconds_per_day / params_POMBFM.dti                            # iend
 
@@ -121,12 +118,6 @@ for i in range(0, int(iterations_needed)+1):
     kinetic_energy.forward[:] = kinetic_energy.backward[:]
     kinetic_energy_times_length.forward[:] = kinetic_energy_times_length.backward[:]
 
-    # print(kinetic_energy_times_length.backward[1])
-    # print(kinetic_energy_times_length.current[1])
-    # print(kinetic_energy_times_length.forward[1])
-    # print()
-    # print(velocity.zonal_current[1])
-    # print()
     kinetic_energy, kinetic_energy_times_length, diffusion, vertical_grid = create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinity, vertical_density_profile, velocity,
                                                                                                           kinetic_energy, kinetic_energy_times_length, wind_stress, bottom_stress)
     # DEFINE ALL FORCINGS
@@ -165,25 +156,13 @@ for i in range(0, int(iterations_needed)+1):
         temperature.current[:] = temperature.current[:] + 0.5 * params_POMBFM.smoth * (temperature.forward[:] + temperature.backward[:] - 2. * temperature.current[:])
         salinity.current[:] = salinity.current[:] + 0.5 * params_POMBFM.smoth * (salinity.forward[:] + salinity.backward[:] - 2. * salinity.current[:])
 
-    # print(diffusion.momentum[1])
-    # COMPUTE VELOCITY
-    # print(velocity.zonal_forward[1])
-    # print()
     velocity.zonal_forward[:] = velocity.zonal_backward[:] + twice_the_timestep * coriolis_parameter * velocity.meridional_current[:]
-    # print(velocity.zonal_forward[1])
-    # print()
     velocity, bottom_stress = calculate_vertical_zonal_velocity_profile(vertical_grid, wind_stress, bottom_stress, diffusion, velocity)
-    # print(velocity.zonal_forward[1])
-    # print('-------------------------------------------------')
 
     velocity.meridional_forward[:] = velocity.meridional_backward[:] - twice_the_timestep * coriolis_parameter * velocity.zonal_current[:]
     velocity, bottom_stress = calculate_vertical_meridional_velocity_profile(vertical_grid, wind_stress, bottom_stress, diffusion, velocity)
 
     # MIX TIME STEL (ASSELIN FILTER)
-    # print(kinetic_energy_times_length.backward[1])
-    # print(kinetic_energy_times_length.current[1])
-    # print(kinetic_energy_times_length.forward[1])
-    # print('-------------------------------------------------')
     kinetic_energy.current[:] = kinetic_energy.current[:] + 0.5 * params_POMBFM.smoth * (kinetic_energy.forward[:] + kinetic_energy.backward[:] - 2. * kinetic_energy.current[:])
     kinetic_energy_times_length.current[:] = kinetic_energy_times_length.current[:] + 0.5 * params_POMBFM.smoth * (kinetic_energy_times_length.forward[:] + kinetic_energy_times_length.backward[:] - 2. * kinetic_energy_times_length.current[:])
 
@@ -196,13 +175,10 @@ for i in range(0, int(iterations_needed)+1):
     kinetic_energy_times_length.backward[:] = kinetic_energy_times_length.current[:]
     kinetic_energy_times_length.current[:] = kinetic_energy_times_length.forward[:]
 
-    # print(kinetic_energy.backward[2])
     velocity.zonal_backward[:] = velocity.zonal_current[:]
     velocity.zonal_current[:] = velocity.zonal_forward[:]
     velocity.meridional_backward[:] = velocity.meridional_current[:]
     velocity.meridional_current[:] = velocity.meridional_forward[:]
-    # print(velocity.zonal_current[1])
-    # print('-------------------------------------------------')
 
     temperature.backward[:] = temperature.current[:]
     temperature.current[:] = temperature.forward[:]

@@ -4,7 +4,7 @@
 from cppdefs import *
 import numpy as np
 from inputs import params_POMBFM
-from pom.pom_constants import twice_the_timestep, vertical_layers, seconds_per_day
+from pom.constants import twice_the_timestep, vertical_layers, seconds_per_day
 from pom.data_classes import VerticalGridData
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

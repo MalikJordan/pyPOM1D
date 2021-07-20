@@ -1,7 +1,7 @@
 from cppdefs import *
 from inputs import params_POMBFM
 import numpy as np
-from pom.pom_constants import vertical_layers, twice_the_timestep
+from pom.constants import vertical_layers, twice_the_timestep
 
 np.set_printoptions(precision=16)
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -26,7 +26,6 @@ def create_vertical_diffusivity_profile(vertical_grid, diffusion, property):
 
     for i in range(1, vertical_layers - 1):
         A[i - 1] = -twice_the_timestep * (diffusion.tracers[i] + umolpr) / (vertical_grid.vertical_spacing[i - 1] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
-        print(A[i-1])
         C[i] = -twice_the_timestep * (diffusion.tracers[i] + umolpr) / (vertical_grid.vertical_spacing[i] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
 
     # need condition for nbc for VH[0] and VHP[0]
