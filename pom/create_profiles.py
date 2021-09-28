@@ -306,7 +306,7 @@ def create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinit
 #               UMOL:   Background diffusivity.
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def calculate_vertical_temperature_and_salinity_profiles(vertical_grid,diffusion, property, shortwave_radiation, nbc):
+def calculate_vertical_temperature_and_salinity_profiles(vertical_grid, diffusion, property, shortwave_radiation, nbc, umol):
 
     # FLAG FOR BOUNDARY CONDITION DEFINITION
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -344,8 +344,8 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_grid,diffusion
     #   START COMPUTATION OF VERTICAL PROFILE
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     for i in range(1, vertical_layers - 1):
-        A[i - 1] = -twice_the_timestep * (diffusion.tracers[i] + params_POMBFM.umol) / (vertical_grid.vertical_spacing[i - 1] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
-        C[i] = -twice_the_timestep * (diffusion.tracers[i] + params_POMBFM.umol) / (vertical_grid.vertical_spacing[i] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
+        A[i - 1] = -twice_the_timestep * (diffusion.tracers[i] + umol) / (vertical_grid.vertical_spacing[i - 1] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
+        C[i] = -twice_the_timestep * (diffusion.tracers[i] + umol) / (vertical_grid.vertical_spacing[i] * vertical_grid.vertical_spacing_staggered[i - 1] * params_POMBFM.h * params_POMBFM.h)
 
     vertical_radiation_profile[:] = 0.
 

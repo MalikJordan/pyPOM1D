@@ -8,6 +8,7 @@ from pom.create_profiles import create_kinetic_energy_profile, create_vertical_d
     calculate_vertical_temperature_and_salinity_profiles, calculate_vertical_zonal_velocity_profile, calculate_vertical_meridional_velocity_profile
 from pom.data_classes import DiffusionCoefficients, ForcingManagerCounters, LeapFrogTimeLevels, MonthlyForcingData, Stresses, TemperatureSalinityData, VelocityData
 from pom.constants import earth_angular_velocity, DAYI, water_specific_heat_times_density, vertical_layers, seconds_per_day, twice_the_timestep
+from pom_bfm_coupling.initialize_variables import initialize_bfm_in_pom
 
 np.set_printoptions(precision=16)
 # pyPOM1D DIRECTORY, USED FOR READING INPUTS (TO BE CHANGED BY USER)
@@ -99,7 +100,7 @@ else:
     POM_only = True
 if not POM_only:
     # INITIALIZATION OF BFM
-    # pom_ini_bfm_1d()
+    d3state, d3stateb = initialize_bfm_in_pom(vertical_grid)
     pass
 
 # # BEGIN THE TIME MARCH
@@ -121,8 +122,9 @@ for i in range(0, int(iterations_needed)+1):
     kinetic_energy, kinetic_energy_times_length, diffusion, vertical_grid = create_kinetic_energy_profile(vertical_grid, diffusion, temperature, salinity, vertical_density_profile, velocity,
                                                                                                           kinetic_energy, kinetic_energy_times_length, wind_stress, bottom_stress)
     # DEFINE ALL FORCINGS
-    temperature.forward, temperature.interpolated, salinity.forward, salinity.interpolated, shortwave_radiation, \
-        temperature.surface_flux, wind_stress, month1_data, month2_data, counters = forcing_manager(i,counters,month1_data,month2_data)
+    temperature.forward, temperature.interpolated, salinity.forward, salinity.interpolated, \
+        shortwave_radiation, temperature.surface_flux, wind_stress, month1_data, month2_data, \
+        counters, nutrients, inorganic_suspended_matter = forcing_manager(i,counters,month1_data,month2_data)
 
     # T&S COMPUTATION
     if params_POMBFM.idiagn == 0:
@@ -146,11 +148,11 @@ for i in range(0, int(iterations_needed)+1):
 
         # COMPUTE TEMPREATURE
         temperature.forward[:] = temperature.backward[:] + (temperature.lateral_advection[:] * twice_the_timestep)
-        calculate_vertical_temperature_and_salinity_profiles(vertical_grid, diffusion, temperature, shortwave_radiation, params_POMBFM.nbct)
+        calculate_vertical_temperature_and_salinity_profiles(vertical_grid, diffusion, temperature, shortwave_radiation, params_POMBFM.nbct, params_POMBFM.umol)
 
         # CALCULATE SALINITY
         salinity.forward[:] = salinity.backward[:] + (salinity.lateral_advection[:] * twice_the_timestep)
-        calculate_vertical_temperature_and_salinity_profiles(vertical_grid, diffusion, salinity, shortwave_radiation, params_POMBFM.nbcs)
+        calculate_vertical_temperature_and_salinity_profiles(vertical_grid, diffusion, salinity, shortwave_radiation, params_POMBFM.nbcs, params_POMBFM.umol)
 
         # MIXING THE TIMESTEP (ASSELIN)
         temperature.current[:] = temperature.current[:] + 0.5 * params_POMBFM.smoth * (temperature.forward[:] + temperature.backward[:] - 2. * temperature.current[:])
@@ -195,25 +197,25 @@ for i in range(0, int(iterations_needed)+1):
     else:
         POM_only = True
     if not POM_only:
-        # pom_bfm_1d()
+        # pom_bfm_1d(i, vertical_grid, diffusion, nutrients, inorganic_suspended_matter)
         pass
 
 # WRITING OF RESTART
-print(time,'\n')
-print('-------------------------------------------------\n')
-print(velocity.zonal_current,'\n', velocity.zonal_backward,'\n', velocity.meridional_current,'\n', velocity.meridional_backward,'\n')
-print('-------------------------------------------------\n')
-print(temperature.current,'\n', temperature.backward,'\n', salinity.current,'\n', salinity.backward,'\n')
-print('-------------------------------------------------\n')
-print(kinetic_energy.current,'\n', kinetic_energy.backward,'\n', kinetic_energy_times_length.current,'\n', kinetic_energy_times_length.backward,'\n')
-print('-------------------------------------------------\n')
-print(diffusion.tracers,'\n', diffusion.momentum,'\n', diffusion.kinetic_energy,'\n')
-print('-------------------------------------------------\n')
-print(vertical_grid.length_scale,'\n')
-print('-------------------------------------------------\n')
-print(bottom_stress.zonal,'\n', bottom_stress.meridional,'\n')
-print('-------------------------------------------------\n')
-print(vertical_density_profile)
+# print(time,'\n')
+# print('-------------------------------------------------\n')
+# print(velocity.zonal_current,'\n', velocity.zonal_backward,'\n', velocity.meridional_current,'\n', velocity.meridional_backward,'\n')
+# print('-------------------------------------------------\n')
+# print(temperature.current,'\n', temperature.backward,'\n', salinity.current,'\n', salinity.backward,'\n')
+# print('-------------------------------------------------\n')
+# print(kinetic_energy.current,'\n', kinetic_energy.backward,'\n', kinetic_energy_times_length.current,'\n', kinetic_energy_times_length.backward,'\n')
+# print('-------------------------------------------------\n')
+# print(diffusion.tracers,'\n', diffusion.momentum,'\n', diffusion.kinetic_energy,'\n')
+# print('-------------------------------------------------\n')
+# print(vertical_grid.length_scale,'\n')
+# print('-------------------------------------------------\n')
+# print(bottom_stress.zonal,'\n', bottom_stress.meridional,'\n')
+# print('-------------------------------------------------\n')
+# print(vertical_density_profile)
 
 # BFM RESTART
 try:

@@ -5,6 +5,7 @@ from pom.constants import seconds_per_day
 from inputs import params_POMBFM
 from inputs.pom_forcing_data import write_forcing_data
 from pom.data_classes import MonthlyForcingData, Stresses
+from pom_bfm_coupling.data_classes import NutrientData
 
 # From ModulePom
 
@@ -142,6 +143,7 @@ def forcing_manager(time_loop_counter,counters,month1_data,month2_data):
     NO3bott = month1_data.NO3_b + counters.ratio_month * (month2_data.NO3_b - month1_data.NO3_b)
     PO4bott = month1_data.PO4_b + counters.ratio_month * (month2_data.PO4_b - month1_data.PO4_b)
     PONbott_grad = month1_data.PON_b + counters.ratio_month * (month2_data.PON_b - month1_data.PON_b)
+    nutrients = NutrientData(NO3surf,NH4surf,PO4surf,SIO4surf,O2bott,NO3bott,PO4bott,PONbott_grad)
 
     if counters.month_interpolator == counters.timesteps_per_month:
 
@@ -166,5 +168,5 @@ def forcing_manager(time_loop_counter,counters,month1_data,month2_data):
         # READ FOLLOWING MONTH
         month2_data = write_forcing_data(counters.month_counter)
 
-    return tf, tstar, sf, sstar, swrad, wtsurf, wind_stress, month1_data, month2_data, counters
+    return tf, tstar, sf, sstar, swrad, wtsurf, wind_stress, month1_data, month2_data, counters, nutrients, ism
 
