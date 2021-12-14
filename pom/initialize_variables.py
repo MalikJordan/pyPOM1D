@@ -349,7 +349,7 @@ def pom_to_bfm():
 # DESCRIPTION
 #
 # This subroutine opens and read files containing the initial conditions
-# for P2c, Z4c, R1c, R6c, N1p, N3n, N4n, and O2o
+# for nanoflagellates_LO_C, omnivMesozoo_LO_C, labileDOM_NO_C, particOrganDetritus_NO_C, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, and disOxygen_IO_O
 # Files are read in direct access mode reading path
 # specified in bfm_IC_input nml
 #
@@ -358,8 +358,8 @@ def pom_to_bfm():
 def get_initial_conditions():
 
     """
-    Desription: Opens and reads data files containing the initial conditions for P2c, Z4c,
-                R1c, R6c, N1p, N3n, N4n, and O2o
+    Desription: Opens and reads data files containing the initial conditions for nanoflagellates_LO_C, omnivMesozoo_LO_C,
+                labileDOM_NO_C, particOrganDetritus_NO_C, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, and disOxygen_IO_O
 
     :return: initial conditions for phytoplankton carbon, zooplankton carbon, particulate
              organic carbon, dissolved organic carbon, phosphate, nitrate, ammonium,
@@ -376,30 +376,30 @@ def get_initial_conditions():
     oxygen_data_path = current_path + oxy_input
 
     if path.exists(phytoplankton_carbon_data_path):
-        p2c = np.fromfile(phytoplankton_carbon_data_path)
+        nanoflagellates_LO_C = np.fromfile(phytoplankton_carbon_data_path)
 
     if path.exists(zooplankton_carbon_data_path):
-        z5c = np.fromfile(zooplankton_carbon_data_path)
+        microzoo_LO_C = np.fromfile(zooplankton_carbon_data_path)
 
     if path.exists(particulate_organic_carbon_data_path):
-        r6c = np.fromfile(particulate_organic_carbon_data_path)
+        particOrganDetritus_NO_C = np.fromfile(particulate_organic_carbon_data_path)
 
     if path.exists(dissolved_organic_carbon_data_path):
-        r1c = np.fromfile(dissolved_organic_carbon_data_path)
+        labileDOM_NO_C = np.fromfile(dissolved_organic_carbon_data_path)
 
     if path.exists(phosphate_data_path):
-        n1p = np.fromfile(phosphate_data_path)
+        phospate_IO_P = np.fromfile(phosphate_data_path)
 
     if path.exists(nitrate_data_path):
-        n3n = np.fromfile(nitrate_data_path)
+        nitrate_IO_N = np.fromfile(nitrate_data_path)
 
     if path.exists(ammonium_data_path):
-        n4n = np.fromfile(ammonium_data_path)
+        ammonium_IO_N = np.fromfile(ammonium_data_path)
 
     if path.exists(oxygen_data_path):
-        o2o = np.fromfile(oxygen_data_path)
+        disOxygen_IO_O = np.fromfile(oxygen_data_path)
 
-    return p2c, z5c, r6c, r1c, n1p, n3n, n4n, o2o
+    return nanoflagellates_LO_C, microzoo_LO_C, particOrganDetritus_NO_C, labileDOM_NO_C, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, disOxygen_IO_O
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # MODEL  POM - Princeton Ocean Model
@@ -450,7 +450,7 @@ def get_initial_conditions():
 #     #   DEFINITION OF GENERAL PELAGIC STATE VARIABLES:
 #     #   PELAGIC GASES
 #     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#     p2c, z5c, r6c, r1c, n1p, n3n, n4n, o2o = get_initial_conditions()
+#     nanoflagellates_LO_C, microzoo_LO_C, particOrganDetritus_NO_C, labileDOM_NO_C, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, disOxygen_IO_O = get_initial_conditions()
 #
 #     # NEED TO FINISH TRANSLATING MODULEMEM
 #

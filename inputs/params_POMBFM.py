@@ -11,10 +11,10 @@ ihotst = 0          # switch for cold start (ihotst = 0) and hot start, ie readi
 kl1 = 2             # surface logarithmic layers distribution
 kl2 = 150           # bottom logarithmic layers distribution
 savef = 1           # output averaging and saving frequency [days]
-nrt_o2o = 0.06      # relaxation velocity for oxygen [m/d]
-nrt_n1p = 0.06      # relaxation velocity for phosphate [m/d]
-nrt_n3n = 0.06      # relaxation velocity for nitrate [m/d]
-nrt_n4n = 0.05      # relaxation velocity for ammonium [m/d]
+nrt_disOxygen_IO_O = 0.06      # relaxation velocity for oxygen [m/d]
+nrt_phospate_IO_P = 0.06      # relaxation velocity for phosphate [m/d]
+nrt_nitrate_IO_N = 0.06      # relaxation velocity for nitrate [m/d]
+nrt_ammonium_IO_N = 0.05      # relaxation velocity for ammonium [m/d]
 nbct = 2            # flag for temperature boundary conditions
 nbcs = 1            # flag for salinity boundary conditions
 nbcbfm = 1          # flag for bfm boundary conditions

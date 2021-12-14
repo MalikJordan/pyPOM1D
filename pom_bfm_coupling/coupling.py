@@ -47,14 +47,14 @@ def pom_bfm_1d(vertical_grid, i, time, diffusion, nutrients, temperature, salini
     etw, esw, eir, ess, erho, depth, ewind = pom_to_bfm(vertical_grid, temperature, salinity, inorganic_suspended_matter,
                                                         shortwave_radiation, vertical_density_profile, wind_stress)
 
-    [o2o, n1p, n3n, n4n, o4n, n5s, n6r, b1c, b1n, b1p,
-     p1c, p1n, p1p, p1l, p1s, p2c, p2n, p2p, p2l, p3c, p3n, p3p, p3l, p4c, p4n, p4p, p4l,
-     z3c, z3n, z3p, z4c, z4n, z4p, z5c, z5n, z5p, z6c, z6n, z6p,
-     r1c, r1n, r1p, r2c, r3c, r6c, r6n, r6p, r6s, o3c, o3h] = set_initial_conditions()
+    [disOxygen_IO_O, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, o4n, silicate_IO_Si, reductEquiv_IO_R, pelBacteria_LO_C, pelBacteria_LO_N, pelBacteria_LO_P,
+     diatoms_LO_C, diatoms_LO_N, diatoms_LO_P, diatoms_LO_Chl, diatoms_LO_Si, nanoflagellates_LO_C, nanoflagellates_LO_N, nanoflagellates_LO_P, nanoflagellates_LO_Chl, picophyto_LO_C, picophyto_LO_N, picophyto_LO_P, picophyto_LO_Chl, largephyto_LO_C, largephyto_LO_N, largephyto_LO_P, largephyto_LO_Chl,
+     carnivMesozoo_LO_C, carnivMesozoo_LO_N, carnivMesozoo_LO_P, omnivMesozoo_LO_C, omnivMesozoo_LO_N, omnivMesozoo_LO_P, microzoo_LO_C, microzoo_LO_N, microzoo_LO_P, z6c, z6n, z6p,
+     labileDOM_NO_C, labileDOM_NO_N, labileDOM_NO_P, semilabileDOC_NO_C, semirefractDOC_NO_C, particOrganDetritus_NO_C, particOrganDetritus_NO_N, particOrganDetritus_NO_P, particOrganDetritus_NO_Si, disInorgCarbon_IO_C, o3h] = set_initial_conditions()
 
     bfm50_rate_eqns(time, conc, seasonal_cycle=False)
 
-    calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, o2o, n1p, n3n)
+    calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, disOxygen_IO_O, phospate_IO_P, nitrate_IO_N)
 
 # import numpy as np
 #

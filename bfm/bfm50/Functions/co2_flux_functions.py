@@ -5,24 +5,24 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
     """ calculates the air-sea flux of co2 """
     
     # Species concentrations
-    n1p = conc[1]              # Phosphate (mmol P m^-3)
-    n5s = conc[5]              # Silicate (mmol Si m^-3)
-    o3c = conc[48]             # Dissolved inorganic carbon(mg C m^-3)
+    phospate_IO_P = conc[1]              # Phosphate (mmol P m^-3)
+    silicate_IO_Si = conc[5]              # Silicate (mmol Si m^-3)
+    disInorgCarbon_IO_C = conc[48]             # Dissolved inorganic carbon(mg C m^-3)
     o3h = conc[49]             # Total alkalinity (mmol Eq m^-3)
     
     # Calculate Schmidt number, ratio between the kinematic viscosity and the molecular diffusivity of carbon dioxide
-    schmidt_number_o3c = (co2_flux_parameters["c1"] - co2_flux_parameters["c2"]*temper + co2_flux_parameters["c3"]*(temper**2) - co2_flux_parameters["c4"]*(temper**3))
-    schmidt_ratio_o3c = co2_flux_parameters["schmidt_o3c"]/schmidt_number_o3c
+    schmidt_number_disInorgCarbon_IO_C = (co2_flux_parameters["c1"] - co2_flux_parameters["c2"]*temper + co2_flux_parameters["c3"]*(temper**2) - co2_flux_parameters["c4"]*(temper**3))
+    schmidt_ratio_disInorgCarbon_IO_C = co2_flux_parameters["schmidt_disInorgCarbon_IO_C"]/schmidt_number_disInorgCarbon_IO_C
 
     # schmidt_ratio is limited to 0 when T > 40 °C 
-    if schmidt_ratio_o3c<0.0:
-        schmidt_ratio_o3c = 0.0
+    if schmidt_ratio_disInorgCarbon_IO_C<0.0:
+        schmidt_ratio_disInorgCarbon_IO_C = 0.0
 
     # Compute Chemical enhancement the Temperature dependent gas transfer
     bt = 2.5*(0.5246 + 1.6256e-2*temper + 4.9946e-4*(temper**2))
 
     # Calculate wind dependency + Chemical enhancement including conversion cm/hr => m/s
-    ken = (bt + co2_flux_parameters["d"]*(wind**2))*numpy.sqrt(schmidt_ratio_o3c)*constant_parameters["cm2m"]*constant_parameters["hours_per_day"]/constant_parameters["sec_per_day"]
+    ken = (bt + co2_flux_parameters["d"]*(wind**2))*numpy.sqrt(schmidt_ratio_disInorgCarbon_IO_C)*constant_parameters["cm2m"]*constant_parameters["hours_per_day"]/constant_parameters["sec_per_day"]
 
     # K0, solubility of co2 in the water (K Henry) from Weiss 1974; K0 = [co2]/pco2 [mol kg-1 atm-1]
     tk = (temper + constant_parameters["c_to_kelvin"])
@@ -64,13 +64,13 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
     ft = 0.000067*scl/18.9984
     
     # change units from mmol m^-3 to mol/kg
-#    pt = n1p/rho*1e-3
-#    sit = n5s/rho*1e-3
+#    pt = phospate_IO_P/rho*1e-3
+#    sit = silicate_IO_Si/rho*1e-3
     pt = 0.0
     sit = 0.0
     
     # change DIC (o3h) units from mg C m^-3 to mol kg^-1
-    ldic = o3c*constant_parameters["omega_c"]*constant_parameters["g_per_mg"]/rho
+    ldic = disInorgCarbon_IO_C*constant_parameters["omega_c"]*constant_parameters["g_per_mg"]/rho
     
     # convert TA from inits of mmol eq m^-3 to mol eq kg^-1
     alk = o3h/rho*constant_parameters["mol_per_mmol"]
@@ -139,12 +139,12 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
     pco2_sea = pco2_sea*constant_parameters["uatm_per_atm"]
     
     # flux co2 in mmol C m^-2 s^-1
-    do3cdt_air_sea_flux = ken*(pco2_air - pco2_sea)*k0*rho/1000.0
+    ddisInorgCarbon_IO_Cdt_air_sea_flux = ken*(pco2_air - pco2_sea)*k0*rho/1000.0
     
     # convert flux to units of mg C m^-3 s^-1
-    do3cdt_air_sea_flux = do3cdt_air_sea_flux/constant_parameters["omega_c"]/environmental_parameters["del_z"]
+    ddisInorgCarbon_IO_Cdt_air_sea_flux = ddisInorgCarbon_IO_Cdt_air_sea_flux/constant_parameters["omega_c"]/environmental_parameters["del_z"]
     
-    return do3cdt_air_sea_flux
+    return ddisInorgCarbon_IO_Cdt_air_sea_flux
     
 def calculate_Hplus(pH, k1, k2, k1p, k2p, k3p, ksi, kw, ks, kf, kb, bt, st, ft, pt, sit, ldic, alk):
     """ This function expresses total alkalinity (TA) as a function of DIC, 

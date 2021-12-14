@@ -79,9 +79,9 @@ check_fixed_quota = 0
 # ! p_epsChla   [m2/mgChla]    Chla-specific extinction coefficient
 # ! p_epsR6      [m2/mgC]      Specific attenuation coefficient of particulate
 # !                            detritus
-# ! p_pe_R1c     [-]           Fractional content of C in cytoplasm
-# ! p_pe_R1n     [-]           Fractional content of N in cytoplasm
-# ! p_pe_R1p     [-]           Fractional content of P in cytoplasm
+# ! p_pe_labileDOM_NO_C     [-]           Fractional content of C in cytoplasm
+# ! p_pe_labileDOM_NO_N     [-]           Fractional content of N in cytoplasm
+# ! p_pe_labileDOM_NO_P     [-]           Fractional content of P in cytoplasm
 # ! p_qro        [mmolHS-/     Stoichiometric coefficient for
 # !               mmolO2]      anaerobic reactions
 # ! p_qon_dentri [mmolO2/      Stoichiometric coefficient for
@@ -100,9 +100,9 @@ p_eps0       = 0.04
 p_epsESS     = 0.04E-03
 p_epsChla    = 0.03
 p_epsR6      = 0.1E-03
-p_pe_R1c     = 0.60
-p_pe_R1n     = 0.72
-p_pe_R1p     = 0.832
+p_pe_labileDOM_NO_C     = 0.60
+p_pe_labileDOM_NO_N     = 0.72
+p_pe_labileDOM_NO_P     = 0.832
 p_pe_R1s     = 0.06
 p_qro        = 0.50
 p_qon_dentri = 1.25
