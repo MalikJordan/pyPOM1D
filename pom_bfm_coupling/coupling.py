@@ -49,8 +49,8 @@ def pom_bfm_1d(vertical_grid, i, time, diffusion, nutrients, temperature, salini
 
     [disOxygen_IO_O, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, o4n, silicate_IO_Si, reductEquiv_IO_R, pelBacteria_LO_C, pelBacteria_LO_N, pelBacteria_LO_P,
      diatoms_LO_C, diatoms_LO_N, diatoms_LO_P, diatoms_LO_Chl, diatoms_LO_Si, nanoflagellates_LO_C, nanoflagellates_LO_N, nanoflagellates_LO_P, nanoflagellates_LO_Chl, picophyto_LO_C, picophyto_LO_N, picophyto_LO_P, picophyto_LO_Chl, largephyto_LO_C, largephyto_LO_N, largephyto_LO_P, largephyto_LO_Chl,
-     carnivMesozoo_LO_C, carnivMesozoo_LO_N, carnivMesozoo_LO_P, omnivMesozoo_LO_C, omnivMesozoo_LO_N, omnivMesozoo_LO_P, microzoo_LO_C, microzoo_LO_N, microzoo_LO_P, z6c, z6n, z6p,
-     labileDOM_NO_C, labileDOM_NO_N, labileDOM_NO_P, semilabileDOC_NO_C, semirefractDOC_NO_C, particOrganDetritus_NO_C, particOrganDetritus_NO_N, particOrganDetritus_NO_P, particOrganDetritus_NO_Si, disInorgCarbon_IO_C, o3h] = set_initial_conditions()
+     carnivMesozoo_LO_C, carnivMesozoo_LO_N, carnivMesozoo_LO_P, omnivMesozoo_LO_C, omnivMesozoo_LO_N, omnivMesozoo_LO_P, microzoo_LO_C, microzoo_LO_N, microzoo_LO_P, heteroFlagellates_LO_C, heteroFlagellates_LO_N, heteroFlagellates_LO_P,
+     labileDOM_NO_C, labileDOM_NO_N, labileDOM_NO_P, semilabileDOC_NO_C, semirefractDOC_NO_C, particOrganDetritus_NO_C, particOrganDetritus_NO_N, particOrganDetritus_NO_P, particOrganDetritus_NO_Si, disInorgCarbon_IO_C, totalAlkalinity_IO] = set_initial_conditions()
 
     bfm50_rate_eqns(time, conc, seasonal_cycle=False)
 

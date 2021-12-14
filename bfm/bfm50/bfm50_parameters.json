@@ -301,10 +301,10 @@
         "del_z5z5": 1.0,
         "del_z5z6": 0.8,
         "del_z6b1": 0.9,
-        "del_z6p1": 0.0,
-        "del_z6p2": 0.1,
-        "del_z6p3": 1.0,
-        "del_z6p4": 0.0,
+        "del_heteroFlagellates_LO_P1": 0.0,
+        "del_heteroFlagellates_LO_P2": 0.1,
+        "del_heteroFlagellates_LO_P3": 1.0,
+        "del_heteroFlagellates_LO_P4": 0.0,
         "del_z6z5": 0.0,
         "del_z6z6": 0.2
     }

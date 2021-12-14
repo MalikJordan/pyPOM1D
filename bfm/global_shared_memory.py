@@ -55,9 +55,9 @@
 # !        microzoo_LO_C                                             Microzooplankton         mg C/m3
 # !        microzoo_LO_N                                             Microzooplankton       mmol N/m3
 # !        microzoo_LO_P                                             Microzooplankton       mmol P/m3
-# !        Z6c                         Heterotrophic Nanoflagellates (HNAN)         mg C/m3
-# !        Z6n                         Heterotrophic Nanoflagellates (HNAN)       mmol N/m3
-# !        Z6p                         Heterotrophic Nanoflagellates (HNAN)       mmol P/m3
+# !        heteroFlagellates_LO_C                         Heterotrophic Nanoflagellates (HNAN)         mg C/m3
+# !        heteroFlagellates_LO_N                         Heterotrophic Nanoflagellates (HNAN)       mmol N/m3
+# !        heteroFlagellates_LO_P                         Heterotrophic Nanoflagellates (HNAN)       mmol P/m3
 # !        labileDOM_NO_C                              Labile Dissolved Organic Matter         mg C/m3
 # !        labileDOM_NO_N                              Labile Dissolved Organic Matter       mmol N/m3
 # !        labileDOM_NO_P                              Labile Dissolved Organic Matter       mmol P/m3
@@ -68,7 +68,7 @@
 # !        particOrganDetritus_NO_P                                   Particulate Organic Matter       mmol P/m3
 # !        particOrganDetritus_NO_Si                                   Particulate Organic Matter      mmol Si/m3
 # !        disInorgCarbon_IO_C                                   Dissolved Inorganic Carbon         mg C/m3
-# !        O3h                                   Dissolved Inorganic Carbon      mmol eq/m3
+# !        totalAlkalinity_IO                                   Dissolved Inorganic Carbon      mmol eq/m3
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   STATE VARIABLES INFO (ICE)
@@ -143,9 +143,9 @@ ppdiatoms_LO_N = 12; ppdiatoms_LO_P = 13; ppdiatoms_LO_Chl = 14; ppdiatoms_LO_Si
 ppnanoflagellates_LO_Chl = 19; ppP2s = 0;  pppicophyto_LO_C = 20; pppicophyto_LO_N = 21; pppicophyto_LO_P = 22; pppicophyto_LO_Chl = 23; ppP3s = 0
 pplargephyto_LO_C = 24; pplargephyto_LO_N = 25; pplargephyto_LO_P = 26; pplargephyto_LO_Chl = 27; ppP4s = 0;  ppcarnivMesozoo_LO_C = 28; ppcarnivMesozoo_LO_N = 29
 ppcarnivMesozoo_LO_P = 30; ppomnivMesozoo_LO_C = 31; ppomnivMesozoo_LO_N = 32; ppomnivMesozoo_LO_P = 33; ppmicrozoo_LO_C = 34; ppmicrozoo_LO_N = 35; ppmicrozoo_LO_P = 36
-ppZ6c = 37; ppZ6n = 38; ppZ6p = 39; pplabileDOM_NO_C = 40; pplabileDOM_NO_N = 41; pplabileDOM_NO_P = 42; ppR1s = 0
+ppheteroFlagellates_LO_C = 37; ppheteroFlagellates_LO_N = 38; ppheteroFlagellates_LO_P = 39; pplabileDOM_NO_C = 40; pplabileDOM_NO_N = 41; pplabileDOM_NO_P = 42; ppR1s = 0
 ppsemilabileDOC_NO_C = 43; ppR2n = 0;  ppR2p = 0;  ppR2s = 0;  ppsemirefractDOC_NO_C = 44; ppR3n = 0;  ppR3p = 0; ppR3s = 0
-ppparticOrganDetritus_NO_C = 45; ppparticOrganDetritus_NO_N = 46; ppparticOrganDetritus_NO_P = 47; ppparticOrganDetritus_NO_Si = 48; ppdisInorgCarbon_IO_C = 49; ppO3h = 50
+ppparticOrganDetritus_NO_C = 45; ppparticOrganDetritus_NO_N = 46; ppparticOrganDetritus_NO_P = 47; ppparticOrganDetritus_NO_Si = 48; ppdisInorgCarbon_IO_C = 49; pptotalAlkalinity_IO = 50
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   GLOBAL DEFINITION OF SEAICE (D2) STATE VARIABLES
@@ -448,7 +448,7 @@ def ppMesoZooPlankton(n,constituent):
 def ppMicroZooPlankton(n,constituent):
 
     pointers = [ppmicrozoo_LO_C, ppmicrozoo_LO_N, ppmicrozoo_LO_P, 0., 0., 0.,
-                ppZ6c, ppZ6n, ppZ6p, 0., 0., 0.]
+                ppheteroFlagellates_LO_C, ppheteroFlagellates_LO_N, ppheteroFlagellates_LO_P, 0., 0., 0.]
 
     if n > 2 or n == 0:
         ppMicroZooPlankton = 0

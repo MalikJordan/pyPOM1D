@@ -57,9 +57,9 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, disOxyge
     ppnanoflagellates_LO_Chl = 18; ppP2s = 0; pppicophyto_LO_C = 19; pppicophyto_LO_N = 20; pppicophyto_LO_P = 21; pppicophyto_LO_Chl = 22; ppP3s = 0
     pplargephyto_LO_C = 23; pplargephyto_LO_N = 24; pplargephyto_LO_P = 25; pplargephyto_LO_Chl = 26; ppP4s = 0; ppcarnivMesozoo_LO_C = 27; ppcarnivMesozoo_LO_N = 28
     ppcarnivMesozoo_LO_P = 29; ppomnivMesozoo_LO_C = 30; ppomnivMesozoo_LO_N = 31; ppomnivMesozoo_LO_P = 32; ppmicrozoo_LO_C = 33; ppmicrozoo_LO_N = 34; ppmicrozoo_LO_P = 35
-    ppZ6c = 36; ppZ6n = 37; ppZ6p = 38; pplabileDOM_NO_C = 39; pplabileDOM_NO_N = 40; pplabileDOM_NO_P = 41; ppR1s = 0
+    ppheteroFlagellates_LO_C = 36; ppheteroFlagellates_LO_N = 37; ppheteroFlagellates_LO_P = 38; pplabileDOM_NO_C = 39; pplabileDOM_NO_N = 40; pplabileDOM_NO_P = 41; ppR1s = 0
     ppsemilabileDOC_NO_C = 42; ppR2n = 0; ppR2p = 0; ppR2s = 0; ppsemirefractDOC_NO_C = 43; ppR3n = 0; ppR3p = 0; ppR3s = 0
-    ppparticOrganDetritus_NO_C = 44; ppparticOrganDetritus_NO_N = 45; ppparticOrganDetritus_NO_P = 46; ppparticOrganDetritus_NO_Si = 47; ppdisInorgCarbon_IO_C = 48; ppO3h = 49
+    ppparticOrganDetritus_NO_C = 44; ppparticOrganDetritus_NO_N = 45; ppparticOrganDetritus_NO_P = 46; ppparticOrganDetritus_NO_Si = 47; ppdisInorgCarbon_IO_C = 48; pptotalAlkalinity_IO = 49
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   LOCAL VARIABLES

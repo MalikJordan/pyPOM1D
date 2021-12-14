@@ -4,8 +4,8 @@ from inputs import params_POMBFM
 from bfm.constants import num_d3_box_states, num_d2_box_states_ben
 from bfm.variable_info import set_variable_info_bfm
 from os import path
-from inputs.namelist_input_data import disOxygen_IO_O0, phospate_IO_P0, nitrate_IO_N0, ammonium_IO_N0, silicate_IO_Si0, reductEquiv_IO_R0, disInorgCarbon_IO_C0, o3h0, o4n0, diatoms_LO_C0, nanoflagellates_LO_C0, picophyto_LO_C0, largephyto_LO_C0, \
-    carnivMesozoo_LO_C0, omnivMesozoo_LO_C0, microzoo_LO_C0, z6c0, pelBacteria_LO_C0, labileDOM_NO_C0, semilabileDOC_NO_C0, semirefractDOC_NO_C0, particOrganDetritus_NO_C0, \
+from inputs.namelist_input_data import disOxygen_IO_O0, phospate_IO_P0, nitrate_IO_N0, ammonium_IO_N0, silicate_IO_Si0, reductEquiv_IO_R0, disInorgCarbon_IO_C0, totalAlkalinity_IO0, o4n0, diatoms_LO_C0, nanoflagellates_LO_C0, picophyto_LO_C0, largephyto_LO_C0, \
+    carnivMesozoo_LO_C0, omnivMesozoo_LO_C0, microzoo_LO_C0, heteroFlagellates_LO_C0, pelBacteria_LO_C0, labileDOM_NO_C0, semilabileDOC_NO_C0, semirefractDOC_NO_C0, particOrganDetritus_NO_C0, \
     y1c0, y2c0, y3c0, y4c0, y5c0, h1c0, h2c0, k1p0, k11p0, k21p0, k4n0, k14n0, k24n0, k3n0, k5s0, k6r0, \
     d1m0, d2m0, d6m0, d7m0, d8m0, d9m0, q6c0, q6n0, q6p0, q6s0, q1c0, q11c0, g2o0, g3c0, g13c0, g23c0, g3h0, g13h0, g23h0, \
     calcphytoplankton, calcmesozooplankton, calcmicrozooplankton, calcpelbacteria, calcbenorganisms, calcbenbacteria
@@ -85,8 +85,8 @@ def initialize_bfm_in_pom(vertical_grid):
     # Define initial conditions
     [disOxygen_IO_O, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, o4n, silicate_IO_Si, reductEquiv_IO_R, pelBacteria_LO_C, pelBacteria_LO_N, pelBacteria_LO_P,
      diatoms_LO_C, diatoms_LO_N, diatoms_LO_P, diatoms_LO_Chl, diatoms_LO_Si, nanoflagellates_LO_C, nanoflagellates_LO_N, nanoflagellates_LO_P, nanoflagellates_LO_Chl, picophyto_LO_C, picophyto_LO_N, picophyto_LO_P, picophyto_LO_Chl, largephyto_LO_C, largephyto_LO_N, largephyto_LO_P, largephyto_LO_Chl,
-     carnivMesozoo_LO_C, carnivMesozoo_LO_N, carnivMesozoo_LO_P, omnivMesozoo_LO_C, omnivMesozoo_LO_N, omnivMesozoo_LO_P, microzoo_LO_C, microzoo_LO_N, microzoo_LO_P, z6c, z6n, z6p,
-     labileDOM_NO_C, labileDOM_NO_N, labileDOM_NO_P, semilabileDOC_NO_C, semirefractDOC_NO_C, particOrganDetritus_NO_C, particOrganDetritus_NO_N, particOrganDetritus_NO_P, particOrganDetritus_NO_Si, disInorgCarbon_IO_C, o3h] = set_initial_conditions()
+     carnivMesozoo_LO_C, carnivMesozoo_LO_N, carnivMesozoo_LO_P, omnivMesozoo_LO_C, omnivMesozoo_LO_N, omnivMesozoo_LO_P, microzoo_LO_C, microzoo_LO_N, microzoo_LO_P, heteroFlagellates_LO_C, heteroFlagellates_LO_N, heteroFlagellates_LO_P,
+     labileDOM_NO_C, labileDOM_NO_N, labileDOM_NO_P, semilabileDOC_NO_C, semirefractDOC_NO_C, particOrganDetritus_NO_C, particOrganDetritus_NO_N, particOrganDetritus_NO_P, particOrganDetritus_NO_Si, disInorgCarbon_IO_C, totalAlkalinity_IO] = set_initial_conditions()
 
     # init_save_bfm()
 
@@ -181,7 +181,7 @@ def set_initial_conditions():
     nanoflagellates_LO_C, microzoo_LO_C, particOrganDetritus_NO_C, labileDOM_NO_C, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, disOxygen_IO_O = read_bfm_input()
 
     disInorgCarbon_IO_C = disInorgCarbon_IO_C0 * np.ones(vertical_layers)
-    o3h = o3h0 * np.ones(vertical_layers)
+    totalAlkalinity_IO = totalAlkalinity_IO0 * np.ones(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   Pelagic nutrients (mMol / m3)
@@ -327,13 +327,13 @@ def set_initial_conditions():
     #   Heterotrophic flagellates (respectively mg C/m3 mMol N/m3 mMol P/m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if calcmicrozooplankton[1]:
-        z6c = z6c0 * np.ones(vertical_layers)
-        z6n = z6c * p_nRc
-        z6p = z6c * p_pRc
+        heteroFlagellates_LO_C = heteroFlagellates_LO_C0 * np.ones(vertical_layers)
+        heteroFlagellates_LO_N = heteroFlagellates_LO_C * p_nRc
+        heteroFlagellates_LO_P = heteroFlagellates_LO_C * p_pRc
     else:
-        z6c = np.zeros(vertical_layers)
-        z6n = np.zeros(vertical_layers)
-        z6p = np.zeros(vertical_layers)
+        heteroFlagellates_LO_C = np.zeros(vertical_layers)
+        heteroFlagellates_LO_N = np.zeros(vertical_layers)
+        heteroFlagellates_LO_P = np.zeros(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   State variables for pelagic bacteria model B1
@@ -457,8 +457,8 @@ def set_initial_conditions():
 
     return [disOxygen_IO_O, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, o4n, silicate_IO_Si, reductEquiv_IO_R, pelBacteria_LO_C, pelBacteria_LO_N, pelBacteria_LO_P,
             diatoms_LO_C, diatoms_LO_N, diatoms_LO_P, diatoms_LO_Chl, diatoms_LO_Si, nanoflagellates_LO_C, nanoflagellates_LO_N, nanoflagellates_LO_P, nanoflagellates_LO_Chl, picophyto_LO_C, picophyto_LO_N, picophyto_LO_P, picophyto_LO_Chl, largephyto_LO_C, largephyto_LO_N, largephyto_LO_P, largephyto_LO_Chl,
-            carnivMesozoo_LO_C, carnivMesozoo_LO_N, carnivMesozoo_LO_P, omnivMesozoo_LO_C, omnivMesozoo_LO_N, omnivMesozoo_LO_P, microzoo_LO_C, microzoo_LO_N, microzoo_LO_P, z6c, z6n, z6p,
-            labileDOM_NO_C, labileDOM_NO_N, labileDOM_NO_P, semilabileDOC_NO_C, semirefractDOC_NO_C, particOrganDetritus_NO_C, particOrganDetritus_NO_N, particOrganDetritus_NO_P, particOrganDetritus_NO_Si, disInorgCarbon_IO_C, o3h]
+            carnivMesozoo_LO_C, carnivMesozoo_LO_N, carnivMesozoo_LO_P, omnivMesozoo_LO_C, omnivMesozoo_LO_N, omnivMesozoo_LO_P, microzoo_LO_C, microzoo_LO_N, microzoo_LO_P, heteroFlagellates_LO_C, heteroFlagellates_LO_N, heteroFlagellates_LO_P,
+            labileDOM_NO_C, labileDOM_NO_N, labileDOM_NO_P, semilabileDOC_NO_C, semirefractDOC_NO_C, particOrganDetritus_NO_C, particOrganDetritus_NO_N, particOrganDetritus_NO_P, particOrganDetritus_NO_Si, disInorgCarbon_IO_C, totalAlkalinity_IO]
 
 
 # UPDATED VARIABLE NAMES    -    NAME_TYPE_CONSTITUENT

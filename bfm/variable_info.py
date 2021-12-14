@@ -197,15 +197,15 @@ def set_variable_info_bfm():
     variable_names[35] = "Microzooplankton"
     variable_units[35] = "mmol P/m3"
 
-    variable_abbrev[36] = "Z6c"
+    variable_abbrev[36] = "heteroFlagellates_LO_C"
     variable_names[36] = "Heterotrophic Nanoflagellates (HNAN)"
     variable_units[36] = "mg C/m3"
 
-    variable_abbrev[37] = "Z6n"
+    variable_abbrev[37] = "heteroFlagellates_LO_N"
     variable_names[37] = "Heterotrophic Nanoflagellates (HNAN)"
     variable_units[37] = "mmol N/m3"
 
-    variable_abbrev[38] = "Z6p"
+    variable_abbrev[38] = "heteroFlagellates_LO_P"
     variable_names[38] = "Heterotrophic Nanoflagellates (HNAN)"
     variable_units[38] = "mmol P/m3"
 
@@ -249,7 +249,7 @@ def set_variable_info_bfm():
     variable_names[48] = "Dissolved Inorganic Carbon"
     variable_units[48] = "mg C/m3"
 
-    variable_abbrev[49] = "O3h"
+    variable_abbrev[49] = "totalAlkalinity_IO"
     variable_names[49] = "Dissolved Inorganic Carbon"
     variable_units[49] = "mmol eq/m3"
 
@@ -649,23 +649,23 @@ def set_variable_info_bfm():
     variable_names[148] = "large phytoplankton grazing by microzooplankton"
     variable_units[148] = "mg C/m3/d"
 
-    variable_abbrev[149] = "fP1Z6c"
+    variable_abbrev[149] = "fP1heteroFlagellates_LO_C"
     variable_names[149] = "diatom grazing by heterotrophic nanoflagellates"
     variable_units[149] = "mg C/m3/d"
 
-    variable_abbrev[150] = "fP2Z6c"
+    variable_abbrev[150] = "fP2heteroFlagellates_LO_C"
     variable_names[150] = "flagellates grazing by heterotrophic nanoflagellates"
     variable_units[150] = "mg C/m3/d"
 
-    variable_abbrev[151] = "fP3Z6c"
+    variable_abbrev[151] = "fP3heteroFlagellates_LO_C"
     variable_names[151] = "picophytoplankton grazing by heterotrophic nanoflagellates"
     variable_units[151] = "mg C/m3/d"
 
-    variable_abbrev[152] = "fP4Z6c"
+    variable_abbrev[152] = "fP4heteroFlagellates_LO_C"
     variable_names[152] = "large phytoplankton grazing by heterotrophic nanoflagellates"
     variable_units[152] = "mg C/m3/d"
 
-    variable_abbrev[153] = "fB1Z6c"
+    variable_abbrev[153] = "fB1heteroFlagellates_LO_C"
     variable_names[153] = "bacterial grazing by heterotrophic nanoflagellates"
     variable_units[153] = "mg C/m3/d"
 
@@ -931,15 +931,15 @@ def set_variable_info_bfm():
     variable_names[218] = "flux of Microzooplankton at SURFACE"
     variable_units[218] = "mmol P/m2/day"
 
-    variable_abbrev[219] = "jsurZ6c"
+    variable_abbrev[219] = "jsurheteroFlagellates_LO_C"
     variable_names[219] = "flux of Heterotrophic Nanoflagellates (HNAN) at SURFACE"
     variable_units[219] = "mg C/m2/day"
 
-    variable_abbrev[220] = "jsurZ6n"
+    variable_abbrev[220] = "jsurheteroFlagellates_LO_N"
     variable_names[220] = "flux of Heterotrophic Nanoflagellates (HNAN) at SURFACE"
     variable_units[220] = "mmol N/m2/day"
 
-    variable_abbrev[221] = "jsurZ6p"
+    variable_abbrev[221] = "jsurheteroFlagellates_LO_P"
     variable_names[221] = "flux of Heterotrophic Nanoflagellates (HNAN) at SURFACE"
     variable_units[221] = "mmol P/m2/day"
 
@@ -983,7 +983,7 @@ def set_variable_info_bfm():
     variable_names[231] = "flux of Dissolved Inorganic Carbon at SURFACE"
     variable_units[231] = "mg C/m2/day"
 
-    variable_abbrev[232] = "jsurO3h"
+    variable_abbrev[232] = "jsurtotalAlkalinity_IO"
     variable_names[232] = "flux of Dissolved Inorganic Carbon at SURFACE"
     variable_units[232] = "mmol eq/m2/day"
 
@@ -1132,15 +1132,15 @@ def set_variable_info_bfm():
     variable_names[268] = "flux of Microzooplankton at BOTTOM"
     variable_units[268] = "mmol P/m2/day"
 
-    variable_abbrev[269] = "jbotZ6c"
+    variable_abbrev[269] = "jbotheteroFlagellates_LO_C"
     variable_names[269] = "flux of Heterotrophic Nanoflagellates (HNAN) at BOTTOM"
     variable_units[269] = "mg C/m2/day"
 
-    variable_abbrev[270] = "jbotZ6n"
+    variable_abbrev[270] = "jbotheteroFlagellates_LO_N"
     variable_names[270] = "flux of Heterotrophic Nanoflagellates (HNAN) at BOTTOM"
     variable_units[270] = "mmol N/m2/day"
 
-    variable_abbrev[271] = "jbotZ6p"
+    variable_abbrev[271] = "jbotheteroFlagellates_LO_P"
     variable_names[271] = "flux of Heterotrophic Nanoflagellates (HNAN) at BOTTOM"
     variable_units[271] = "mmol P/m2/day"
 
@@ -1184,7 +1184,7 @@ def set_variable_info_bfm():
     variable_names[281] = "flux of Dissolved Inorganic Carbon at BOTTOM"
     variable_units[281] = "mg C/m2/day"
 
-    variable_abbrev[282] = "jbotO3h"
+    variable_abbrev[282] = "jbottotalAlkalinity_IO"
     variable_names[282] = "flux of Dissolved Inorganic Carbon at BOTTOM"
     variable_units[282] = "mmol eq/m2/day"
 
@@ -1333,15 +1333,15 @@ def set_variable_info_bfm():
     variable_names[318] = "flux of Microzooplankton at RIVER"
     variable_units[318] = "mmol P/m2/day"
 
-    variable_abbrev[319] = "jrivZ6c"
+    variable_abbrev[319] = "jrivheteroFlagellates_LO_C"
     variable_names[319] = "flux of Heterotrophic Nanoflagellates (HNAN) at RIVER"
     variable_units[319] = "mg C/m2/day"
 
-    variable_abbrev[320] = "jrivZ6n"
+    variable_abbrev[320] = "jrivheteroFlagellates_LO_N"
     variable_names[320] = "flux of Heterotrophic Nanoflagellates (HNAN) at RIVER"
     variable_units[320] = "mmol N/m2/day"
 
-    variable_abbrev[321] = "jrivZ6p"
+    variable_abbrev[321] = "jrivheteroFlagellates_LO_P"
     variable_names[321] = "flux of Heterotrophic Nanoflagellates (HNAN) at RIVER"
     variable_units[321] = "mmol P/m2/day"
 
@@ -1385,7 +1385,7 @@ def set_variable_info_bfm():
     variable_names[331] = "flux of Dissolved Inorganic Carbon at RIVER"
     variable_units[331] = "mg C/m2/day"
 
-    variable_abbrev[332] = "jrivO3h"
+    variable_abbrev[332] = "jrivtotalAlkalinity_IO"
     variable_names[332] = "flux of Dissolved Inorganic Carbon at RIVER"
     variable_units[332] = "mmol eq/m2/day"
 

@@ -30,9 +30,9 @@ def get_mesozoo_predation_terms(conc, mesozoo3_parameters, mesozoo4_parameters, 
     microzoo_LO_C = conc[33]             # Microzooplankton carbon (mg C m^-3)
     microzoo_LO_N = conc[34]             # Microzooplankton nitrogen (mmol N m^-3)
     microzoo_LO_P = conc[35]             # Microzooplankton phosphate (mmol P m^-3)
-    z6c = conc[36]             # Heterotrophic flagellates carbon (mg C m^-3)
-    z6n = conc[37]             # Heterotrophic flagellates nitrogen (mmol N m^-3)
-    z6p = conc[38]             # Heterotrophic flagellates phosphate (mmol P m^-3)
+    heteroFlagellates_LO_C = conc[36]             # Heterotrophic flagellates carbon (mg C m^-3)
+    heteroFlagellates_LO_N = conc[37]             # Heterotrophic flagellates nitrogen (mmol N m^-3)
+    heteroFlagellates_LO_P = conc[38]             # Heterotrophic flagellates phosphate (mmol P m^-3)
     
     # concentration ratios
     conc_ratio_n = {
@@ -43,7 +43,7 @@ def get_mesozoo_predation_terms(conc, mesozoo3_parameters, mesozoo4_parameters, 
             "z3": get_concentration_ratio(carnivMesozoo_LO_N, carnivMesozoo_LO_C, constant_parameters["p_small"]),
             "z4": get_concentration_ratio(omnivMesozoo_LO_N, omnivMesozoo_LO_C, constant_parameters["p_small"]),
             "z5": get_concentration_ratio(microzoo_LO_N, microzoo_LO_C, constant_parameters["p_small"]),
-            "z6": get_concentration_ratio(z6n, z6c, constant_parameters["p_small"])
+            "z6": get_concentration_ratio(heteroFlagellates_LO_N, heteroFlagellates_LO_C, constant_parameters["p_small"])
             }
     conc_ratio_p = {
             "p1": get_concentration_ratio(diatoms_LO_P, diatoms_LO_C, constant_parameters["p_small"]),
@@ -53,7 +53,7 @@ def get_mesozoo_predation_terms(conc, mesozoo3_parameters, mesozoo4_parameters, 
             "z3": get_concentration_ratio(carnivMesozoo_LO_P, carnivMesozoo_LO_C, constant_parameters["p_small"]),
             "z4": get_concentration_ratio(omnivMesozoo_LO_P, omnivMesozoo_LO_C, constant_parameters["p_small"]),
             "z5": get_concentration_ratio(microzoo_LO_P, microzoo_LO_C, constant_parameters["p_small"]),
-            "z6": get_concentration_ratio(z6p, z6c, constant_parameters["p_small"])
+            "z6": get_concentration_ratio(heteroFlagellates_LO_P, heteroFlagellates_LO_C, constant_parameters["p_small"])
             }
     
     # Zooplankton temperature regulating factor
@@ -71,8 +71,8 @@ def get_mesozoo_predation_terms(conc, mesozoo3_parameters, mesozoo4_parameters, 
     available_mesozoo_c4 = (zoo_availability_parameters["del_z4z3"]*carnivMesozoo_LO_C) + (zoo_availability_parameters["del_z4z4"]*omnivMesozoo_LO_C)
     
     # Microzooplankton LFG
-    available_microzoo_c3 = (zoo_availability_parameters["del_z3z5"]*microzoo_LO_C) + (zoo_availability_parameters["del_z3z6"]*z6c)
-    available_microzoo_c4 = (zoo_availability_parameters["del_z4z5"]*microzoo_LO_C) + (zoo_availability_parameters["del_z4z6"]*z6c)
+    available_microzoo_c3 = (zoo_availability_parameters["del_z3z5"]*microzoo_LO_C) + (zoo_availability_parameters["del_z3z6"]*heteroFlagellates_LO_C)
+    available_microzoo_c4 = (zoo_availability_parameters["del_z4z5"]*microzoo_LO_C) + (zoo_availability_parameters["del_z4z6"]*heteroFlagellates_LO_C)
 #    sys.exit(available_microzoo_c4)
     
     # Total potential food (from Meso.F90 'rumc')
@@ -96,7 +96,7 @@ def get_mesozoo_predation_terms(conc, mesozoo3_parameters, mesozoo4_parameters, 
             "z3": specific_uptake_rate_z3*zoo_availability_parameters["del_z3z3"]*carnivMesozoo_LO_C,
             "z4": specific_uptake_rate_z3*zoo_availability_parameters["del_z3z4"]*omnivMesozoo_LO_C,
             "z5": specific_uptake_rate_z3*zoo_availability_parameters["del_z3z5"]*microzoo_LO_C,
-            "z6": specific_uptake_rate_z3*zoo_availability_parameters["del_z3z6"]*z6c
+            "z6": specific_uptake_rate_z3*zoo_availability_parameters["del_z3z6"]*heteroFlagellates_LO_C
             }
 
     domnivMesozoo_LO_Cdt_prd = {
@@ -107,7 +107,7 @@ def get_mesozoo_predation_terms(conc, mesozoo3_parameters, mesozoo4_parameters, 
             "z3": specific_uptake_rate_z4*zoo_availability_parameters["del_z4z3"]*carnivMesozoo_LO_C,
             "z4": specific_uptake_rate_z4*zoo_availability_parameters["del_z4z4"]*omnivMesozoo_LO_C,
             "z5": specific_uptake_rate_z4*zoo_availability_parameters["del_z4z5"]*microzoo_LO_C,
-            "z6": specific_uptake_rate_z4*zoo_availability_parameters["del_z4z6"]*z6c
+            "z6": specific_uptake_rate_z4*zoo_availability_parameters["del_z4z6"]*heteroFlagellates_LO_C
             }
     # Total ingestion rate
     ic3 = 0.0
@@ -164,9 +164,9 @@ def get_microzoo_predation_terms(conc, microzoo5_parameters, microzoo6_parameter
     microzoo_LO_C = conc[33]             # Microzooplankton carbon (mg C m^-3)
     microzoo_LO_N = conc[34]             # Microzooplankton nitrogen (mmol N m^-3)
     microzoo_LO_P = conc[35]             # Microzooplankton phosphate (mmol P m^-3)
-    z6c = conc[36]             # Heterotrophic flagellates carbon (mg C m^-3)
-    z6n = conc[37]             # Heterotrophic flagellates nitrogen (mmol N m^-3)
-    z6p = conc[38]             # Heterotrophic flagellates phosphate (mmol P m^-3)
+    heteroFlagellates_LO_C = conc[36]             # Heterotrophic flagellates carbon (mg C m^-3)
+    heteroFlagellates_LO_N = conc[37]             # Heterotrophic flagellates nitrogen (mmol N m^-3)
+    heteroFlagellates_LO_P = conc[38]             # Heterotrophic flagellates phosphate (mmol P m^-3)
     
     # concentration ratios
     conc_ratio_n = {
@@ -176,7 +176,7 @@ def get_microzoo_predation_terms(conc, microzoo5_parameters, microzoo6_parameter
             "p3": get_concentration_ratio(picophyto_LO_N, picophyto_LO_C, constant_parameters["p_small"]),
             "p4": get_concentration_ratio(largephyto_LO_N, largephyto_LO_C, constant_parameters["p_small"]),
             "z5": get_concentration_ratio(microzoo_LO_N, microzoo_LO_C, constant_parameters["p_small"]),
-            "z6": get_concentration_ratio(z6n, z6c, constant_parameters["p_small"])
+            "z6": get_concentration_ratio(heteroFlagellates_LO_N, heteroFlagellates_LO_C, constant_parameters["p_small"])
             }
     
     conc_ratio_p = {
@@ -186,7 +186,7 @@ def get_microzoo_predation_terms(conc, microzoo5_parameters, microzoo6_parameter
             "p3": get_concentration_ratio(picophyto_LO_P, picophyto_LO_C, constant_parameters["p_small"]),
             "p4": get_concentration_ratio(largephyto_LO_P, largephyto_LO_C, constant_parameters["p_small"]),
             "z5": get_concentration_ratio(microzoo_LO_P, microzoo_LO_C, constant_parameters["p_small"]),
-            "z6": get_concentration_ratio(z6p, z6c, constant_parameters["p_small"])
+            "z6": get_concentration_ratio(heteroFlagellates_LO_P, heteroFlagellates_LO_C, constant_parameters["p_small"])
             }
     
     # Zooplankton temperature regulating factor
@@ -200,7 +200,7 @@ def get_microzoo_predation_terms(conc, microzoo5_parameters, microzoo6_parameter
             "p3": picophyto_LO_C/(picophyto_LO_C + microzoo5_parameters["mu_z"]),
             "p4": largephyto_LO_C/(largephyto_LO_C + microzoo5_parameters["mu_z"]),
             "z5": microzoo_LO_C/(microzoo_LO_C + microzoo5_parameters["mu_z"]),
-            "z6": z6c/(z6c + microzoo5_parameters["mu_z"])
+            "z6": heteroFlagellates_LO_C/(heteroFlagellates_LO_C + microzoo5_parameters["mu_z"])
             }
     
     capture_efficiencies_z6 = {
@@ -210,7 +210,7 @@ def get_microzoo_predation_terms(conc, microzoo5_parameters, microzoo6_parameter
             "p3": picophyto_LO_C/(picophyto_LO_C + microzoo6_parameters["mu_z"]),
             "p4": largephyto_LO_C/(largephyto_LO_C + microzoo6_parameters["mu_z"]),
             "z5": microzoo_LO_C/(microzoo_LO_C + microzoo6_parameters["mu_z"]),
-            "z6": z6c/(z6c + microzoo6_parameters["mu_z"])
+            "z6": heteroFlagellates_LO_C/(heteroFlagellates_LO_C + microzoo6_parameters["mu_z"])
             }
     
     # Calculate total potential food given the non-dim prey availability and capture efficiency
@@ -230,21 +230,21 @@ def get_microzoo_predation_terms(conc, microzoo5_parameters, microzoo6_parameter
                           (zoo_availability_parameters["del_carnivMesozoo_LO_P3"]*picophyto_LO_C*capture_efficiencies_z5["p3"]*conc_ratio_n["p3"]) + (zoo_availability_parameters["del_carnivMesozoo_LO_P4"]*largephyto_LO_C*capture_efficiencies_z5["p4"]*conc_ratio_n["p4"]))
     available_phyto_p5 = ((zoo_availability_parameters["del_microzoo_LO_P1"]*diatoms_LO_C*capture_efficiencies_z5["p1"]*conc_ratio_p["p1"]) + (zoo_availability_parameters["del_carnivMesozoo_LO_P2"]*nanoflagellates_LO_C*capture_efficiencies_z5["p2"]*conc_ratio_p["p2"]) + 
                           (zoo_availability_parameters["del_carnivMesozoo_LO_P3"]*picophyto_LO_C*capture_efficiencies_z5["p3"]*conc_ratio_p["p3"]) + (zoo_availability_parameters["del_carnivMesozoo_LO_P4"]*largephyto_LO_C*capture_efficiencies_z5["p4"]*conc_ratio_p["p4"]))
-    available_phyto_c6 = ((zoo_availability_parameters["del_z6p1"]*diatoms_LO_C*capture_efficiencies_z6["p1"]) + (zoo_availability_parameters["del_z6p2"]*nanoflagellates_LO_C*capture_efficiencies_z6["p2"]) + 
-                          (zoo_availability_parameters["del_z6p3"]*picophyto_LO_C*capture_efficiencies_z6["p3"]) + (zoo_availability_parameters["del_z6p4"]*largephyto_LO_C*capture_efficiencies_z6["p4"]))
-    available_phyto_n6 = ((zoo_availability_parameters["del_z6p1"]*diatoms_LO_C*capture_efficiencies_z6["p1"]*conc_ratio_n["p1"]) + (zoo_availability_parameters["del_z6p2"]*nanoflagellates_LO_C*capture_efficiencies_z6["p2"]*conc_ratio_n["p2"]) + 
-                          (zoo_availability_parameters["del_z6p3"]*picophyto_LO_C*capture_efficiencies_z6["p3"]*conc_ratio_n["p3"]) + (zoo_availability_parameters["del_z6p4"]*largephyto_LO_C*capture_efficiencies_z6["p4"]*conc_ratio_n["p4"]))
-    available_phyto_p6 = ((zoo_availability_parameters["del_z6p1"]*diatoms_LO_C*capture_efficiencies_z6["p1"]*conc_ratio_p["p1"]) + (zoo_availability_parameters["del_z6p2"]*nanoflagellates_LO_C*capture_efficiencies_z6["p2"]*conc_ratio_p["p2"]) + 
-                          (zoo_availability_parameters["del_z6p3"]*picophyto_LO_C*capture_efficiencies_z6["p3"]*conc_ratio_p["p3"]) + (zoo_availability_parameters["del_z6p4"]*largephyto_LO_C*capture_efficiencies_z6["p4"]*conc_ratio_p["p4"]))
+    available_phyto_c6 = ((zoo_availability_parameters["del_heteroFlagellates_LO_P1"]*diatoms_LO_C*capture_efficiencies_z6["p1"]) + (zoo_availability_parameters["del_heteroFlagellates_LO_P2"]*nanoflagellates_LO_C*capture_efficiencies_z6["p2"]) + 
+                          (zoo_availability_parameters["del_heteroFlagellates_LO_P3"]*picophyto_LO_C*capture_efficiencies_z6["p3"]) + (zoo_availability_parameters["del_heteroFlagellates_LO_P4"]*largephyto_LO_C*capture_efficiencies_z6["p4"]))
+    available_phyto_n6 = ((zoo_availability_parameters["del_heteroFlagellates_LO_P1"]*diatoms_LO_C*capture_efficiencies_z6["p1"]*conc_ratio_n["p1"]) + (zoo_availability_parameters["del_heteroFlagellates_LO_P2"]*nanoflagellates_LO_C*capture_efficiencies_z6["p2"]*conc_ratio_n["p2"]) + 
+                          (zoo_availability_parameters["del_heteroFlagellates_LO_P3"]*picophyto_LO_C*capture_efficiencies_z6["p3"]*conc_ratio_n["p3"]) + (zoo_availability_parameters["del_heteroFlagellates_LO_P4"]*largephyto_LO_C*capture_efficiencies_z6["p4"]*conc_ratio_n["p4"]))
+    available_phyto_p6 = ((zoo_availability_parameters["del_heteroFlagellates_LO_P1"]*diatoms_LO_C*capture_efficiencies_z6["p1"]*conc_ratio_p["p1"]) + (zoo_availability_parameters["del_heteroFlagellates_LO_P2"]*nanoflagellates_LO_C*capture_efficiencies_z6["p2"]*conc_ratio_p["p2"]) + 
+                          (zoo_availability_parameters["del_heteroFlagellates_LO_P3"]*picophyto_LO_C*capture_efficiencies_z6["p3"]*conc_ratio_p["p3"]) + (zoo_availability_parameters["del_heteroFlagellates_LO_P4"]*largephyto_LO_C*capture_efficiencies_z6["p4"]*conc_ratio_p["p4"]))
     
     # Phytoplankton LFG: Food availability of prey Microzooplankton for predator Z5 and Z6
-    available_microzoo_c5 = (zoo_availability_parameters["del_z5z5"]*microzoo_LO_C*capture_efficiencies_z5["z5"]) + (zoo_availability_parameters["del_z5z6"]*z6c*capture_efficiencies_z5["z6"])
-    available_microzoo_n5 = (zoo_availability_parameters["del_z5z5"]*microzoo_LO_C*capture_efficiencies_z5["z5"]*conc_ratio_n["z5"]) + (zoo_availability_parameters["del_z5z6"]*z6c*capture_efficiencies_z5["z6"]*conc_ratio_n["z6"])
-    available_microzoo_p5 = (zoo_availability_parameters["del_z5z5"]*microzoo_LO_C*capture_efficiencies_z5["z5"]*conc_ratio_p["z5"]) + (zoo_availability_parameters["del_z5z6"]*z6c*capture_efficiencies_z5["z6"]*conc_ratio_p["z6"])
+    available_microzoo_c5 = (zoo_availability_parameters["del_z5z5"]*microzoo_LO_C*capture_efficiencies_z5["z5"]) + (zoo_availability_parameters["del_z5z6"]*heteroFlagellates_LO_C*capture_efficiencies_z5["z6"])
+    available_microzoo_n5 = (zoo_availability_parameters["del_z5z5"]*microzoo_LO_C*capture_efficiencies_z5["z5"]*conc_ratio_n["z5"]) + (zoo_availability_parameters["del_z5z6"]*heteroFlagellates_LO_C*capture_efficiencies_z5["z6"]*conc_ratio_n["z6"])
+    available_microzoo_p5 = (zoo_availability_parameters["del_z5z5"]*microzoo_LO_C*capture_efficiencies_z5["z5"]*conc_ratio_p["z5"]) + (zoo_availability_parameters["del_z5z6"]*heteroFlagellates_LO_C*capture_efficiencies_z5["z6"]*conc_ratio_p["z6"])
     
-    available_microzoo_c6 = (zoo_availability_parameters["del_z6z5"]*microzoo_LO_C*capture_efficiencies_z6["z5"]) + (zoo_availability_parameters["del_z6z6"]*z6c*capture_efficiencies_z6["z6"])
-    available_microzoo_n6 = (zoo_availability_parameters["del_z6z5"]*microzoo_LO_C*capture_efficiencies_z6["z5"]**conc_ratio_n["z5"]) + (zoo_availability_parameters["del_z6z6"]*z6c*capture_efficiencies_z6["z6"]**conc_ratio_n["z6"])
-    available_microzoo_p6 = (zoo_availability_parameters["del_z6z5"]*microzoo_LO_C*capture_efficiencies_z6["z5"]**conc_ratio_p["z5"]) + (zoo_availability_parameters["del_z6z6"]*z6c*capture_efficiencies_z6["z6"]**conc_ratio_p["z6"])
+    available_microzoo_c6 = (zoo_availability_parameters["del_z6z5"]*microzoo_LO_C*capture_efficiencies_z6["z5"]) + (zoo_availability_parameters["del_z6z6"]*heteroFlagellates_LO_C*capture_efficiencies_z6["z6"])
+    available_microzoo_n6 = (zoo_availability_parameters["del_z6z5"]*microzoo_LO_C*capture_efficiencies_z6["z5"]**conc_ratio_n["z5"]) + (zoo_availability_parameters["del_z6z6"]*heteroFlagellates_LO_C*capture_efficiencies_z6["z6"]**conc_ratio_n["z6"])
+    available_microzoo_p6 = (zoo_availability_parameters["del_z6z5"]*microzoo_LO_C*capture_efficiencies_z6["z5"]**conc_ratio_p["z5"]) + (zoo_availability_parameters["del_z6z6"]*heteroFlagellates_LO_C*capture_efficiencies_z6["z6"]**conc_ratio_p["z6"])
     
     # Total potential food (from MicroZoo.F90 'rumc', 'rumn', 'rump')
     f_c5 = available_bact_c5 + available_phyto_c5 + available_microzoo_c5
@@ -256,7 +256,7 @@ def get_microzoo_predation_terms(conc, microzoo5_parameters, microzoo6_parameter
     
     # Calculate total food uptake rate (from MicroZoo.F90 line 243 'rugc')
     total_uptake_rate_z5 = fTZ*microzoo5_parameters["r_Z0"]*(f_c5/(f_c5 + microzoo5_parameters["h_Z_F"]))*microzoo_LO_C
-    total_uptake_rate_z6 = fTZ*microzoo6_parameters["r_Z0"]*(f_c6/(f_c6 + microzoo6_parameters["h_Z_F"]))*z6c
+    total_uptake_rate_z6 = fTZ*microzoo6_parameters["r_Z0"]*(f_c6/(f_c6 + microzoo6_parameters["h_Z_F"]))*heteroFlagellates_LO_C
     
     # Calculate specific uptake rate considering potentially available food (from MicroZoo.F90 line 244 'sut')
     specific_uptake_rate_z5 = total_uptake_rate_z5/(f_c5 + constant_parameters["p_small"])
@@ -270,17 +270,17 @@ def get_microzoo_predation_terms(conc, microzoo5_parameters, microzoo6_parameter
             "p3": specific_uptake_rate_z5*zoo_availability_parameters["del_microzoo_LO_P3"]*picophyto_LO_C*capture_efficiencies_z5["p3"],
             "p4": specific_uptake_rate_z5*zoo_availability_parameters["del_microzoo_LO_P4"]*largephyto_LO_C*capture_efficiencies_z5["p4"],
             "z5": specific_uptake_rate_z5*zoo_availability_parameters["del_z5z5"]*microzoo_LO_C*capture_efficiencies_z5["z5"],
-            "z6": specific_uptake_rate_z5*zoo_availability_parameters["del_z5z6"]*z6c*capture_efficiencies_z5["z6"]
+            "z6": specific_uptake_rate_z5*zoo_availability_parameters["del_z5z6"]*heteroFlagellates_LO_C*capture_efficiencies_z5["z6"]
             }
         
-    dZ6cdt_prd = {
+    dheteroFlagellates_LO_Cdt_prd = {
             "b1": specific_uptake_rate_z6*zoo_availability_parameters["del_z6b1"]*pelBacteria_LO_C*capture_efficiencies_z6["b1"],
-            "p1": specific_uptake_rate_z6*zoo_availability_parameters["del_z6p1"]*diatoms_LO_C*capture_efficiencies_z6["p1"],
-            "p2": specific_uptake_rate_z6*zoo_availability_parameters["del_z6p2"]*nanoflagellates_LO_C*capture_efficiencies_z6["p2"],
-            "p3": specific_uptake_rate_z6*zoo_availability_parameters["del_z6p3"]*picophyto_LO_C*capture_efficiencies_z6["p3"],
-            "p4": specific_uptake_rate_z6*zoo_availability_parameters["del_z6p4"]*largephyto_LO_C*capture_efficiencies_z6["p4"],
+            "p1": specific_uptake_rate_z6*zoo_availability_parameters["del_heteroFlagellates_LO_P1"]*diatoms_LO_C*capture_efficiencies_z6["p1"],
+            "p2": specific_uptake_rate_z6*zoo_availability_parameters["del_heteroFlagellates_LO_P2"]*nanoflagellates_LO_C*capture_efficiencies_z6["p2"],
+            "p3": specific_uptake_rate_z6*zoo_availability_parameters["del_heteroFlagellates_LO_P3"]*picophyto_LO_C*capture_efficiencies_z6["p3"],
+            "p4": specific_uptake_rate_z6*zoo_availability_parameters["del_heteroFlagellates_LO_P4"]*largephyto_LO_C*capture_efficiencies_z6["p4"],
             "z5": specific_uptake_rate_z6*zoo_availability_parameters["del_z6z5"]*microzoo_LO_C*capture_efficiencies_z6["z5"],
-            "z6": specific_uptake_rate_z6*zoo_availability_parameters["del_z6z6"]*z6c*capture_efficiencies_z6["z6"]
+            "z6": specific_uptake_rate_z6*zoo_availability_parameters["del_z6z6"]*heteroFlagellates_LO_C*capture_efficiencies_z6["z6"]
             }
     
     # Total ingestion rate
@@ -297,9 +297,9 @@ def get_microzoo_predation_terms(conc, microzoo5_parameters, microzoo6_parameter
     in6 = 0.0
     ip6 = 0.0
     
-    for key in dZ6cdt_prd:
-        ic6 += dZ6cdt_prd[key]
-        in6 += dZ6cdt_prd[key]*conc_ratio_n[key]
-        ip6 += dZ6cdt_prd[key]*conc_ratio_p[key]
+    for key in dheteroFlagellates_LO_Cdt_prd:
+        ic6 += dheteroFlagellates_LO_Cdt_prd[key]
+        in6 += dheteroFlagellates_LO_Cdt_prd[key]*conc_ratio_n[key]
+        ip6 += dheteroFlagellates_LO_Cdt_prd[key]*conc_ratio_p[key]
     
-    return dmicrozoo_LO_Cdt_prd, dZ6cdt_prd, ic5, in5, ip5, ic6, in6, ip6
+    return dmicrozoo_LO_Cdt_prd, dheteroFlagellates_LO_Cdt_prd, ic5, in5, ip5, ic6, in6, ip6

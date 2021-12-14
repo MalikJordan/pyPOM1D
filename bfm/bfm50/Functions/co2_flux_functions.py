@@ -8,7 +8,7 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
     phospate_IO_P = conc[1]              # Phosphate (mmol P m^-3)
     silicate_IO_Si = conc[5]              # Silicate (mmol Si m^-3)
     disInorgCarbon_IO_C = conc[48]             # Dissolved inorganic carbon(mg C m^-3)
-    o3h = conc[49]             # Total alkalinity (mmol Eq m^-3)
+    totalAlkalinity_IO = conc[49]             # Total alkalinity (mmol Eq m^-3)
     
     # Calculate Schmidt number, ratio between the kinematic viscosity and the molecular diffusivity of carbon dioxide
     schmidt_number_disInorgCarbon_IO_C = (co2_flux_parameters["c1"] - co2_flux_parameters["c2"]*temper + co2_flux_parameters["c3"]*(temper**2) - co2_flux_parameters["c4"]*(temper**3))
@@ -69,11 +69,11 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
     pt = 0.0
     sit = 0.0
     
-    # change DIC (o3h) units from mg C m^-3 to mol kg^-1
+    # change DIC (totalAlkalinity_IO) units from mg C m^-3 to mol kg^-1
     ldic = disInorgCarbon_IO_C*constant_parameters["omega_c"]*constant_parameters["g_per_mg"]/rho
     
     # convert TA from inits of mmol eq m^-3 to mol eq kg^-1
-    alk = o3h/rho*constant_parameters["mol_per_mmol"]
+    alk = totalAlkalinity_IO/rho*constant_parameters["mol_per_mmol"]
     
     # calculate Acidity constants
     # constants according to Mehrbach et al. (1973) as refitted by Dickson and Millero (1987) 
