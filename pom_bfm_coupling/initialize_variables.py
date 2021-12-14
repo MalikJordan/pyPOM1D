@@ -4,7 +4,7 @@ from inputs import params_POMBFM
 from bfm.constants import num_d3_box_states, num_d2_box_states_ben
 from bfm.variable_info import set_variable_info_bfm
 from os import path
-from inputs.namelist_input_data import disOxygen_IO_O0, phospate_IO_P0, nitrate_IO_N0, ammonium_IO_N0, silicate_IO_Si0, reductEquiv_IO_R0, disInorgCarbon_IO_C0, totalAlkalinity_IO0, o4n0, diatoms_LO_C0, nanoflagellates_LO_C0, picophyto_LO_C0, largephyto_LO_C0, \
+from inputs.namelist_input_data import disOxygen_IO_O0, phospate_IO_P0, nitrate_IO_N0, ammonium_IO_N0, silicate_IO_Si0, reductEquiv_IO_R0, disInorgCarbon_IO_C0, totalAlkalinity_IO0, nitrogenSink0, diatoms_LO_C0, nanoflagellates_LO_C0, picophyto_LO_C0, largephyto_LO_C0, \
     carnivMesozoo_LO_C0, omnivMesozoo_LO_C0, microzoo_LO_C0, heteroFlagellates_LO_C0, pelBacteria_LO_C0, labileDOM_NO_C0, semilabileDOC_NO_C0, semirefractDOC_NO_C0, particOrganDetritus_NO_C0, \
     y1c0, y2c0, y3c0, y4c0, y5c0, h1c0, h2c0, k1p0, k11p0, k21p0, k4n0, k14n0, k24n0, k3n0, k5s0, k6r0, \
     d1m0, d2m0, d6m0, d7m0, d8m0, d9m0, q6c0, q6n0, q6p0, q6s0, q1c0, q11c0, g2o0, g3c0, g13c0, g23c0, g3h0, g13h0, g23h0, \
@@ -83,7 +83,7 @@ def initialize_bfm_in_pom(vertical_grid):
         d2stateb_ben = np.zeros((num_d2_box_states_ben,num_boxes_xy))
 
     # Define initial conditions
-    [disOxygen_IO_O, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, o4n, silicate_IO_Si, reductEquiv_IO_R, pelBacteria_LO_C, pelBacteria_LO_N, pelBacteria_LO_P,
+    [disOxygen_IO_O, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, nitrogenSink, silicate_IO_Si, reductEquiv_IO_R, pelBacteria_LO_C, pelBacteria_LO_N, pelBacteria_LO_P,
      diatoms_LO_C, diatoms_LO_N, diatoms_LO_P, diatoms_LO_Chl, diatoms_LO_Si, nanoflagellates_LO_C, nanoflagellates_LO_N, nanoflagellates_LO_P, nanoflagellates_LO_Chl, picophyto_LO_C, picophyto_LO_N, picophyto_LO_P, picophyto_LO_Chl, largephyto_LO_C, largephyto_LO_N, largephyto_LO_P, largephyto_LO_Chl,
      carnivMesozoo_LO_C, carnivMesozoo_LO_N, carnivMesozoo_LO_P, omnivMesozoo_LO_C, omnivMesozoo_LO_N, omnivMesozoo_LO_P, microzoo_LO_C, microzoo_LO_N, microzoo_LO_P, heteroFlagellates_LO_C, heteroFlagellates_LO_N, heteroFlagellates_LO_P,
      labileDOM_NO_C, labileDOM_NO_N, labileDOM_NO_P, semilabileDOC_NO_C, semirefractDOC_NO_C, particOrganDetritus_NO_C, particOrganDetritus_NO_N, particOrganDetritus_NO_P, particOrganDetritus_NO_Si, disInorgCarbon_IO_C, totalAlkalinity_IO] = set_initial_conditions()
@@ -187,7 +187,7 @@ def set_initial_conditions():
     #   Pelagic nutrients (mMol / m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     silicate_IO_Si = silicate_IO_Si0 * np.ones(vertical_layers)
-    o4n = o4n0 * np.ones(vertical_layers)
+    nitrogenSink = nitrogenSink0 * np.ones(vertical_layers)
     reductEquiv_IO_R = reductEquiv_IO_R0 * np.ones(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -452,13 +452,74 @@ def set_initial_conditions():
         d8m = d8m0 * np.ones(vertical_layers)
         d9m = d9m0 * np.ones(vertical_layers)
 
+    # Fill matrix with bfm variable data
+    bfm_variables = np.zeros((vertical_layers,50))
 
+    bfm_variables[:,0] = disOxygen_IO_O[:]
+    bfm_variables[:,1] = phospate_IO_P[:]
+    bfm_variables[:,2] = nitrate_IO_N[:]
+    bfm_variables[:,3] = ammonium_IO_N[:]
+    bfm_variables[:,4] = nitrogenSink[:]
+    bfm_variables[:,5] = silicate_IO_Si[:]
+    bfm_variables[:,6] = reductEquiv_IO_R[:]
 
+    bfm_variables[:,7] = pelBacteria_LO_C[:]
+    bfm_variables[:,8] = pelBacteria_LO_N[:]
+    bfm_variables[:,9] = pelBacteria_LO_P[:]
+ 
+    bfm_variables[:,10] = diatoms_LO_C[:]
+    bfm_variables[:,11] = diatoms_LO_N[:]
+    bfm_variables[:,12] = diatoms_LO_P[:]
+    bfm_variables[:,13] = diatoms_LO_Chl[:]
+    bfm_variables[:,14] = diatoms_LO_Si[:]
+ 
+    bfm_variables[:,15] = nanoflagellates_LO_C[:]
+    bfm_variables[:,16] = nanoflagellates_LO_N[:]
+    bfm_variables[:,17] = nanoflagellates_LO_P[:]
+    bfm_variables[:,18] = nanoflagellates_LO_Chl[:]
 
-    return [disOxygen_IO_O, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, o4n, silicate_IO_Si, reductEquiv_IO_R, pelBacteria_LO_C, pelBacteria_LO_N, pelBacteria_LO_P,
-            diatoms_LO_C, diatoms_LO_N, diatoms_LO_P, diatoms_LO_Chl, diatoms_LO_Si, nanoflagellates_LO_C, nanoflagellates_LO_N, nanoflagellates_LO_P, nanoflagellates_LO_Chl, picophyto_LO_C, picophyto_LO_N, picophyto_LO_P, picophyto_LO_Chl, largephyto_LO_C, largephyto_LO_N, largephyto_LO_P, largephyto_LO_Chl,
-            carnivMesozoo_LO_C, carnivMesozoo_LO_N, carnivMesozoo_LO_P, omnivMesozoo_LO_C, omnivMesozoo_LO_N, omnivMesozoo_LO_P, microzoo_LO_C, microzoo_LO_N, microzoo_LO_P, heteroFlagellates_LO_C, heteroFlagellates_LO_N, heteroFlagellates_LO_P,
-            labileDOM_NO_C, labileDOM_NO_N, labileDOM_NO_P, semilabileDOC_NO_C, semirefractDOC_NO_C, particOrganDetritus_NO_C, particOrganDetritus_NO_N, particOrganDetritus_NO_P, particOrganDetritus_NO_Si, disInorgCarbon_IO_C, totalAlkalinity_IO]
+    bfm_variables[:,19] = picophyto_LO_C[:]
+    bfm_variables[:,20] = picophyto_LO_N[:]
+    bfm_variables[:,21] = picophyto_LO_P[:]
+    bfm_variables[:,22] = picophyto_LO_Chl[:]
+
+    bfm_variables[:,23] = largephyto_LO_C[:]
+    bfm_variables[:,24] = largephyto_LO_N[:]
+    bfm_variables[:,25] = largephyto_LO_P[:]
+    bfm_variables[:,26] = largephyto_LO_Chl[:]
+
+    bfm_variables[:,27] = carnivMesozoo_LO_C[:]
+    bfm_variables[:,28] = carnivMesozoo_LO_N[:]
+    bfm_variables[:,29] = carnivMesozoo_LO_P[:]
+
+    bfm_variables[:,30] = omnivMesozoo_LO_C[:]
+    bfm_variables[:,31] = omnivMesozoo_LO_N[:]
+    bfm_variables[:,32] = omnivMesozoo_LO_P[:]
+ 
+    bfm_variables[:,33] = microzoo_LO_C[:]
+    bfm_variables[:,34] = microzoo_LO_N[:]
+    bfm_variables[:,35] = microzoo_LO_P[:]
+ 
+    bfm_variables[:,36] = heteroFlagellates_LO_C[:]
+    bfm_variables[:,37] = heteroFlagellates_LO_N[:]
+    bfm_variables[:,38] = heteroFlagellates_LO_P[:]
+
+    bfm_variables[:,39] = labileDOM_NO_C[:]
+    bfm_variables[:,40] = labileDOM_NO_N[:]
+    bfm_variables[:,41] = labileDOM_NO_P[:]
+ 
+    bfm_variables[:,42] = semilabileDOC_NO_C[:]
+    bfm_variables[:,43] = semirefractDOC_NO_C[:]
+
+    bfm_variables[:,44] = particOrganDetritus_NO_C[:]
+    bfm_variables[:,45] = particOrganDetritus_NO_N[:]
+    bfm_variables[:,46] = particOrganDetritus_NO_P[:]
+    bfm_variables[:,47] = particOrganDetritus_NO_Si[:]
+
+    bfm_variables[:,48] = disInorgCarbon_IO_C[:]
+    bfm_variables[:,49] = totalAlkalinity_IO[:]
+
+    return bfm_variables
 
 
 # UPDATED VARIABLE NAMES    -    NAME_TYPE_CONSTITUENT
@@ -472,6 +533,7 @@ def set_initial_conditions():
 # o2o - disOxygen_IO_O
 # o3c - disInorgCarbon_IO_C
 # o3h - totalAlkalinity_IO
+# o4n - nitrogenSink
 # p1c - diatoms_LO_C
 # p1n - diatoms_LO_N
 # p1p - diatoms_LO_P

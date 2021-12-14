@@ -288,56 +288,56 @@ def get_numeric_timestep():
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-def pom_to_bfm():
+# def pom_to_bfm():
 
-    """
-    Description: Passes the physical variables to the BFM
+#     """
+#     Description: Passes the physical variables to the BFM
 
-    :return: seawater density, temperature and salinity, suspended sediment load,
-             photosynthetically available radiation, gridpoint depth, and wind speed
-    """
+#     :return: seawater density, temperature and salinity, suspended sediment load,
+#              photosynthetically available radiation, gridpoint depth, and wind speed
+#     """
 
-    # try:
-    #     import NOPOINTERS
-    #     NOPOINTERS = True
-    # except FileNotFoundError:
-    #     NOPOINTERS = False
-    # if NOPOINTERS:
-    #     from modules import ETW, ESW, EIR, ESS, ERHO, EWIND, Depth
+#     # try:
+#     #     import NOPOINTERS
+#     #     NOPOINTERS = True
+#     # except FileNotFoundError:
+#     #     NOPOINTERS = False
+#     # if NOPOINTERS:
+#     #     from modules import ETW, ESW, EIR, ESS, ERHO, EWIND, Depth
 
-    from modules_old import vertical_layers, water_specific_heat_times_density, temperature_backward, \
-        salinity_backward, density_profile, bottom_depth, vertical_spacing, shortwave_radiation, wind_stress_zonal, \
-        wind_stress_meridional, diffusion_coefficient_momentum, diffusion_coefficient_tracers, \
-        velocity_zonal, velocity_meridional, kinetic_energy, \
-        kinetic_energy_times_length, length_scale
+#     from modules_old import vertical_layers, water_specific_heat_times_density, temperature_backward, \
+#         salinity_backward, density_profile, bottom_depth, vertical_spacing, shortwave_radiation, wind_stress_zonal, \
+#         wind_stress_meridional, diffusion_coefficient_momentum, diffusion_coefficient_tracers, \
+#         velocity_zonal, velocity_meridional, kinetic_energy, \
+#         kinetic_energy_times_length, length_scale
 
-    from modules_old import inorganic_suspended_matter, interpolated_w_velocity, w_eddy_velocity
+#     from modules_old import inorganic_suspended_matter, interpolated_w_velocity, w_eddy_velocity
 
-    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    #   1D ARRAYS FOR BFM
-    # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#     #   1D ARRAYS FOR BFM
+#     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    ETW = np.zeros(vertical_layers - 1)
-    ESW = np.zeros(vertical_layers - 1)
-    ESS = np.zeros(vertical_layers - 1)
-    ERHO = np.zeros(vertical_layers - 1)
-    Depth = np.zeros(vertical_layers - 1)
-    EIR = np.zeros(vertical_layers - 1)
+#     ETW = np.zeros(vertical_layers - 1)
+#     ESW = np.zeros(vertical_layers - 1)
+#     ESS = np.zeros(vertical_layers - 1)
+#     ERHO = np.zeros(vertical_layers - 1)
+#     Depth = np.zeros(vertical_layers - 1)
+#     EIR = np.zeros(vertical_layers - 1)
 
-    for i in range(0,vertical_layers - 1):
-        ETW[i] = temperature_backward[i]
-        ESW[i] = salinity_backward[i]
-        ERHO[i] = (density_profile[i] * 1.E3) + 1.E3
-        ESS[i] = inorganic_suspended_matter[i]
-        Depth[i] = vertical_spacing[i] * params_POMBFM.h
+#     for i in range(0,vertical_layers - 1):
+#         ETW[i] = temperature_backward[i]
+#         ESW[i] = salinity_backward[i]
+#         ERHO[i] = (density_profile[i] * 1.E3) + 1.E3
+#         ESS[i] = inorganic_suspended_matter[i]
+#         Depth[i] = vertical_spacing[i] * params_POMBFM.h
 
-    EIR[0] = -1. * shortwave_radiation * water_specific_heat_times_density
+#     EIR[0] = -1. * shortwave_radiation * water_specific_heat_times_density
 
-    wind_stress = np.sqrt(wind_stress_zonal**2 + wind_stress_meridional**2) * 1.E3
-    EWIND = np.sqrt(wind_stress/(1.25 * 0.0014))
+#     wind_stress = np.sqrt(wind_stress_zonal**2 + wind_stress_meridional**2) * 1.E3
+#     EWIND = np.sqrt(wind_stress/(1.25 * 0.0014))
 
-    return ETW, ESW, EIR, \
-           ESS, ERHO, EWIND
+#     return ETW, ESW, EIR, \
+#            ESS, ERHO, EWIND
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

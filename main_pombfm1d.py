@@ -9,6 +9,8 @@ from pom.create_profiles import create_kinetic_energy_profile, create_vertical_d
 from pom.data_classes import DiffusionCoefficients, ForcingManagerCounters, LeapFrogTimeLevels, MonthlyForcingData, Stresses, TemperatureSalinityData, VelocityData
 from pom.constants import earth_angular_velocity, DAYI, water_specific_heat_times_density, vertical_layers, seconds_per_day, twice_the_timestep
 from pom_bfm_coupling.initialize_variables import initialize_bfm_in_pom
+from pom_bfm_coupling.data_classes import BfmPhysicalVariableData
+from pom_bfm_coupling.coupling import pom_to_bfm, pom_bfm_1d
 
 np.set_printoptions(precision=16)
 # pyPOM1D DIRECTORY, USED FOR READING INPUTS (TO BE CHANGED BY USER)
@@ -101,6 +103,7 @@ else:
 if not POM_only:
     # INITIALIZATION OF BFM
     d3state, d3stateb = initialize_bfm_in_pom(vertical_grid)
+    bfm_phys_vars = BfmPhysicalVariableData()
     pass
 
 # # BEGIN THE TIME MARCH
@@ -197,6 +200,7 @@ for i in range(0, int(iterations_needed)+1):
     else:
         POM_only = True
     if not POM_only:
+        bfm_phys_vars = pom_to_bfm(bfm_phys_vars, vertical_grid, temperature, salinity, inorganic_suspended_matter, shortwave_radiation, vertical_density_profile, wind_stress)
         # pom_bfm_1d(i, vertical_grid, diffusion, nutrients, inorganic_suspended_matter)
         pass
 

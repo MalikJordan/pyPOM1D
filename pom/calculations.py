@@ -237,7 +237,7 @@ def calculate_mixed_layer_depth(vertical_coordinates_staggered, temperature):
 #     #   GLOBAL DEFINITION OF PELAGIC (D3/D2) STATE VARIABLES (From ModuleMem)
 #     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #     ppdisOxygen_IO_O = 1; ppphospate_IO_P = 2; ppnitrate_IO_N = 3
-#     ppammonium_IO_N = 4; ppO4n = 5; ppsilicate_IO_Si = 6; ppreductEquiv_IO_R = 7; pppelBacteria_LO_C = 8; pppelBacteria_LO_N = 9; pppelBacteria_LO_P = 10; ppdiatoms_LO_C = 11
+#     ppammonium_IO_N = 4; ppnitrogenSink = 5; ppsilicate_IO_Si = 6; ppreductEquiv_IO_R = 7; pppelBacteria_LO_C = 8; pppelBacteria_LO_N = 9; pppelBacteria_LO_P = 10; ppdiatoms_LO_C = 11
 #     ppdiatoms_LO_N = 12; ppdiatoms_LO_P = 13; ppdiatoms_LO_Chl = 14; ppdiatoms_LO_Si = 15; ppnanoflagellates_LO_C = 16; ppnanoflagellates_LO_N = 17; ppnanoflagellates_LO_P = 18
 #     ppnanoflagellates_LO_Chl = 19; ppP2s = 0; pppicophyto_LO_C = 20; pppicophyto_LO_N = 21; pppicophyto_LO_P = 22; pppicophyto_LO_Chl = 23; ppP3s = 0
 #     pplargephyto_LO_C = 24; pplargephyto_LO_N = 25; pplargephyto_LO_P = 26; pplargephyto_LO_Chl = 27; ppP4s = 0; ppcarnivMesozoo_LO_C = 28; ppcarnivMesozoo_LO_N = 29

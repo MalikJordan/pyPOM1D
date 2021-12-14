@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 
 def insw_vector(parameter):
     switch = 0.0
@@ -9,7 +9,7 @@ def insw_vector(parameter):
 
 
 def eTq_vector(temp, basetemp, q10):
-    eTq = numpy.exp(numpy.log(q10)*(temp-basetemp)/basetemp)
+    eTq = np.exp(np.log(q10)*(temp-basetemp)/basetemp)
     
     return eTq
 

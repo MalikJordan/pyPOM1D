@@ -69,7 +69,7 @@ def set_variable_info_bfm():
     variable_names[3] = "Ammonium"
     variable_units[3] = "mmol N/m3"
 
-    variable_abbrev[4] = "O4n"
+    variable_abbrev[4] = "nitrogenSink"
     variable_names[4] = "NitrogenSink"
     variable_units[4] = "mmol N/m3"
 
@@ -361,7 +361,7 @@ def set_variable_info_bfm():
     variable_names[76] = "Pelagic Anaerobic Mineralization Rate"
     variable_units[76] = "mmol O2/m3/d"
 
-    variable_abbrev[77] = "flN3O4n"
+    variable_abbrev[77] = "flN3nitrogenSink"
     variable_names[77] = "Pelagic Denitrification Rate"
     variable_units[77] = "mmol N/m3/d"
 
@@ -803,7 +803,7 @@ def set_variable_info_bfm():
     variable_names[186] = "flux of Ammonium at SURFACE"
     variable_units[186] = "mmol N/m2/day"
 
-    variable_abbrev[187] = "jsurO4n"
+    variable_abbrev[187] = "jsurnitrogenSink"
     variable_names[187] = "flux of NitrogenSink at SURFACE"
     variable_units[187] = "mmol N/m2/day"
 
@@ -1004,7 +1004,7 @@ def set_variable_info_bfm():
     variable_names[236] = "flux of Ammonium at BOTTOM"
     variable_units[236] = "mmol N/m2/day"
 
-    variable_abbrev[237] = "jbotO4n"
+    variable_abbrev[237] = "jbotnitrogenSink"
     variable_names[237] = "flux of NitrogenSink at BOTTOM"
     variable_units[237] = "mmol N/m2/day"
 
@@ -1205,7 +1205,7 @@ def set_variable_info_bfm():
     variable_names[286] = "flux of Ammonium at RIVER"
     variable_units[286] = "mmol N/m2/day"
 
-    variable_abbrev[287] = "jrivO4n"
+    variable_abbrev[287] = "jrivnitrogenSink"
     variable_names[287] = "flux of NitrogenSink at RIVER"
     variable_units[287] = "flux of NitrogenSink at RIVER"
 

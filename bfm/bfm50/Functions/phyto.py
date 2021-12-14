@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 import sys
 from Functions.other_functions import insw_vector, eTq_vector, get_concentration_ratio
 
@@ -58,14 +58,14 @@ def phyto_eqns(conc, phyto_parameters, env_parameters, constant_parameters, grou
     # irradiance (uE m^-2 s^-1) from Phyto.F90 lines 353-355
     irradiance = qs*env_parameters["epsilon_PAR"]/constant_parameters["e2w"]
     r = xEPS * env_parameters["del_z"]
-    r = irradiance/xEPS/env_parameters["del_z"]*(1.0 - numpy.exp(-r))
+    r = irradiance/xEPS/env_parameters["del_z"]*(1.0 - np.exp(-r))
     irr = max(constant_parameters["p_small"], r)
     
     # Compute exponent E_PAR/E_K = alpha0/PBmax (part of eqn. 2.2.4)
     exponent = pl_pc*phyto_parameters["alpha_chl"]/phyto_parameters["rP0"]*irr
 
     # light limitation factor (from Phyto.f90 line 374, eiPPY)
-    light_lim = (1.0 - numpy.exp(-exponent))
+    light_lim = (1.0 - np.exp(-exponent))
 
     #--------------------------------------------------------------------------
     # total photosynthesis (from Phyto.F90 line ~380, sum)

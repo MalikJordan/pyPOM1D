@@ -5,7 +5,7 @@ from bfm.bfm50.BFM50_rate_eqns import bfm50_rate_eqns
 from pom_bfm_coupling.calculations import calculate_vertical_diffusivity
 from pom_bfm_coupling.initialize_variables import set_initial_conditions
 
-def pom_to_bfm(vertical_grid, temperature, salinity, inorganic_suspended_matter, shortwave_radiation, vertical_density_profile, wind_stress):
+def pom_to_bfm(bfm_phys_vars, vertical_grid, temperature, salinity, inorganic_suspended_matter, shortwave_radiation, vertical_density_profile, wind_stress):
 
     """
     Description: Passes the physical variables to the BFM
@@ -26,35 +26,33 @@ def pom_to_bfm(vertical_grid, temperature, salinity, inorganic_suspended_matter,
     #   1D ARRAYS FOR BFM
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    etw = temperature.backward
-    esw = salinity.backward
-    erho = (vertical_density_profile * 1.E3) + 1.E3
-    ess = inorganic_suspended_matter
-    depth = vertical_grid.vertical_spacing * params_POMBFM.h
+    bfm_phys_vars.temperature = temperature.backward
+    bfm_phys_vars.salinity = salinity.backward
+    bfm_phys_vars.density = (vertical_density_profile * 1.E3) + 1.E3
+    bfm_phys_vars.suspended_matter = inorganic_suspended_matter
+    bfm_phys_vars.depth = vertical_grid.vertical_spacing * params_POMBFM.h
 
-    eir = np.zeros(vertical_layers - 1)
-    eir[0] = -1. * shortwave_radiation * water_specific_heat_times_density
+    bfm_phys_vars.irradiation = -1. * shortwave_radiation * water_specific_heat_times_density
 
     wind = np.sqrt(wind_stress.zonal**2 + wind_stress.meridional**2) * 1.E3
-    ewind = np.sqrt(wind/(1.25 * 0.0014))
+    bfm_phys_vars.wind = np.sqrt(wind/(1.25 * 0.0014))
 
-    return etw, esw, eir, ess, erho, depth, ewind
+    return bfm_phys_vars
 
 
-def pom_bfm_1d(vertical_grid, i, time, diffusion, nutrients, temperature, salinity, inorganic_suspended_matter,
-               shortwave_radiation, vertical_density_profile, wind_stress):
+def pom_bfm_1d(vertical_grid, time, diffusion, nutrients, bfm_phys_vars):
 
-    etw, esw, eir, ess, erho, depth, ewind = pom_to_bfm(vertical_grid, temperature, salinity, inorganic_suspended_matter,
-                                                        shortwave_radiation, vertical_density_profile, wind_stress)
+    bfm_variables = set_initial_conditions()
+    bfm_rate_equations = np.zeros((vertical_layers,50))
 
-    [disOxygen_IO_O, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, o4n, silicate_IO_Si, reductEquiv_IO_R, pelBacteria_LO_C, pelBacteria_LO_N, pelBacteria_LO_P,
-     diatoms_LO_C, diatoms_LO_N, diatoms_LO_P, diatoms_LO_Chl, diatoms_LO_Si, nanoflagellates_LO_C, nanoflagellates_LO_N, nanoflagellates_LO_P, nanoflagellates_LO_Chl, picophyto_LO_C, picophyto_LO_N, picophyto_LO_P, picophyto_LO_Chl, largephyto_LO_C, largephyto_LO_N, largephyto_LO_P, largephyto_LO_Chl,
-     carnivMesozoo_LO_C, carnivMesozoo_LO_N, carnivMesozoo_LO_P, omnivMesozoo_LO_C, omnivMesozoo_LO_N, omnivMesozoo_LO_P, microzoo_LO_C, microzoo_LO_N, microzoo_LO_P, heteroFlagellates_LO_C, heteroFlagellates_LO_N, heteroFlagellates_LO_P,
-     labileDOM_NO_C, labileDOM_NO_N, labileDOM_NO_P, semilabileDOC_NO_C, semirefractDOC_NO_C, particOrganDetritus_NO_C, particOrganDetritus_NO_N, particOrganDetritus_NO_P, particOrganDetritus_NO_Si, disInorgCarbon_IO_C, totalAlkalinity_IO] = set_initial_conditions()
+    dOdt_wind = np.zeros(vertical_layers)
+    do3cdt_air_sea_flux = np.zeros(vertical_layers)
+    
+    for i in range(0,vertical_layers):
+        conc = bfm_variables[i,:]
+        bfm_rate_equations[i,:], dOdt_wind[i], do3cdt_air_sea_flux[i] = bfm50_rate_eqns(time, conc, seasonal_cycle=False)
 
-    bfm50_rate_eqns(time, conc, seasonal_cycle=False)
-
-    calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, disOxygen_IO_O, phospate_IO_P, nitrate_IO_N)
+    calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, bfm_variables, dOdt_wind, do3cdt_air_sea_flux)
 
 # import numpy as np
 #

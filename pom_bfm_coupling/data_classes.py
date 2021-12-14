@@ -13,6 +13,17 @@ class BfmStateVariableData:
         self.bottom_flux = bottom_flux
 
 
+class BfmPhysicalVariableData:
+    def __init__(self, temperature=np.zeros(vertical_layers), salinity=np.zeros(vertical_layers), density=np.zeros(vertical_layers), suspended_matter=np.zeros(vertical_layers-1), depth=np.zeros(vertical_layers), irradiation=0, wind=0):
+        self.temperature = temperature
+        self.salinity = salinity
+        self.density = density
+        self.suspended_matter = suspended_matter
+        self.depth = depth
+        self.irradiation = irradiation
+        self.wind = wind
+
+
 class NutrientData:
     def __init__(self,NO3surf,NH4surf,PO4surf,SIO4surf,O2bott,NO3bott,PO4bott,PONbott_grad):
         self.NO3surf = NO3surf

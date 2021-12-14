@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 from Functions.seasonal_cycling_functions import calculate_density
 
 def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_parameters, conc, temper, wind, salt):
@@ -22,12 +22,12 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
     bt = 2.5*(0.5246 + 1.6256e-2*temper + 4.9946e-4*(temper**2))
 
     # Calculate wind dependency + Chemical enhancement including conversion cm/hr => m/s
-    ken = (bt + co2_flux_parameters["d"]*(wind**2))*numpy.sqrt(schmidt_ratio_disInorgCarbon_IO_C)*constant_parameters["cm2m"]*constant_parameters["hours_per_day"]/constant_parameters["sec_per_day"]
+    ken = (bt + co2_flux_parameters["d"]*(wind**2))*np.sqrt(schmidt_ratio_disInorgCarbon_IO_C)*constant_parameters["cm2m"]*constant_parameters["hours_per_day"]/constant_parameters["sec_per_day"]
 
     # K0, solubility of co2 in the water (K Henry) from Weiss 1974; K0 = [co2]/pco2 [mol kg-1 atm-1]
     tk = (temper + constant_parameters["c_to_kelvin"])
     tk_100 = tk/100.0
-    k0 = numpy.exp((93.4517/tk_100) - 60.2409 + (23.3585*numpy.log(tk_100)) + salt*(0.023517 - (0.023656*tk_100) + 0.0047036*(tk_100**2)))
+    k0 = np.exp((93.4517/tk_100) - 60.2409 + (23.3585*np.log(tk_100)) + salt*(0.023517 - (0.023656*tk_100) + 0.0047036*(tk_100**2)))
 
     # partial pressure of atmospheric CO2
     pco2_air = co2_flux_parameters["atm_co2_0"]
@@ -43,15 +43,15 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
 
     # calculate all constants needed to convert between various measured carbon species
     tk_inv = 1.0/tk
-    tk_log = numpy.log(tk)
-    salt_sqrt = numpy.sqrt(salt)
+    tk_log = np.log(tk)
+    salt_sqrt = np.sqrt(salt)
     
     # chlorinity
     scl = salt/1.80655
     
     # ionic strength 
     ionic_strength = 19.924*salt/(1000.0 - 1.005*salt)
-    ionic_strength_sqrt = numpy.sqrt(ionic_strength)
+    ionic_strength_sqrt = np.sqrt(ionic_strength)
     
     # Calculate concentrations for borate, sulfate, and fluoride as a function of chlorinity
     # Uppstrom (1974)
@@ -87,36 +87,36 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
 
     # calculate k1p, [H][H2PO4]/[H3PO4] (ph scale: total)
     lnK = -4576.752*tk_inv + 115.525 - 18.453* tk_log + (-106.736*tk_inv + 0.69171)*salt_sqrt + (-0.65643*tk_inv - 0.01844)*salt
-    k1p = numpy.exp(lnK)
+    k1p = np.exp(lnK)
 
     # calculate k2p, [H][HPO4]/[H2PO4] (ph scale: total)
     lnK = -8814.715*tk_inv + 172.0883 - 27.927* tk_log +(-160.340*tk_inv + 1.3566)*salt_sqrt + (0.37335*tk_inv - 0.05778)*salt
-    k2p = numpy.exp(lnK)
+    k2p = np.exp(lnK)
     
     # calculate k3p, [H][PO4]/[HPO4] (ph scale: total)
     lnK = -3070.75*tk_inv - 18.126 + (17.27039*tk_inv + 2.81197)*salt_sqrt + (-44.99486*tk_inv - 0.09984)*salt
-    k3p = numpy.exp(lnK)
+    k3p = np.exp(lnK)
     
     # calculate ksi, [H][SiO(OH)3]/[Si(OH)4]
-    ksi = -8904.2*tk_inv + 117.385 - 19.334*tk_log + (-458.79*tk_inv + 3.5913)*ionic_strength_sqrt + (188.74*tk_inv - 1.5998)*ionic_strength + (-12.1652*tk_inv + 0.07871)*(ionic_strength**2) + numpy.log(1.0 - (0.001005*salt))
-    ksi = numpy.exp(lnK)
+    ksi = -8904.2*tk_inv + 117.385 - 19.334*tk_log + (-458.79*tk_inv + 3.5913)*ionic_strength_sqrt + (188.74*tk_inv - 1.5998)*ionic_strength + (-12.1652*tk_inv + 0.07871)*(ionic_strength**2) + np.log(1.0 - (0.001005*salt))
+    ksi = np.exp(lnK)
     
     # calculate kw, [H][OH] (ph scale: SWS)
     intercept = 148.9802
     lnK = intercept - 13847.26*tk_inv - 23.6521*tk_log + (118.67*tk_inv - 5.977 + 1.0495*tk_log)*salt_sqrt - 0.01615*salt
-    kw = numpy.exp(lnK)
+    kw = np.exp(lnK)
     
     # calculate ks, [H][SO4]/[HSO4]  (ph scale: "free")
-    lnK = -4276.1*tk_inv + 141.328 - 23.093*tk_log + (-13856.0*tk_inv + 324.57 - 47.986*tk_log)*ionic_strength_sqrt + (35474.0*tk_inv - 771.54 + 114.723*tk_log)*ionic_strength - 2698.0*tk_inv*(ionic_strength**1.5) + 1776.0*tk_inv*(ionic_strength**2) + numpy.log(1.0 - 0.001005*salt)
-    ks = numpy.exp(lnK)
+    lnK = -4276.1*tk_inv + 141.328 - 23.093*tk_log + (-13856.0*tk_inv + 324.57 - 47.986*tk_log)*ionic_strength_sqrt + (35474.0*tk_inv - 771.54 + 114.723*tk_log)*ionic_strength - 2698.0*tk_inv*(ionic_strength**1.5) + 1776.0*tk_inv*(ionic_strength**2) + np.log(1.0 - 0.001005*salt)
+    ks = np.exp(lnK)
     
     # calculate kf, [H][F]/[HF] (ph scale: "free")
-    lnK = 1590.2*tk_inv - 12.641 + 1.525*ionic_strength_sqrt + numpy.log(1.0 - 0.001005*salt)
-    kf = numpy.exp(lnK)
+    lnK = 1590.2*tk_inv - 12.641 + 1.525*ionic_strength_sqrt + np.log(1.0 - 0.001005*salt)
+    kf = np.exp(lnK)
     
     # calculate kb, [H][BO2]/[HBO2] (ph scale: total)
     lnK = (-8966.90 - 2890.53*salt_sqrt - 77.942*salt + 1.728*(salt**1.5) - 0.0996*(salt**2))*tk_inv + (148.0248 + 137.1942*salt_sqrt + 1.62142*salt) + (-24.4344 - 25.085*salt_sqrt - 0.2474*salt)*tk_log + 0.053105*salt_sqrt*tk
-    kb = numpy.exp(lnK)
+    kb = np.exp(lnK)
 
     # calculate [H+] total when DIC and TA are known
     small_interval = (pH>1.0 and pH<9.0)
@@ -133,18 +133,18 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
     h_plus2 = h_plus*h_plus
     co2 = ldic*h_plus2/(h_plus2 + k1*h_plus + k1*k2)
     pco2_sea = co2/k0
-    pH = -numpy.log(h_plus)
+    pH = -np.log(h_plus)
         
     # convert partial pressure of oceanic CO2 to uatm
     pco2_sea = pco2_sea*constant_parameters["uatm_per_atm"]
     
     # flux co2 in mmol C m^-2 s^-1
-    ddisInorgCarbon_IO_Cdt_air_sea_flux = ken*(pco2_air - pco2_sea)*k0*rho/1000.0
+    do3cdt_air_sea_flux = ken*(pco2_air - pco2_sea)*k0*rho/1000.0
     
     # convert flux to units of mg C m^-3 s^-1
-    ddisInorgCarbon_IO_Cdt_air_sea_flux = ddisInorgCarbon_IO_Cdt_air_sea_flux/constant_parameters["omega_c"]/environmental_parameters["del_z"]
+    do3cdt_air_sea_flux = do3cdt_air_sea_flux/constant_parameters["omega_c"]/environmental_parameters["del_z"]
     
-    return ddisInorgCarbon_IO_Cdt_air_sea_flux
+    return do3cdt_air_sea_flux
     
 def calculate_Hplus(pH, k1, k2, k1p, k2p, k3p, ksi, kw, ks, kf, kb, bt, st, ft, pt, sit, ldic, alk):
     """ This function expresses total alkalinity (TA) as a function of DIC, 
@@ -226,7 +226,7 @@ def find_roots_of_f_TA(x1, x2, xacc, maxit, k1, k2, k1p, k2p, k3p, ksi, kw, ks, 
         fh = swap
 
     drtsafe2 = 0.5*(x1 + x2)
-    dxold = numpy.abs(x2 - x1)
+    dxold = np.abs(x2 - x1)
     dx = dxold
     f, df = calculate_Hplus(drtsafe2, k1, k2, k1p, k2p, k3p, ksi, kw, ks, kf, kb, bt, st, ft, pt, sit, ldic, alk)
     
@@ -235,7 +235,7 @@ def find_roots_of_f_TA(x1, x2, xacc, maxit, k1, k2, k1p, k2p, k3p, ksi, kw, ks, 
     
     while True:
         j+=1
-        if ((drtsafe2 - xh)*df - f)*((drtsafe2 - xl)*df - f) >= 0 or numpy.abs(2.0*f) > numpy.abs(dxold*df):
+        if ((drtsafe2 - xh)*df - f)*((drtsafe2 - xl)*df - f) >= 0 or np.abs(2.0*f) > np.abs(dxold*df):
             dxold = dx
             dx = 0.5*(xh - xl)
             drtsafe2 = xl + dx
@@ -246,7 +246,7 @@ def find_roots_of_f_TA(x1, x2, xacc, maxit, k1, k2, k1p, k2p, k3p, ksi, kw, ks, 
             temp = drtsafe2
             drtsafe2 = drtsafe2 - dx
             ready = (temp == drtsafe2)
-        ready = numpy.abs(dx)<xacc
+        ready = np.abs(dx)<xacc
         if not ready:
             f, df = calculate_Hplus(drtsafe2, k1, k2, k1p, k2p, k3p, ksi, kw, ks, kf, kb, bt, st, ft, pt, sit, ldic, alk)
             if f<0:

@@ -23,7 +23,7 @@
 # !        phospate_IO_P                                                    Phosphate       mmol P/m3
 # !        nitrate_IO_N                                                      Nitrate       mmol N/m3
 # !        ammonium_IO_N                                                     Ammonium       mmol N/m3
-# !        O4n                                                 NitrogenSink       mmol N/m3
+# !        nitrogenSink                                                 NitrogenSink       mmol N/m3
 # !        silicate_IO_Si                                                     Silicate      mmol Si/m3
 # !        reductEquiv_IO_R                                        Reduction Equivalents     mmol S--/m3
 # !        pelBacteria_LO_C                               Aerobic and Anaerobic Bacteria         mg C/m3
@@ -138,7 +138,7 @@ if INCLUDE_BEN:
 #   GLOBAL DEFINITION OF PELAGIC (D3/D2) STATE VARIABLES
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 ppdisOxygen_IO_O = 1;  ppphospate_IO_P = 2;  ppnitrate_IO_N = 3
-ppammonium_IO_N = 4;  ppO4n = 5;  ppsilicate_IO_Si = 6;  ppreductEquiv_IO_R = 7;  pppelBacteria_LO_C = 8;  pppelBacteria_LO_N = 9;  pppelBacteria_LO_P = 10; ppdiatoms_LO_C = 11
+ppammonium_IO_N = 4;  ppnitrogenSink = 5;  ppsilicate_IO_Si = 6;  ppreductEquiv_IO_R = 7;  pppelBacteria_LO_C = 8;  pppelBacteria_LO_N = 9;  pppelBacteria_LO_P = 10; ppdiatoms_LO_C = 11
 ppdiatoms_LO_N = 12; ppdiatoms_LO_P = 13; ppdiatoms_LO_Chl = 14; ppdiatoms_LO_Si = 15; ppnanoflagellates_LO_C = 16; ppnanoflagellates_LO_N = 17; ppnanoflagellates_LO_P = 18
 ppnanoflagellates_LO_Chl = 19; ppP2s = 0;  pppicophyto_LO_C = 20; pppicophyto_LO_N = 21; pppicophyto_LO_P = 22; pppicophyto_LO_Chl = 23; ppP3s = 0
 pplargephyto_LO_C = 24; pplargephyto_LO_N = 25; pplargephyto_LO_P = 26; pplargephyto_LO_Chl = 27; ppP4s = 0;  ppcarnivMesozoo_LO_C = 28; ppcarnivMesozoo_LO_N = 29
@@ -231,7 +231,7 @@ iiInorganic        = 1; iiO3 = 1
 # !     eO2mO2                                   Relative Oxygen saturation               -
 # !       Chla                                                Chlorophyll-a       mg Chl/m3
 # !    flPTreductEquiv_IO_R                        Pelagic Anaerobic Mineralization Rate    mmol O2/m3/d
-# !    flN3O4n                                 Pelagic Denitrification Rate     mmol N/m3/d
+# !    flN3nitrogenSink                                 Pelagic Denitrification Rate     mmol N/m3/d
 # !    flammonium_IO_Nitrate_IO_N                                   Pelagic Nitrification Rate     mmol N/m3/d
 # !     sediR2                                  Detritus sedimentation rate             m/d
 # !     sediR6                                  Detritus sedimentation rate             m/d
@@ -301,7 +301,7 @@ ppETW     = 1;  ppESW     = 2;  ppERHO    = 3;  ppEIR = 4
 ppESS     = 5;  ppexud    = 6;  ppDepth   = 7;  ppVolume  = 8;  ppArea     = 9;  ppDIC   = 10; ppCO2   = 11
 pppCO2    = 12; ppHCO3    = 13; ppCO3     = 14; ppALK     = 15; pppH       = 16; ppOCalc = 17; ppOArag = 18
 ppEPR     = 19; pptotpelc = 20; pptotpeln = 21; pptotpelp = 22; pptotpels  = 23
-ppcxoO2   = 24; ppeO2mO2  = 25; ppChla    = 26; ppflPTreductEquiv_IO_R = 27; ppflN3O4n  = 28
+ppcxoO2   = 24; ppeO2mO2  = 25; ppChla    = 26; ppflPTreductEquiv_IO_R = 27; ppflN3nitrogenSink  = 28
 ppflammonium_IO_Nitrate_IO_N = 29; ppsediR2  = 30; ppsediR6  = 31; ppxEPS    = 32; ppABIO_eps = 33
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

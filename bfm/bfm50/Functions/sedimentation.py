@@ -36,14 +36,14 @@ def phyto_sedimentation():
     iiP1 = 1; iiP2 = 2; iiP3 = 3; iiP4 = 4
 
     # FROM PelGLobal.F90 (149-154)
-    phyto_sedimentation_rates = np.array([iiPhytoPlankton,vertical_layers-1])
+    phyto_sedimentation_rates = np.zeros((vertical_layers-1,iiPhytoPlankton))
     for i in range(0,iiPhytoPlankton):
-        phyto_sedimentation_rates[iiPhytoPlankton,:] = p_rPIm[i]
+        phyto_sedimentation_rates[:,iiPhytoPlankton] = p_rPIm[i]
         try:
             BFM_POM
         except NameError:
             BFM_POM = False
         if not BFM_POM:
-            phyto_sedimentation_rates[i,vertical_layers-2] = p_burvel_PI
+            phyto_sedimentation_rates[vertical_layers-2,i] = p_burvel_PI
 
     return phyto_sedimentation_rates

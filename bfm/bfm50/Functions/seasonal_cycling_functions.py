@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import brewer2mpl
@@ -14,10 +14,10 @@ def calc_day_of_year(time_seconds):
     else:
         sec_per_day = 86400.0
         time_day = time_seconds/sec_per_day
-        day_of_year = numpy.floor(time_day) + 1
+        day_of_year = np.floor(time_day) + 1
         
     # calculate year
-    year = numpy.ceil(day_of_year/cycle)
+    year = np.ceil(day_of_year/cycle)
     
     # correct day of year if year>1
     if year > 1:
@@ -29,7 +29,7 @@ def calc_fraction_of_day(time_seconds):
     """ function that calculates the fration of the day """
     
     sec_per_day = 86400.0
-    seconds_of_day = numpy.fmod(time_seconds,sec_per_day)
+    seconds_of_day = np.fmod(time_seconds,sec_per_day)
     fraction_of_day = seconds_of_day/sec_per_day
 
     return fraction_of_day
@@ -40,7 +40,7 @@ def get_wind(time,w_win,w_sum):
 
     day_of_year = calc_day_of_year(time)
     fraction_of_day = calc_fraction_of_day(time)
-    wind = (w_sum+w_win)/2 - ((w_sum-w_win)/2)*numpy.cos((day_of_year+(fraction_of_day - 0.5))*(numpy.pi/180))
+    wind = (w_sum+w_win)/2 - ((w_sum-w_win)/2)*np.cos((day_of_year+(fraction_of_day - 0.5))*(np.pi/180))
 
     return wind
 
@@ -50,7 +50,7 @@ def get_salinity(time,s_win,s_sum):
 
     day_of_year = calc_day_of_year(time)
     fraction_of_day = calc_fraction_of_day(time)
-    salinity = (s_sum+s_win)/2.0 - ((s_sum-s_win)/2.0)*numpy.cos((day_of_year+(fraction_of_day - 0.5))*(numpy.pi/180))
+    salinity = (s_sum+s_win)/2.0 - ((s_sum-s_win)/2.0)*np.cos((day_of_year+(fraction_of_day - 0.5))*(np.pi/180))
 
     return salinity
 
@@ -61,17 +61,17 @@ def get_sunlight(time,q_win,q_sum):
     day_of_year = calc_day_of_year(time)
     fraction_of_day = calc_fraction_of_day(time)
     latitude = 45.0
-    light = (q_sum+q_win)/2.0 - (q_sum-q_win)/2.0*numpy.cos(day_of_year*(numpy.pi/180))
+    light = (q_sum+q_win)/2.0 - (q_sum-q_win)/2.0*np.cos(day_of_year*(np.pi/180))
     cycle = 360
-    declination = -0.406*numpy.cos(2.0*numpy.pi*int(day_of_year)/cycle)
-    day_length = numpy.arccos(-numpy.tan(declination)*numpy.tan(latitude*(numpy.pi/180)))/numpy.pi*24.0
+    declination = -0.406*np.cos(2.0*np.pi*int(day_of_year)/cycle)
+    day_length = np.arccos(-np.tan(declination)*np.tan(latitude*(np.pi/180)))/np.pi*24.0
 #    print(day_length)
     day_time = fraction_of_day*24.0
-    day_time = numpy.abs(day_time - 12.0)
+    day_time = np.abs(day_time - 12.0)
     day_len = day_length/2.0
     if(day_time<day_len):
-        day_time = day_time/day_len*numpy.pi
-        wlight = light*numpy.cos(day_time) + light
+        day_time = day_time/day_len*np.pi
+        wlight = light*np.cos(day_time) + light
     else:
         wlight = 0.0
     
@@ -82,7 +82,7 @@ def get_temperature(time,t_win,t_sum,tde):
 
     day_of_year = calc_day_of_year(time)
     fraction_of_day = calc_fraction_of_day(time)
-    temperature = (t_sum + t_win)/2.0 - (t_sum - t_win)/2.0*numpy.cos((day_of_year+(fraction_of_day - 0.5))*(numpy.pi/180)) - tde*0.5*numpy.cos(2*numpy.pi*fraction_of_day)
+    temperature = (t_sum + t_win)/2.0 - (t_sum - t_win)/2.0*np.cos((day_of_year+(fraction_of_day - 0.5))*(np.pi/180)) - tde*0.5*np.cos(2*np.pi*fraction_of_day)
 
     return temperature
 
@@ -137,12 +137,12 @@ if __name__ == '__main__':
     temperature = []
     
     # day of year
-    day_of_year = numpy.zeros(7310)
-#    time_values = numpy.linspace(0,86400*360*2,721)
-#    time_values = numpy.linspace(8640, 43200, 5)
-#    time_values = numpy.linspace(8640, 86400*365, 5000)
-    time_values = numpy.linspace(8640, 6.31584e+07, 7310)
-#    time_values = numpy.insert(t_span, 0, 0)
+    day_of_year = np.zeros(7310)
+#    time_values = np.linspace(0,86400*360*2,721)
+#    time_values = np.linspace(8640, 43200, 5)
+#    time_values = np.linspace(8640, 86400*365, 5000)
+    time_values = np.linspace(8640, 6.31584e+07, 7310)
+#    time_values = np.insert(t_span, 0, 0)
     for time in time_values:
         wind.append(get_wind(time,w_win,w_sum))
         salinity.append(get_salinity(time,s_win,s_sum))
@@ -170,7 +170,7 @@ if __name__ == '__main__':
 #        plt.axes(frameon=0)
 #        plt.grid(axis='y', color="0.9",linestyle='--')
 #        plt.plot(time_values, salinity, color=colors[2])
-#        plt.yticks(numpy.arange(min(salinity), max(salinity)+1, 1))
+#        plt.yticks(np.arange(min(salinity), max(salinity)+1, 1))
 #        plt.ylabel('Salinity', fontsize=14)
 #        plt.xlabel('Time (sec)', fontsize=14)
 #        pdf.savefig(fig, bbox_inches = "tight")
@@ -189,7 +189,7 @@ if __name__ == '__main__':
 #        plt.axes(frameon=0)
 #        plt.grid(axis='y', color="0.9",linestyle='--')
 #        plt.plot(time_values, temperature, color=colors[4])
-#        plt.yticks(numpy.arange(min(temperature), max(temperature)+1, 4))
+#        plt.yticks(np.arange(min(temperature), max(temperature)+1, 4))
 #        plt.ylabel('Temperature', fontsize=14)
 #        plt.xlabel('Time (sec)', fontsize=14)
 #        pdf.savefig(fig, bbox_inches = "tight")

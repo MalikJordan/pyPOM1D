@@ -1,5 +1,5 @@
 from __future__ import division, print_function
-import numpy
+import numpy as np
 import json
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
@@ -17,7 +17,7 @@ from Functions.other_functions import insw_vector, get_concentration_ratio
 
 
 # Names of species in the system
-species_names = ['disOxygen_IO_O', 'phospate_IO_P', 'nitrate_IO_N', 'ammonium_IO_N', 'O4n', 'silicate_IO_Si', 'reductEquiv_IO_R', 'pelBacteria_LO_C', 'pelBacteria_LO_N', 'pelBacteria_LO_P', 
+species_names = ['disOxygen_IO_O', 'phospate_IO_P', 'nitrate_IO_N', 'ammonium_IO_N', 'nitrogenSink', 'silicate_IO_Si', 'reductEquiv_IO_R', 'pelBacteria_LO_C', 'pelBacteria_LO_N', 'pelBacteria_LO_P', 
                  'diatoms_LO_C', 'diatoms_LO_N', 'diatoms_LO_P', 'diatoms_LO_Chl', 'diatoms_LO_Si', 'nanoflagellates_LO_C', 'nanoflagellates_LO_N', 'nanoflagellates_LO_P', 'nanoflagellates_LO_Chl',
                  'picophyto_LO_C', 'picophyto_LO_N', 'picophyto_LO_P', 'picophyto_LO_Chl', 'largephyto_LO_C', 'largephyto_LO_N', 'largephyto_LO_P', 'largephyto_LO_Chl',
                  'carnivMesozoo_LO_C', 'carnivMesozoo_LO_N', 'carnivMesozoo_LO_P', 'omnivMesozoo_LO_C', 'omnivMesozoo_LO_N', 'omnivMesozoo_LO_P', 'microzoo_LO_C', 'microzoo_LO_N', 'microzoo_LO_P',
@@ -92,7 +92,7 @@ def bfm50_rate_eqns(time, conc, seasonal_cycle=True):
     phospate_IO_P = conc[1]              # Phosphate (mmol P m^-3)
     nitrate_IO_N = conc[2]              # Nitrate (mmol N m^-3)
     ammonium_IO_N = conc[3]              # Ammonium (mmol N m^-3)
-    o4n = conc[4]              # Nitrogen sink (mmol N m^-3)
+    nitrogenSink = conc[4]              # Nitrogen sink (mmol N m^-3)
     silicate_IO_Si = conc[5]              # Silicate (mmol Si m^-3)
     reductEquiv_IO_R = conc[6]              # Reduction equivalents (mmol S m^-3)
     pelBacteria_LO_C = conc[7]              # Pelagic bacteria carbon (mg C m^-3)
@@ -235,7 +235,7 @@ def bfm50_rate_eqns(time, conc, seasonal_cycle=True):
     dOdt_wind = calculate_oxygen_reaeration(oxygen_reaeration_parameters, environmental_parameters, constant_parameters, conc, temper, salt, wind)
 
     #------------------------------- CO_2 Flux --------------------------------
-    ddisInorgCarbon_IO_Cdt_air_sea_flux = calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_parameters, conc, temper, wind, salt)
+    do3cdt_air_sea_flux = calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_parameters, conc, temper, wind, salt)
 
     #--------------------------------------------------------------------------
     #----------------------------- Rate Equations -----------------------------
@@ -252,7 +252,7 @@ def bfm50_rate_eqns(time, conc, seasonal_cycle=True):
     dphospate_IO_P_dt = - (ddiatoms_LO_Pdt_upt_phospate_IO_P + dnanoflagellates_LO_Pdt_upt_phospate_IO_P + dpicophyto_LO_Pdt_upt_phospate_IO_P + dlargephyto_LO_Pdt_upt_phospate_IO_P) + (dBpdt_upt_rel_phospate_IO_P*insw_vector(dBpdt_upt_rel_phospate_IO_P)) - ((-1)*f_B_p*dBpdt_upt_rel_phospate_IO_P*insw_vector(-dBpdt_upt_rel_phospate_IO_P)) + (dcarnivMesozoo_LO_Pdt_rel_phospate_IO_P + domnivMesozoo_LO_Pdt_rel_phospate_IO_P + dmicrozoo_LO_Pdt_rel_phospate_IO_P + dheteroFlagellates_LO_Pdt_rel_phospate_IO_P)
     dnitrate_IO_N_dt = - (ddiatoms_LO_Ndt_upt_nitrate_IO_N + dnanoflagellates_LO_Ndt_upt_nitrate_IO_N + dpicophyto_LO_Ndt_upt_nitrate_IO_N + dlargephyto_LO_Ndt_upt_nitrate_IO_N) + dammonium_IO_Ndt_nit_nitrate_IO_N - dnitrate_IO_Ndt_denit
     dammonium_IO_N_dt = - (ddiatoms_LO_Ndt_upt_ammonium_IO_N + dnanoflagellates_LO_Ndt_upt_ammonium_IO_N + dpicophyto_LO_Ndt_upt_ammonium_IO_N + dlargephyto_LO_Ndt_upt_ammonium_IO_N) + (dBndt_upt_rel_ammonium_IO_N*insw_vector(dBndt_upt_rel_ammonium_IO_N)) - ((-1)*f_B_n*dBndt_upt_rel_ammonium_IO_N*insw_vector(-dBndt_upt_rel_ammonium_IO_N)) + (dcarnivMesozoo_LO_Ndt_rel_ammonium_IO_N + domnivMesozoo_LO_Ndt_rel_ammonium_IO_N + dmicrozoo_LO_Ndt_rel_ammonium_IO_N + dheteroFlagellates_LO_Ndt_rel_ammonium_IO_N) - dammonium_IO_Ndt_nit_nitrate_IO_N
-    do4n_dt = dnitrate_IO_Ndt_denit
+    dnitrogenSink_dt = dnitrate_IO_Ndt_denit
     dsilicate_IO_Si_dt = - ddiatoms_LO_Sidt_upt_silicate_IO_Si + dparticOrganDetritus_NO_Sidt_rmn_silicate_IO_Si
 
     # Reduction equivalents
@@ -317,7 +317,7 @@ def bfm50_rate_eqns(time, conc, seasonal_cycle=True):
     dparticOrganDetritus_NO_Si_dt = ddiatoms_LO_Sidt_lys_particOrganDetritus_NO_Si - dparticOrganDetritus_NO_Sidt_rmn_silicate_IO_Si + (diatoms_LO_Si_diatoms_LO_C*(dcarnivMesozoo_LO_Cdt_prd["p1"] + domnivMesozoo_LO_Cdt_prd["p1"] + dmicrozoo_LO_Cdt_prd["p1"] + dheteroFlagellates_LO_Cdt_prd["p1"]))
 
     # Dissolved inorganic carbon
-    ddisInorgCarbon_IO_C_dt = (-ddiatoms_LO_Cdt_gpp_disInorgCarbon_IO_C + ddiatoms_LO_Cdt_rsp_disInorgCarbon_IO_C) + (-dnanoflagellates_LO_Cdt_gpp_disInorgCarbon_IO_C + dnanoflagellates_LO_Cdt_rsp_disInorgCarbon_IO_C) + (-dpicophyto_LO_Cdt_gpp_disInorgCarbon_IO_C + dpicophyto_LO_Cdt_rsp_disInorgCarbon_IO_C) + (-dlargephyto_LO_Cdt_gpp_disInorgCarbon_IO_C + dlargephyto_LO_Cdt_rsp_disInorgCarbon_IO_C) + dBcdt_rsp_disInorgCarbon_IO_C + dcarnivMesozoo_LO_Cdt_rsp_disInorgCarbon_IO_C + domnivMesozoo_LO_Cdt_rsp_disInorgCarbon_IO_C + dmicrozoo_LO_Cdt_rsp_disInorgCarbon_IO_C + dheteroFlagellates_LO_Cdt_rsp_disInorgCarbon_IO_C + ddisInorgCarbon_IO_Cdt_air_sea_flux
+    ddisInorgCarbon_IO_C_dt = (-ddiatoms_LO_Cdt_gpp_disInorgCarbon_IO_C + ddiatoms_LO_Cdt_rsp_disInorgCarbon_IO_C) + (-dnanoflagellates_LO_Cdt_gpp_disInorgCarbon_IO_C + dnanoflagellates_LO_Cdt_rsp_disInorgCarbon_IO_C) + (-dpicophyto_LO_Cdt_gpp_disInorgCarbon_IO_C + dpicophyto_LO_Cdt_rsp_disInorgCarbon_IO_C) + (-dlargephyto_LO_Cdt_gpp_disInorgCarbon_IO_C + dlargephyto_LO_Cdt_rsp_disInorgCarbon_IO_C) + dBcdt_rsp_disInorgCarbon_IO_C + dcarnivMesozoo_LO_Cdt_rsp_disInorgCarbon_IO_C + domnivMesozoo_LO_Cdt_rsp_disInorgCarbon_IO_C + dmicrozoo_LO_Cdt_rsp_disInorgCarbon_IO_C + dheteroFlagellates_LO_Cdt_rsp_disInorgCarbon_IO_C + do3cdt_air_sea_flux
     
     # Total alkalinity (from Alkalinity.F90)
     if pel_chem_parameters["calc_alkalinity"] and disInorgCarbon_IO_C>0.0:
@@ -325,15 +325,17 @@ def bfm50_rate_eqns(time, conc, seasonal_cycle=True):
     else:
         dtotalAlkalinity_IO_dt = 0.0
 
-    return [ddisOxygen_IO_O_dt, dphospate_IO_P_dt, dnitrate_IO_N_dt, dammonium_IO_N_dt, do4n_dt, dsilicate_IO_Si_dt, dreductEquiv_IO_R_dt, dpelBacteria_LO_C_dt, dpelBacteria_LO_N_dt, dpelBacteria_LO_P_dt, 
+    rate_equations = [ddisOxygen_IO_O_dt, dphospate_IO_P_dt, dnitrate_IO_N_dt, dammonium_IO_N_dt, dnitrogenSink_dt, dsilicate_IO_Si_dt, dreductEquiv_IO_R_dt, dpelBacteria_LO_C_dt, dpelBacteria_LO_N_dt, dpelBacteria_LO_P_dt, 
             ddiatoms_LO_C_dt, ddiatoms_LO_N_dt, ddiatoms_LO_P_dt, ddiatoms_LO_Chl_dt, ddiatoms_LO_Si_dt, dnanoflagellates_LO_C_dt, dnanoflagellates_LO_N_dt, dnanoflagellates_LO_P_dt, dnanoflagellates_LO_Chl_dt, 
             dpicophyto_LO_C_dt, dpicophyto_LO_N_dt, dpicophyto_LO_P_dt, dpicophyto_LO_Chl_dt, dlargephyto_LO_C_dt, dlargephyto_LO_N_dt, dlargephyto_LO_P_dt, dlargephyto_LO_Chl_dt, dcarnivMesozoo_LO_C_dt, dcarnivMesozoo_LO_N_dt, dcarnivMesozoo_LO_P_dt,
             domnivMesozoo_LO_C_dt, domnivMesozoo_LO_N_dt, domnivMesozoo_LO_P_dt, dmicrozoo_LO_C_dt, dmicrozoo_LO_N_dt, dmicrozoo_LO_P_dt, dheteroFlagellates_LO_C_dt, dheteroFlagellates_LO_N_dt, dheteroFlagellates_LO_P_dt, dlabileDOM_NO_C_dt, dlabileDOM_NO_N_dt, dlabileDOM_NO_P_dt, 
             dsemilabileDOC_NO_C_dt, dsemirefractDOC_NO_C_dt, dparticOrganDetritus_NO_C_dt, dparticOrganDetritus_NO_N_dt, dparticOrganDetritus_NO_P_dt, dparticOrganDetritus_NO_Si_dt, ddisInorgCarbon_IO_C_dt, dtotalAlkalinity_IO_dt]
+    
+    return rate_equations, dOdt_wind, do3cdt_air_sea_flux
 
 if __name__ == '__main__':
     # Names of species in the system
-    species_names = ['disOxygen_IO_O', 'phospate_IO_P', 'nitrate_IO_N', 'ammonium_IO_N', 'O4n', 'silicate_IO_Si', 'reductEquiv_IO_R', 'pelBacteria_LO_C', 'pelBacteria_LO_N', 'pelBacteria_LO_P',
+    species_names = ['disOxygen_IO_O', 'phospate_IO_P', 'nitrate_IO_N', 'ammonium_IO_N', 'nitrogenSink', 'silicate_IO_Si', 'reductEquiv_IO_R', 'pelBacteria_LO_C', 'pelBacteria_LO_N', 'pelBacteria_LO_P',
                      'diatoms_LO_C', 'diatoms_LO_N', 'diatoms_LO_P', 'diatoms_LO_Chl', 'diatoms_LO_Si', 'nanoflagellates_LO_C', 'nanoflagellates_LO_N', 'nanoflagellates_LO_P', 'nanoflagellates_LO_Chl',
                      'picophyto_LO_C', 'picophyto_LO_N', 'picophyto_LO_P', 'picophyto_LO_Chl', 'largephyto_LO_C', 'largephyto_LO_N', 'largephyto_LO_P', 'largephyto_LO_Chl',
                      'carnivMesozoo_LO_C', 'carnivMesozoo_LO_N', 'carnivMesozoo_LO_P', 'omnivMesozoo_LO_C', 'omnivMesozoo_LO_N', 'omnivMesozoo_LO_P', 'microzoo_LO_C', 'microzoo_LO_N', 'microzoo_LO_P',
@@ -345,7 +347,7 @@ if __name__ == '__main__':
           1.0,                      # phospate_IO_P
           5.0,                      # nitrate_IO_N
           1.0,                      # ammonium_IO_N
-          200.0,                    # O4n
+          200.0,                    # nitrogenSink
           8.0,                      # silicate_IO_Si
           1.0,                      # reductEquiv_IO_R
           1.0,                      # pelBacteria_LO_C
@@ -397,7 +399,7 @@ if __name__ == '__main__':
     t_span = [0, 86400*365*10]
 
     # Assign multiplier = 1, indicating all species are present
-    multiplier = numpy.ones(len(c0))
+    multiplier = np.ones(len(c0))
 
     # Integrate
     solution_full_model = solve_ivp(bfm50_rate_eqns, t_span, c0, method='RK23')

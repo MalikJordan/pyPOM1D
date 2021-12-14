@@ -45,14 +45,14 @@ def calculate_vertical_advection(property, sinking_velocity, vertical_grid):
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, disOxygen_IO_O, phospate_IO_P, nitrate_IO_N):
+def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, bfm_variables, dOdt_wind, do3cdt_air_sea_flux):
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GLOBAL DEFINITION OF PELAGIC (D3/D2) STATE VARIABLES (From ModuleMem)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     # Values correspond to index from bfm.variable_info.py
     ppdisOxygen_IO_O = 0; ppphospate_IO_P = 1; ppnitrate_IO_N = 2
-    ppammonium_IO_N = 3; ppO4n = 4; ppsilicate_IO_Si = 5; ppreductEquiv_IO_R = 6; pppelBacteria_LO_C = 7; pppelBacteria_LO_N = 8; pppelBacteria_LO_P = 9; ppdiatoms_LO_C = 10
+    ppammonium_IO_N = 3; ppnitrogenSink = 4; ppsilicate_IO_Si = 5; ppreductEquiv_IO_R = 6; pppelBacteria_LO_C = 7; pppelBacteria_LO_N = 8; pppelBacteria_LO_P = 9; ppdiatoms_LO_C = 10
     ppdiatoms_LO_N = 11; ppdiatoms_LO_P = 12; ppdiatoms_LO_Chl = 13; ppdiatoms_LO_Si = 14; ppnanoflagellates_LO_C = 15; ppnanoflagellates_LO_N = 16; ppnanoflagellates_LO_P = 17
     ppnanoflagellates_LO_Chl = 18; ppP2s = 0; pppicophyto_LO_C = 19; pppicophyto_LO_N = 20; pppicophyto_LO_P = 21; pppicophyto_LO_Chl = 22; ppP3s = 0
     pplargephyto_LO_C = 23; pplargephyto_LO_N = 24; pplargephyto_LO_P = 25; pplargephyto_LO_Chl = 26; ppP4s = 0; ppcarnivMesozoo_LO_C = 27; ppcarnivMesozoo_LO_N = 28
@@ -105,18 +105,18 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, disOxyge
         #   NUTRIENTS SURFACE AND BOTTOM FLUXES
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-        if M == ppdisOxygen_IO_O:
-            bfm_state_var.surface_flux = -(jsurdisOxygen_IO_O[0] / seconds_per_day)
-            bfm_state_var.bottom_flux = (disOxygen_IO_O[vertical_layers-2] - nutrients.O2BOTT) * trelax_disOxygen_IO_O
-        elif M == ppdisInorgCarbon_IO_C:
+        if M == ppdisOxygen_IO_O:   # Dissolved Oxygen (o2o)
+            bfm_state_var.surface_flux = -(dOdt_wind[0] / seconds_per_day)
+            bfm_state_var.bottom_flux = (bfm_variables[vertical_layers-2,0] - nutrients.O2BOTT) * trelax_disOxygen_IO_O
+        elif M == ppdisInorgCarbon_IO_C:    # Dissolved Inorganic Carbon (o3c)
             bfm_state_var.surface_flux = 0.
-        elif M == ppphospate_IO_P:
+        elif M == ppphospate_IO_P:  # Phosphate (n1p)
             bfm_state_var.surface_flux = 0.
-            bfm_state_var.bottom_flux = (phospate_IO_P[vertical_layers-2] - nutrients.PO4BOTT) * trelax_phospate_IO_P
-        elif M == ppnitrate_IO_N:
+            bfm_state_var.bottom_flux = (bfm_variables[vertical_layers-2,1] - nutrients.PO4BOTT) * trelax_phospate_IO_P
+        elif M == ppnitrate_IO_N:   # Nitrate (n3n)
             bfm_state_var.surface_flux = 0.
-            bfm_state_var.bottom_flux = (nitrate_IO_N[vertical_layers-2] - nutrients.NO3BOTT) * trelax_nitrate_IO_N
-        elif M == ppsilicate_IO_Si:
+            bfm_state_var.bottom_flux = (bfm_variables[vertical_layers-2,2] - nutrients.NO3BOTT) * trelax_nitrate_IO_N
+        elif M == ppsilicate_IO_Si: # Silicate (n5s)
             bfm_state_var.surface_flux = 0.
         else:
             bfm_state_var.surface_flux = 0.
@@ -194,8 +194,8 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, disOxyge
             d3state[M][N] = bfm_state_var.forward[N]
 
     if not AssignAirPelFluxesInBFMFlag:
-        jsurdisOxygen_IO_O[:] = 0.
-        jsurdisInorgCarbon_IO_C[:] = 0.
+        dOdt_wind[:] = 0.
+        do3cdt_air_sea_flux[:] = 0.
 
 
     return
