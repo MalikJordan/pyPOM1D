@@ -471,7 +471,7 @@ def set_initial_conditions():
 # n7f - reductEquiv_IO_Fe
 # o2o - disOxygen_IO_O
 # o3c - disInorgCarbon_IO_C
-# o3n - totalAlkalinity_IO
+# o3h - totalAlkalinity_IO
 # p1c - diatoms_LO_C
 # p1n - diatoms_LO_N
 # p1p - diatoms_LO_P
@@ -505,6 +505,9 @@ def set_initial_conditions():
 # z5c - microzoo_LO_C
 # z5n - microzoo_LO_N
 # z5p - microzoo_LO_P
+# z6c - heteroFlagellates_LO_C
+# z6n - heteroFlagellates_LO_N
+# z6p - heteroFlagellates_LO_P
 # r1c - labileDOM_NO_C
 # r1n - labileDOM_NO_N
 # r1p - labileDOM_NO_P
