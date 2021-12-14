@@ -10,6 +10,7 @@ from inputs.namelist_input_data import o2o0, n1p0, n3n0, n4n0, n5s0, n6r0, o3c0,
     d1m0, d2m0, d6m0, d7m0, d8m0, d9m0, q6c0, q6n0, q6p0, q6s0, q1c0, q11c0, g2o0, g3c0, g13c0, g23c0, g3h0, g13h0, g23h0, \
     calcphytoplankton, calcmesozooplankton, calcmicrozooplankton, calcpelbacteria, calcbenorganisms, calcbenbacteria
 
+# Unresolved reference: INCLUDE_BEN
 
 def initialize_bfm_in_pom(vertical_grid):
 
@@ -82,7 +83,11 @@ def initialize_bfm_in_pom(vertical_grid):
         d2stateb_ben = np.zeros((num_d2_box_states_ben,num_boxes_xy))
 
     # Define initial conditions
-    set_initial_conditions()
+    [o2o, n1p, n3n, n4n, o4n, n5s, n6r, b1c, b1n, b1p,
+     p1c, p1n, p1p, p1l, p1s, p2c, p2n, p2p, p2l, p3c, p3n, p3p, p3l, p4c, p4n, p4p, p4l,
+     z3c, z3n, z3p, z4c, z4n, z4p, z5c, z5n, z5p, z6c, z6n, z6p,
+     r1c, r1n, r1p, r2c, r3c, r6c, r6n, r6p, r6s, o3c, o3h] = set_initial_conditions()
+
     # init_save_bfm()
 
     # Initialize prior time step for leapfrog
@@ -174,6 +179,9 @@ def set_initial_conditions():
     #   Definition of general pelagic state variables: Pelagic Fases
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     p2c, z5c, r6c, r1c, n1p, n3n, n4n, o2o = read_bfm_input()
+
+    o3c = o3c0 * np.ones(vertical_layers)
+    o3h = o3h0 * np.ones(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   Pelagic nutrients (mMol / m3)
@@ -444,12 +452,70 @@ def set_initial_conditions():
         d8m = d8m0 * np.ones(vertical_layers)
         d9m = d9m0 * np.ones(vertical_layers)
 
-    return o2o, n1p, n3n, n4n, o4n, n5s, n6r, b1c, b1n, b1p, \
-           p1c, p1n, p1p, p1l, p1s, p2c, p2n, p2p, p2l, p3c, p3n, p3p, p3l, p4c, p4n, p4p, p4l, \
-           z3c, z3n, z3p, z4c, z4n, z4p, z5c, z5n, z5p, z6c, z6n, z6p, \
-           r1c, r1n, r1p, r2c, r3c, r6c, r6n, r6p, r6s, o3c, o3h
 
 
+
+    return [o2o, n1p, n3n, n4n, o4n, n5s, n6r, b1c, b1n, b1p,
+            p1c, p1n, p1p, p1l, p1s, p2c, p2n, p2p, p2l, p3c, p3n, p3p, p3l, p4c, p4n, p4p, p4l,
+            z3c, z3n, z3p, z4c, z4n, z4p, z5c, z5n, z5p, z6c, z6n, z6p,
+            r1c, r1n, r1p, r2c, r3c, r6c, r6n, r6p, r6s, o3c, o3h]
+
+
+# UPDATED VARIABLE NAMES    -    NAME_TYPE_CONSTITUENT
+#
+# n1p - phospate_IO_P
+# n3n - nitrate_IO_N
+# n4n - ammonium_IO_N
+# n5s - silicate_IO_Si
+# n6r - reductEquiv_IO_R
+# n7f - reductEquiv_IO_Fe
+# o2o - disOxygen_IO_O
+# o3c - disInorgCarbon_IO_C
+# o3n - totalAlkalinity_IO
+# p1c - diatoms_LO_C
+# p1n - diatoms_LO_N
+# p1p - diatoms_LO_P
+# p1l - diatoms_LO_Chl
+# p1s - diatoms_LO_Si
+# p1f - diatoms_LO_Fe
+# p2c - nanoflagellates_LO_C
+# p2n - nanoflagellates_LO_N
+# p2p - nanoflagellates_LO_P
+# p2l - nanoflagellates_LO_Chl
+# p2f - nanoflagellates_LO_Fe
+# p3c - picophyto_LO_C
+# p3n - picophyto_LO_N
+# p3p - picophyto_LO_P
+# p3l - picophyto_LO_L
+# p3f - picophyto_LO_Fe
+# p4c - largephyto_LO_C
+# p4n - largephyto_LO_N
+# p4p - largephyto_LO_P
+# p4l - largephyto_LO_Chl
+# p4f - largephyto_LO_Fe
+# b1c - pelBacteria_LO_C
+# b1n - pelBacteria_LO_N
+# b1p - pelBacteria_LO_P
+# z3c - carnivMesozoo_LO_C
+# z3n - carnivMesozoo_LO_N
+# z3p - carnivMesozoo_LO_P
+# z4c - omnivMesozoo_LO_C
+# z4n - omnivMesozoo_LO_N
+# z4p - omnivMesozoo_LO_P
+# z5c - microzoo_LO_C
+# z5n - microzoo_LO_N
+# z5p - microzoo_LO_P
+# r1c - labileDOM_NO_C
+# r1n - labileDOM_NO_N
+# r1p - labileDOM_NO_P
+# r1f - labileDOM_NO_Fe
+# r2c - semilabileDOC_NO_C
+# r3c - semirefractDOC_NO_C
+# r6c - particOrganDetritus_NO_C
+# r6n - particOrganDetritus_NO_N
+# r6p - particOrganDetritus_NO_P
+# r6s - particOrganDetritus_NO_Si
+# r6f - particOrganDetritus_NO_Fe
 
 
 

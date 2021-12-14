@@ -171,7 +171,7 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, o2o, n1p
         # The bot flux for Zooplankton is left equal to ZERO
 
         # SINKING: UPSTREAM VERTICAL ADVECTION
-        calculate_vertical_advection(bfm_state_var,sinking_velocity,vertical_grid)
+        bfm_state_var = calculate_vertical_advection(bfm_state_var,sinking_velocity,vertical_grid)
 
         # SOURCE SPLITTING LEAPFROG INTEGRATION
         for i in range(0,vertical_layers-1):
