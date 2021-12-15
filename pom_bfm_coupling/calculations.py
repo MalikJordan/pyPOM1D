@@ -132,12 +132,12 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, bfm_vari
         #   BOTTOM FLUX
         #   R6: Particulate Organic Matter
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
+        detritus_sedimentation_rate = detritus_sedimentation()
         # The botflux for Particulate Organic Matter is left equal to ZERO
         if ppparticOrganDetritus_NO_C <= M <= ppparticOrganDetritus_NO_Si:
 
             for i in range(0,vertical_layers-1):
-                sinking_velocity[i] = sinking_velocity[i] - sediR6[i]/seconds_per_day
+                sinking_velocity[i] = sinking_velocity[i] - detritus_sedimentation_rate[i]/seconds_per_day
 
             # FINAL SINK VALUE
             sinking_velocity[vertical_layers-1] = sinking_velocity[vertical_layers-2]
@@ -145,6 +145,7 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, bfm_vari
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         #   SEDIMENTATION PHYTOPLANKTON
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+        phyto_sedimentation_rates = phyto_sedimentation()
         # The botflux for Phytoplankton is left equal to ZERO
         if ppdiatoms_LO_C <= M <= pplargephyto_LO_Chl:
 
@@ -159,7 +160,7 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, bfm_vari
                 N = 4   # iiP4
 
             for i in range(0,vertical_layers-1):
-                sinking_velocity[i] = sinking_velocity[i] - sediPPY[i]/seconds_per_day
+                sinking_velocity[i] = sinking_velocity[i] - phyto_sedimentation_rates[i,N]/seconds_per_day
 
             # FINAL SINK VALUE
             sinking_velocity[vertical_layers - 1] = sinking_velocity[vertical_layers - 2]
@@ -201,5 +202,50 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, bfm_vari
     return
 
 
+def detritus_sedimentation():
 
+    # FROM namelists_bfm
+    # p_rR6m        [m/d]   detritus sinking rate
+    # p_burvel_R6   [m/d]   Bottom burial velocity for detritus
+
+    p_rR6m = 1.
+    p_burvel_R6 = 1.
+    # p_burvel_R6 = 1.5
+
+    # FROM PelGlobal.F90 (145-148)
+    detritus_sedimentation_rate = p_rR6m * np.ones(vertical_layers-1)
+    try:
+        BFM_POM
+    except NameError:
+        BFM_POM = False
+    if not BFM_POM:
+        detritus_sedimentation_rate[vertical_layers-2] = p_burvel_R6
+
+    return detritus_sedimentation_rate
+
+
+def phyto_sedimentation():
+
+    # FROM namelists_bfm
+    # p_rPIm        [m/d]   phytoplanktom background sinking rate
+    # p_burvel_PI   [m/d]   Botttom burial velocity for detritus
+    p_rPIm = [0.0, 0.0, 0.0, 0.0]
+    p_burvel_PI = 0.0
+
+    # FROM MODULEMEM.F90 (338)
+    iiPhytoPlankton = 4
+    iiP1 = 1; iiP2 = 2; iiP3 = 3; iiP4 = 4
+
+    # FROM PelGLobal.F90 (149-154)
+    phyto_sedimentation_rates = np.zeros((vertical_layers-1,iiPhytoPlankton))
+    for i in range(0,iiPhytoPlankton):
+        phyto_sedimentation_rates[:,iiPhytoPlankton] = p_rPIm[i]
+        try:
+            BFM_POM
+        except NameError:
+            BFM_POM = False
+        if not BFM_POM:
+            phyto_sedimentation_rates[vertical_layers-2,i] = p_burvel_PI
+
+    return phyto_sedimentation_rates
 

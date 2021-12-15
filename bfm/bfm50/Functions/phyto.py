@@ -2,7 +2,7 @@ import numpy as np
 import sys
 from Functions.other_functions import insw_vector, eTq_vector, get_concentration_ratio
 
-def phyto_eqns(conc, phyto_parameters, env_parameters, constant_parameters, group, pc, pn, pp, pl, qs, temp, time):
+def phyto_eqns(conc, phyto_parameters, env_parameters, constant_parameters, group, pc, pn, pp, pl, qs, suspended_sediments, temp, time):
     """ Calculates the terms needed for the phytoplnaktion biological rate equations
         Equations come from the BFM user manual
     """
@@ -47,7 +47,7 @@ def phyto_eqns(conc, phyto_parameters, env_parameters, constant_parameters, grou
     
     #--------------------------------------------------------------------------    
     # Total extinction coef (m^-1)
-    suspended_sediments = 0.0
+    # suspended_sediments = 0.0
     # from CalcVerticalExtinction.F90 line 82
     xEPS = env_parameters["p_eps0"] + env_parameters["p_epsESS"]*suspended_sediments + env_parameters["p_epsR6"]*particOrganDetritus_NO_C
     # from CalcVerticalExtinction.F90 line 101 (ChlAttenFlag=1, ChlDynamicsFlag=2)       

@@ -25,7 +25,7 @@ species_names = ['disOxygen_IO_O', 'phospate_IO_P', 'nitrate_IO_N', 'ammonium_IO
                  'particOrganDetritus_NO_N', 'particOrganDetritus_NO_P', 'particOrganDetritus_NO_Si', 'disInorgCarbon_IO_C', 'totalAlkalinity_IO']
 
 
-def bfm50_rate_eqns(time, conc, seasonal_cycle=True):
+def bfm50_rate_eqns(count, bfm_variables, time, conc, seasonal_cycle=True):
     """ Calculates the change in concentration for the 50 state variables
         NOTE: iron dynamics are not included, this is to compare to the standalone pelagic system
     """
@@ -81,10 +81,15 @@ def bfm50_rate_eqns(time, conc, seasonal_cycle=True):
         qs = get_sunlight(t,qs_win,qs_sum)                                      # Yearly irradiance cycle
 
     else:
-        wind = environmental_parameters["w_win"]
-        temper = environmental_parameters["t_win"]
-        salt = environmental_parameters["s_win"]
-        qs = environmental_parameters["qs_win"]
+        # wind = environmental_parameters["w_win"]
+        # temper = environmental_parameters["t_win"]
+        # salt = environmental_parameters["s_win"]
+        # qs = environmental_parameters["qs_win"]
+        wind = bfm_variables.wind
+        temper = bfm_variables.temperature[count]
+        salt = bfm_variables.salinity[count]
+        qs = bfm_variables.irradiance
+
 
     #--------------------------------------------------------------------------
     # State variables
@@ -172,25 +177,26 @@ def bfm50_rate_eqns(time, conc, seasonal_cycle=True):
     #--------------------------------------------------------------------------
     #---------------------- Phytoplankton Equations ---------------------------
     #--------------------------------------------------------------------------
+    suspended_sediments = bfm_variables.suspended_matter[count]
     # P1: Diatoms terms
     (ddiatoms_LO_Cdt_gpp_disInorgCarbon_IO_C, ddiatoms_LO_Cdt_rsp_disInorgCarbon_IO_C, ddiatoms_LO_Cdt_lys_labileDOM_NO_C, ddiatoms_LO_Cdt_lys_particOrganDetritus_NO_C, ddiatoms_LO_Cdt_exu_semilabileDOC_NO_C, ddiatoms_LO_Ndt_upt_nitrate_IO_N, ddiatoms_LO_Ndt_upt_ammonium_IO_N, 
      extra_n1, ddiatoms_LO_Ndt_lys_labileDOM_NO_N, ddiatoms_LO_Ndt_lys_particOrganDetritus_NO_N, ddiatoms_LO_Pdt_upt_phospate_IO_P, ddiatoms_LO_Pdt_upt_labileDOM_NO_P, ddiatoms_LO_Pdt_lys_labileDOM_NO_P, ddiatoms_LO_Pdt_lys_particOrganDetritus_NO_P, 
-     ddiatoms_LO_Chldt_syn, ddiatoms_LO_Sidt_upt_silicate_IO_Si, ddiatoms_LO_Sidt_lys_particOrganDetritus_NO_Si) = phyto_eqns(conc, phyto1_prameters, environmental_parameters, constant_parameters, 1, diatoms_LO_C, diatoms_LO_N, diatoms_LO_P, diatoms_LO_Chl, qs, temper, time)
+     ddiatoms_LO_Chldt_syn, ddiatoms_LO_Sidt_upt_silicate_IO_Si, ddiatoms_LO_Sidt_lys_particOrganDetritus_NO_Si) = phyto_eqns(conc, phyto1_prameters, environmental_parameters, constant_parameters, 1, diatoms_LO_C, diatoms_LO_N, diatoms_LO_P, diatoms_LO_Chl, qs, suspended_sediments, temper, time)
 
     # P2: Flagellates terms
     (dnanoflagellates_LO_Cdt_gpp_disInorgCarbon_IO_C, dnanoflagellates_LO_Cdt_rsp_disInorgCarbon_IO_C, dnanoflagellates_LO_Cdt_lys_labileDOM_NO_C, dnanoflagellates_LO_Cdt_lys_particOrganDetritus_NO_C, dnanoflagellates_LO_Cdt_exu_semilabileDOC_NO_C, dnanoflagellates_LO_Ndt_upt_nitrate_IO_N, dnanoflagellates_LO_Ndt_upt_ammonium_IO_N, 
      extra_n2, dnanoflagellates_LO_Ndt_lys_labileDOM_NO_N, dnanoflagellates_LO_Ndt_lys_particOrganDetritus_NO_N, dnanoflagellates_LO_Pdt_upt_phospate_IO_P, dnanoflagellates_LO_Pdt_upt_labileDOM_NO_P, dnanoflagellates_LO_Pdt_lys_labileDOM_NO_P, dnanoflagellates_LO_Pdt_lys_particOrganDetritus_NO_P, 
-     dnanoflagellates_LO_Chldt_syn, dP2sdt_upt_silicate_IO_Si, dP2sdt_lys_particOrganDetritus_NO_Si) = phyto_eqns(conc, phyto2_prameters, environmental_parameters, constant_parameters, 2, nanoflagellates_LO_C, nanoflagellates_LO_N, nanoflagellates_LO_P, nanoflagellates_LO_Chl, qs, temper, time)
+     dnanoflagellates_LO_Chldt_syn, dP2sdt_upt_silicate_IO_Si, dP2sdt_lys_particOrganDetritus_NO_Si) = phyto_eqns(conc, phyto2_prameters, environmental_parameters, constant_parameters, 2, nanoflagellates_LO_C, nanoflagellates_LO_N, nanoflagellates_LO_P, nanoflagellates_LO_Chl, qs, suspended_sediments, temper, time)
 
     # P3: PicoPhytoplankton terms
     (dpicophyto_LO_Cdt_gpp_disInorgCarbon_IO_C, dpicophyto_LO_Cdt_rsp_disInorgCarbon_IO_C, dpicophyto_LO_Cdt_lys_labileDOM_NO_C, dpicophyto_LO_Cdt_lys_particOrganDetritus_NO_C, dpicophyto_LO_Cdt_exu_semilabileDOC_NO_C, dpicophyto_LO_Ndt_upt_nitrate_IO_N, dpicophyto_LO_Ndt_upt_ammonium_IO_N, 
      extra_n3, dpicophyto_LO_Ndt_lys_labileDOM_NO_N, dpicophyto_LO_Ndt_lys_particOrganDetritus_NO_N, dpicophyto_LO_Pdt_upt_phospate_IO_P, dpicophyto_LO_Pdt_upt_labileDOM_NO_P, dpicophyto_LO_Pdt_lys_labileDOM_NO_P, dpicophyto_LO_Pdt_lys_particOrganDetritus_NO_P, 
-     dpicophyto_LO_Chldt_syn, dP3sdt_upt_silicate_IO_Si, dP3sdt_lys_particOrganDetritus_NO_Si) = phyto_eqns(conc, phyto3_prameters, environmental_parameters, constant_parameters, 3, picophyto_LO_C, picophyto_LO_N, picophyto_LO_P, picophyto_LO_Chl, qs, temper, time)
+     dpicophyto_LO_Chldt_syn, dP3sdt_upt_silicate_IO_Si, dP3sdt_lys_particOrganDetritus_NO_Si) = phyto_eqns(conc, phyto3_prameters, environmental_parameters, constant_parameters, 3, picophyto_LO_C, picophyto_LO_N, picophyto_LO_P, picophyto_LO_Chl, qs, suspended_sediments, temper, time)
 
     # P4: Large Phytoplankton terms
     (dlargephyto_LO_Cdt_gpp_disInorgCarbon_IO_C, dlargephyto_LO_Cdt_rsp_disInorgCarbon_IO_C, dlargephyto_LO_Cdt_lys_labileDOM_NO_C, dlargephyto_LO_Cdt_lys_particOrganDetritus_NO_C, dlargephyto_LO_Cdt_exu_semilabileDOC_NO_C, dlargephyto_LO_Ndt_upt_nitrate_IO_N, dlargephyto_LO_Ndt_upt_ammonium_IO_N, 
      extra_n4, dlargephyto_LO_Ndt_lys_labileDOM_NO_N, dlargephyto_LO_Ndt_lys_particOrganDetritus_NO_N, dlargephyto_LO_Pdt_upt_phospate_IO_P, dlargephyto_LO_Pdt_upt_labileDOM_NO_P, dlargephyto_LO_Pdt_lys_labileDOM_NO_P, dlargephyto_LO_Pdt_lys_particOrganDetritus_NO_P, 
-     dlargephyto_LO_Chldt_syn, dP4sdt_upt_silicate_IO_Si, dP4sdt_lys_particOrganDetritus_NO_Si) = phyto_eqns(conc, phyto4_prameters, environmental_parameters, constant_parameters, 4, largephyto_LO_C, largephyto_LO_N, largephyto_LO_P, largephyto_LO_Chl, qs, temper, time)
+     dlargephyto_LO_Chldt_syn, dP4sdt_upt_silicate_IO_Si, dP4sdt_lys_particOrganDetritus_NO_Si) = phyto_eqns(conc, phyto4_prameters, environmental_parameters, constant_parameters, 4, largephyto_LO_C, largephyto_LO_N, largephyto_LO_P, largephyto_LO_Chl, qs, suspended_sediments, temper, time)
 
     #--------------------------------------------------------------------------
     #------------------------- Bacteria Equations -----------------------------
@@ -325,13 +331,13 @@ def bfm50_rate_eqns(time, conc, seasonal_cycle=True):
     else:
         dtotalAlkalinity_IO_dt = 0.0
 
-    rate_equations = [ddisOxygen_IO_O_dt, dphospate_IO_P_dt, dnitrate_IO_N_dt, dammonium_IO_N_dt, dnitrogenSink_dt, dsilicate_IO_Si_dt, dreductEquiv_IO_R_dt, dpelBacteria_LO_C_dt, dpelBacteria_LO_N_dt, dpelBacteria_LO_P_dt, 
+    rates = [ddisOxygen_IO_O_dt, dphospate_IO_P_dt, dnitrate_IO_N_dt, dammonium_IO_N_dt, dnitrogenSink_dt, dsilicate_IO_Si_dt, dreductEquiv_IO_R_dt, dpelBacteria_LO_C_dt, dpelBacteria_LO_N_dt, dpelBacteria_LO_P_dt, 
             ddiatoms_LO_C_dt, ddiatoms_LO_N_dt, ddiatoms_LO_P_dt, ddiatoms_LO_Chl_dt, ddiatoms_LO_Si_dt, dnanoflagellates_LO_C_dt, dnanoflagellates_LO_N_dt, dnanoflagellates_LO_P_dt, dnanoflagellates_LO_Chl_dt, 
             dpicophyto_LO_C_dt, dpicophyto_LO_N_dt, dpicophyto_LO_P_dt, dpicophyto_LO_Chl_dt, dlargephyto_LO_C_dt, dlargephyto_LO_N_dt, dlargephyto_LO_P_dt, dlargephyto_LO_Chl_dt, dcarnivMesozoo_LO_C_dt, dcarnivMesozoo_LO_N_dt, dcarnivMesozoo_LO_P_dt,
             domnivMesozoo_LO_C_dt, domnivMesozoo_LO_N_dt, domnivMesozoo_LO_P_dt, dmicrozoo_LO_C_dt, dmicrozoo_LO_N_dt, dmicrozoo_LO_P_dt, dheteroFlagellates_LO_C_dt, dheteroFlagellates_LO_N_dt, dheteroFlagellates_LO_P_dt, dlabileDOM_NO_C_dt, dlabileDOM_NO_N_dt, dlabileDOM_NO_P_dt, 
             dsemilabileDOC_NO_C_dt, dsemirefractDOC_NO_C_dt, dparticOrganDetritus_NO_C_dt, dparticOrganDetritus_NO_N_dt, dparticOrganDetritus_NO_P_dt, dparticOrganDetritus_NO_Si_dt, ddisInorgCarbon_IO_C_dt, dtotalAlkalinity_IO_dt]
     
-    return rate_equations, dOdt_wind, do3cdt_air_sea_flux
+    return rates, dOdt_wind, do3cdt_air_sea_flux
 
 if __name__ == '__main__':
     # Names of species in the system
