@@ -1,4 +1,5 @@
 from cppdefs import *
+from include import BFM_NEMO, INCLUDE_BEN, INCLUDE_SEAICE
 import numpy as np
 from pom.modules_old import RLEN, zero, bfm_lwp, LOGUNIT, no_d3_box_states
 
@@ -71,19 +72,19 @@ ave_ct1 = False
 D3ave = np.empty((dim,dim),dtype=float)
 D2ave = np.empty((dim,dim),dtype=float)
 
-try:
-    import INCLUDE_SEAICE
-    INCLUDE_SEAICE = True
-except FileNotFoundError:
-    INCLUDE_SEAICE = False
+# try:
+#     import INCLUDE_SEAICE
+#     INCLUDE_SEAICE = True
+# except FileNotFoundError:
+#     INCLUDE_SEAICE = False
 if INCLUDE_SEAICE:
     D2ave_ice = np.empty((dim,dim),dtype=float)
 
-try:
-    import INCLUDE_BEN
-    INCLUDE_BEN = True
-except FileNotFoundError:
-    INCLUDE_BEN = False
+# try:
+#     import INCLUDE_BEN
+#     INCLUDE_BEN = True
+# except FileNotFoundError:
+#     INCLUDE_BEN = False
 if INCLUDE_BEN:
     D2ave_ben = np.empty((dim,dim),dtype=float)
 
@@ -120,11 +121,11 @@ stPelRivE = 0
 stPelStart = 0
 stPelEnd = 0
 
-try:
-    import INCLUDE_SEAICE
-    INCLUDE_SEAICE = True
-except FileNotFoundError:
-    INCLUDE_SEAICE = False
+# try:
+#     import INCLUDE_SEAICE
+#     INCLUDE_SEAICE = True
+# except FileNotFoundError:
+#     INCLUDE_SEAICE = False
 if INCLUDE_SEAICE:
     stIceStateS = 0
     stIceDiag2dS = 0
@@ -137,11 +138,11 @@ if INCLUDE_SEAICE:
     stIceStart = 0
     stIceEnd = 0
 
-try:
-    import INCLUDE_BEN
-    INCLUDE_BEN = True
-except FileNotFoundError:
-    INCLUDE_BEN = False
+# try:
+#     import INCLUDE_BEN
+#     INCLUDE_BEN = True
+# except FileNotFoundError:
+#     INCLUDE_BEN = False
 if INCLUDE_BEN:
     stBenStateS = 0
     stBenDiag2dS = 0
@@ -208,28 +209,28 @@ RIVmask = np.empty(dim,dtype=float)
 # TOTAL AMOUNT FOR EACH VARIABLE
 D3STATE_tot = np.empty(dim,dtype=float)
 
-try:
-    import INCLUDE_SEAICE
-    INCLUDE_SEAICE = True
-except FileNotFoundError:
-    INCLUDE_SEAICE = False
+# try:
+#     import INCLUDE_SEAICE
+#     INCLUDE_SEAICE = True
+# except FileNotFoundError:
+#     INCLUDE_SEAICE = False
 if INCLUDE_SEAICE:
     D2STATE_ICE_tot = np.empty(dim,dtype=float)
 
-try:
-    import INCLUDE_BEN
-    INCLUDE_BEN = True
-except FileNotFoundError:
-    INCLUDE_BEN = False
+# try:
+#     import INCLUDE_BEN
+#     INCLUDE_BEN = True
+# except FileNotFoundError:
+#     INCLUDE_BEN = False
 if INCLUDE_BEN:
     D2STATE_BEN_tot = np.empty(dim,dtype=float)
 
 
-try:
-    import BFM_NEMO
-    BFM_NEMO = True
-except FileNotFoundError:
-    BFM_NEMO = False
+# try:
+#     import BFM_NEMO
+#     BFM_NEMO = True
+# except FileNotFoundError:
+#     BFM_NEMO = False
 if BFM_NEMO:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   ADDITIONAL 3D ARAYS
@@ -253,19 +254,19 @@ if BFM_NEMO:
     #   ADDITIONAL INTEGRATION ARRAYS FOR LEAPFROG SCHEME
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     D3STATEB = np.empty((dim,dim),dtype=float)
-    try:
-        import INCLUDE_SEAICE
-        INCLUDE_SEAICE = True
-    except FileNotFoundError:
-        INCLUDE_SEAICE = False
+    # try:
+    #     import INCLUDE_SEAICE
+    #     INCLUDE_SEAICE = True
+    # except FileNotFoundError:
+    #     INCLUDE_SEAICE = False
     if INCLUDE_SEAICE:
         D2STATEB_ICE = np.empty((dim,dim),dtype=float)
 
-    try:
-        import INCLUDE_BEN
-        INCLUDE_BEN = True
-    except FileNotFoundError:
-        INCLUDE_BEN = False
+    # try:
+    #     import INCLUDE_BEN
+    #     INCLUDE_BEN = True
+    # except FileNotFoundError:
+    #     INCLUDE_BEN = False
     if INCLUDE_BEN:
         D2STATEB_BEN = np.empty((dim, dim), dtype=float)
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

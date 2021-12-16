@@ -1,4 +1,4 @@
-from Functions.other_functions import eTq_vector, get_concentration_ratio
+from bfm.bfm50.Functions.other_functions import eTq_vector, get_concentration_ratio
 
 def microzoo_eqns(conc, microzoo_parameters, constant_parameters, environmental_parameters, zc, zn, zp, i_c, i_n, i_p, temp):
     """ Calculates the micorzooplankton (Z5 & Z6) terms needed for the zooplankton biological rate equations

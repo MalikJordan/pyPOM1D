@@ -1,4 +1,5 @@
 import numpy as np
+from include import INCLUDE_BEN, INCLUDE_SEAICE
 
 class PelagicIndex:
     def __init__(self, start, end, state_start, state_end, diag_start, diag_end, flux_start, flux_end, diag2d_start,
@@ -1394,23 +1395,23 @@ def set_variable_info_bfm():
     pelagic_index = PelagicIndex(0,332,0,49,50,140,141,170,171,182,183,232,233,282,283,331)
     index = Index(0,332)
 
-    try:
-        INCLUDE_SEAICE
-    except NameError:
-        INCLUDE_SEAICE = False
-    else:
-        INCLUDE_SEAICE = True
+    # try:
+    #     INCLUDE_SEAICE
+    # except NameError:
+    #     INCLUDE_SEAICE = False
+    # else:
+    #     INCLUDE_SEAICE = True
     if INCLUDE_SEAICE:
         seaice_index = SeaIceIndex(333,332,333,332,333,332,333,332)
     else:
         seaice_index = None
 
-    try:
-        INCLUDE_BEN
-    except NameError:
-        INCLUDE_BEN = False
-    else:
-        INCLUDE_BEN = True
+    # try:
+    #     INCLUDE_BEN
+    # except NameError:
+    #     INCLUDE_BEN = False
+    # else:
+    #     INCLUDE_BEN = True
     if INCLUDE_BEN:
         benthic_index = BenthicIndex(333,332,333,332,333,332,333,332)
     else:

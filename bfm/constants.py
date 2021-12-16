@@ -1,3 +1,4 @@
+from include import INCLUDE_BEN
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #
@@ -104,12 +105,12 @@ num_d3_box_diagnoss = 91
 num_d2_box_diagnoss = 162
 num_d3_box_flux     = 30
 
-try:
-    INCLUDE_BEN
-except NameError:
-    INCLUDE_BEN = False
-else:
-    INCLUDE_BEN = True
+# try:
+#     INCLUDE_BEN
+# except NameError:
+#     INCLUDE_BEN = False
+# else:
+#     INCLUDE_BEN = True
 if INCLUDE_BEN:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GLOBAL SYSTEM CONSTANTS (BEN)

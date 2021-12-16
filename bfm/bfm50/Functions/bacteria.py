@@ -1,5 +1,5 @@
 import sys
-from Functions.other_functions import eTq_vector, get_concentration_ratio
+from bfm.bfm50.Functions.other_functions import eTq_vector, get_concentration_ratio
 
 def bacteria_eqns(conc, bacteria_parameters, constant_parameters, environmental_parameters, temper):
     """ Calculates the terms needed for the bacteria biological rate equations

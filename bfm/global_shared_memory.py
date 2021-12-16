@@ -1,3 +1,4 @@
+from include import INCLUDE_BEN, INCLUDE_SEAICE
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # MODULE: MEM
@@ -95,18 +96,13 @@ no_d3_box_diagnoss = 91
 no_d2_box_diagnoss = 162
 no_d3_box_flux     = 30
 #
-# try:
-#     import INCLUDE_SEAICE
-#     INCLUDE_SEAICE = True
-# except FileNotFoundError:
-#     INCLUDE_SEAICE = False
 
-try:
-    INCLUDE_SEAICE
-except NameError:
-    INCLUDE_SEAICE = False
-else:
-    INCLUDE_SEAICE = True
+# try:
+#     INCLUDE_SEAICE
+# except NameError:
+#     INCLUDE_SEAICE = False
+# else:
+#     INCLUDE_SEAICE = True
 if INCLUDE_SEAICE:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GLOBAL SYSTEM CONSTANTS (ICE)
@@ -116,16 +112,11 @@ if INCLUDE_SEAICE:
     no_d2_box_flux_ice     = 0
 
 # try:
-#     import INCLUDE_BEN
-#     INCLUDE_BEN = True
-# except FileNotFoundError:
+#     INCLUDE_BEN
+# except NameError:
 #     INCLUDE_BEN = False
-try:
-    INCLUDE_BEN
-except NameError:
-    INCLUDE_BEN = False
-else:
-    INCLUDE_BEN = True
+# else:
+#     INCLUDE_BEN = True
 if INCLUDE_BEN:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GLOBAL SYSTEM CONSTANTS (BEN)
@@ -358,17 +349,13 @@ pptotsysn = 9; pptotsysp      = 10; pptotsyss    = 11; ppEICE  = 12
 #     ppPelDetritus, PelDetritus, ppInorganic, Inorganic
 
 
+
 # try:
-#     import INCLUDE_SEAICE
-#     INCLUDE_SEAICE = True
-# except FileNotFoundError:
+#     INCLUDE_SEAICE
+# except NameError:
 #     INCLUDE_SEAICE = False
-try:
-    INCLUDE_SEAICE
-except NameError:
-    INCLUDE_SEAICE = False
-else:
-    INCLUDE_SEAICE = True
+# else:
+#     INCLUDE_SEAICE = True
 if INCLUDE_SEAICE:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SHARED GLOBAL FUNCTIONS (ICE) (MUST BE BELOW CONTAINS)
@@ -377,16 +364,11 @@ if INCLUDE_SEAICE:
     pass
 
 # try:
-#     import INCLUDE_BEN
-#     INCLUDE_BEN = True
-# except FileNotFoundError:
+#     INCLUDE_BEN
+# except NameError:
 #     INCLUDE_BEN = False
-try:
-    INCLUDE_BEN
-except NameError:
-    INCLUDE_BEN = False
-else:
-    INCLUDE_BEN = True
+# else:
+#     INCLUDE_BEN = True
 if INCLUDE_BEN:
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   SHARED GLOBAL FUNCTIONS (ICE) (MUST BE BELOW CONTAINS)

@@ -1,7 +1,8 @@
 import numpy as np
+from include import IMPFLUX, INCLUDE_BEN
 from pom.constants import current_path, seconds_per_day, twice_the_timestep, vertical_layers
 from inputs import params_POMBFM
-from bfm.constants import num_d3_box_states, num_d2_box_states_ben
+from bfm.constants import num_d3_box_states #, num_d2_box_states_ben
 from bfm.variable_info import set_variable_info_bfm
 from os import path
 from inputs.namelist_input_data import disOxygen_IO_O0, phospate_IO_P0, nitrate_IO_N0, ammonium_IO_N0, silicate_IO_Si0, reductEquiv_IO_R0, disInorgCarbon_IO_C0, totalAlkalinity_IO0, nitrogenSink0, diatoms_LO_C0, nanoflagellates_LO_C0, picophyto_LO_C0, largephyto_LO_C0, \
@@ -10,7 +11,8 @@ from inputs.namelist_input_data import disOxygen_IO_O0, phospate_IO_P0, nitrate_
     d1m0, d2m0, d6m0, d7m0, d8m0, d9m0, q6c0, q6n0, q6p0, q6s0, q1c0, q11c0, g2o0, g3c0, g13c0, g23c0, g3h0, g13h0, g23h0, \
     calcphytoplankton, calcmesozooplankton, calcmicrozooplankton, calcpelbacteria, calcbenorganisms, calcbenbacteria
 
-# Unresolved reference: INCLUDE_BEN
+if INCLUDE_BEN:
+    from bfm.constants import num_d2_box_states_ben
 
 def initialize_bfm_in_pom(vertical_grid):
 
@@ -31,12 +33,12 @@ def initialize_bfm_in_pom(vertical_grid):
 
     zeros = np.zeros((num_boxes_x,num_boxes_y,num_boxes_z))
 
-    try:
-        INCLUDE_BEN
-    except NameError:
-        INCLUDE_BEN = False
-    else:
-        INCLUDE_BEN = True
+    # try:
+    #     INCLUDE_BEN
+    # except NameError:
+    #     INCLUDE_BEN = False
+    # else:
+    #     INCLUDE_BEN = True
     if INCLUDE_BEN:
         num_states = num_d3_box_states * num_boxes + num_d2_box_states_ben
         num_boxes_z_ben = 0
@@ -72,26 +74,23 @@ def initialize_bfm_in_pom(vertical_grid):
     depth[:] = vertical_grid.vertical_spacing[:] * params_POMBFM.h
 
     # Allocate and initialize additional integration arrays
-    d3stateb = np.zeros((num_d3_box_states,num_boxes))
-    try:
-        INCLUDE_BEN
-    except NameError:
-        INCLUDE_BEN = False
-    else:
-        INCLUDE_BEN = True
+    d3state = np.zeros((num_boxes,num_d3_box_states))
+    # try:
+    #     INCLUDE_BEN
+    # except NameError:
+    #     INCLUDE_BEN = False
+    # else:
+    #     INCLUDE_BEN = True
     if INCLUDE_BEN:
-        d2stateb_ben = np.zeros((num_d2_box_states_ben,num_boxes_xy))
+        d2stateb_ben = np.zeros((num_boxes_xy,num_d2_box_states_ben))
 
     # Define initial conditions
-    [disOxygen_IO_O, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, nitrogenSink, silicate_IO_Si, reductEquiv_IO_R, pelBacteria_LO_C, pelBacteria_LO_N, pelBacteria_LO_P,
-     diatoms_LO_C, diatoms_LO_N, diatoms_LO_P, diatoms_LO_Chl, diatoms_LO_Si, nanoflagellates_LO_C, nanoflagellates_LO_N, nanoflagellates_LO_P, nanoflagellates_LO_Chl, picophyto_LO_C, picophyto_LO_N, picophyto_LO_P, picophyto_LO_Chl, largephyto_LO_C, largephyto_LO_N, largephyto_LO_P, largephyto_LO_Chl,
-     carnivMesozoo_LO_C, carnivMesozoo_LO_N, carnivMesozoo_LO_P, omnivMesozoo_LO_C, omnivMesozoo_LO_N, omnivMesozoo_LO_P, microzoo_LO_C, microzoo_LO_N, microzoo_LO_P, heteroFlagellates_LO_C, heteroFlagellates_LO_N, heteroFlagellates_LO_P,
-     labileDOM_NO_C, labileDOM_NO_N, labileDOM_NO_P, semilabileDOC_NO_C, semirefractDOC_NO_C, particOrganDetritus_NO_C, particOrganDetritus_NO_N, particOrganDetritus_NO_P, particOrganDetritus_NO_Si, disInorgCarbon_IO_C, totalAlkalinity_IO] = set_initial_conditions()
+    bfm_variables = set_initial_conditions()
 
     # init_save_bfm()
 
     # Initialize prior time step for leapfrog
-    d3state = np.zeros((num_d3_box_states,num_boxes))   # this isn't the real matrix, just a placeholder until api_bfm is translated
+    d3state = bfm_variables[0:num_boxes,:]
     d3stateb = d3state
 
     return d3state, d3stateb
@@ -339,7 +338,7 @@ def set_initial_conditions():
     #   State variables for pelagic bacteria model B1
     #   Pelagic bacteria (respectively mg C/m3 mMol N/m3 mMol P/m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    if calcpelbacteria[0]:
+    if calcpelbacteria:
         pelBacteria_LO_C = pelBacteria_LO_C0 * np.ones(vertical_layers)
         pelBacteria_LO_N = pelBacteria_LO_C * p_nRc
         pelBacteria_LO_P = pelBacteria_LO_C * p_pRc
@@ -349,12 +348,12 @@ def set_initial_conditions():
         pelBacteria_LO_P = np.zeros(vertical_layers)
 
 
-    try:
-        INCLUDE_BEN
-    except NameError:
-        INCLUDE_BEN = False
-    else:
-        INCLUDE_BEN = True
+    # try:
+    #     INCLUDE_BEN
+    # except NameError:
+    #     INCLUDE_BEN = False
+    # else:
+    #     INCLUDE_BEN = True
     if INCLUDE_BEN:
 
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -417,12 +416,12 @@ def set_initial_conditions():
         q1c = q1c0 * np.ones(vertical_layers)
         q11c = q11c0 * np.ones(vertical_layers)
 
-        try:
-            IMPFLUX
-        except NameError:
-            IMPFLUX = False
-        else:
-            IMPFLUX = True
+        # try:
+        #     IMPFLUX
+        # except NameError:
+        #     IMPFLUX = False
+        # else:
+        #     IMPFLUX = True
         if IMPFLUX:
             q6c = 1.E9 * np.ones(vertical_layers)
             q6n = 1.E9 * np.ones(vertical_layers)

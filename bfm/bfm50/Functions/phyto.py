@@ -1,6 +1,6 @@
 import numpy as np
 import sys
-from Functions.other_functions import insw_vector, eTq_vector, get_concentration_ratio
+from bfm.bfm50.Functions.other_functions import insw_vector, eTq_vector, get_concentration_ratio
 
 def phyto_eqns(conc, phyto_parameters, env_parameters, constant_parameters, group, pc, pn, pp, pl, qs, suspended_sediments, temp, time):
     """ Calculates the terms needed for the phytoplnaktion biological rate equations

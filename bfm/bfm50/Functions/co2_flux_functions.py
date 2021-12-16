@@ -1,5 +1,5 @@
 import numpy as np
-from Functions.seasonal_cycling_functions import calculate_density
+from bfm.bfm50.Functions.seasonal_cycling_functions import calculate_density
 
 def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_parameters, conc, temper, wind, salt):
     """ calculates the air-sea flux of co2 """

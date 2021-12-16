@@ -1,4 +1,4 @@
-from Functions.other_functions import eTq_vector
+from bfm.bfm50.Functions.other_functions import eTq_vector
 
 def pel_chem_eqns(pel_chem_parameters, environmental_parameters, constant_parameters, temper, conc, flPTreductEquiv_IO_R):
     """ calculates the non-living equations for DOM, POM, and nutrients """

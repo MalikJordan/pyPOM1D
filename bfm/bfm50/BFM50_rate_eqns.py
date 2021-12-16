@@ -4,16 +4,17 @@ import json
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
-from Functions.seasonal_cycling_functions import get_wind, get_salinity, get_sunlight, get_temperature, calculate_density
-from Functions.phyto import phyto_eqns
-from Functions.bacteria import bacteria_eqns
-from Functions.predation import get_mesozoo_predation_terms, get_microzoo_predation_terms
-from Functions.micro import microzoo_eqns
-from Functions.meso import mesozoo_eqns
-from Functions.pel_chem import pel_chem_eqns
-from Functions.oxygen import calculate_oxygen_reaeration
-from Functions.co2_flux_functions import calculate_co2_flux
-from Functions.other_functions import insw_vector, get_concentration_ratio
+from bfm.bfm50.Functions.seasonal_cycling_functions import get_wind, get_salinity, get_sunlight, get_temperature, calculate_density
+from bfm.bfm50.Functions.phyto import phyto_eqns
+from bfm.bfm50.Functions.bacteria import bacteria_eqns
+from bfm.bfm50.Functions.predation import get_mesozoo_predation_terms, get_microzoo_predation_terms
+from bfm.bfm50.Functions.micro import microzoo_eqns
+from bfm.bfm50.Functions.meso import mesozoo_eqns
+from bfm.bfm50.Functions.pel_chem import pel_chem_eqns
+from bfm.bfm50.Functions.oxygen import calculate_oxygen_reaeration
+from bfm.bfm50.Functions.co2_flux_functions import calculate_co2_flux
+from bfm.bfm50.Functions.other_functions import insw_vector, get_concentration_ratio
+from pom.constants import current_path
 
 
 # Names of species in the system
@@ -25,7 +26,7 @@ species_names = ['disOxygen_IO_O', 'phospate_IO_P', 'nitrate_IO_N', 'ammonium_IO
                  'particOrganDetritus_NO_N', 'particOrganDetritus_NO_P', 'particOrganDetritus_NO_Si', 'disInorgCarbon_IO_C', 'totalAlkalinity_IO']
 
 
-def bfm50_rate_eqns(count, bfm_variables, time, conc, seasonal_cycle=True):
+def bfm50_rate_eqns(count, bfm_phys_vars, time, conc, seasonal_cycle=True):
     """ Calculates the change in concentration for the 50 state variables
         NOTE: iron dynamics are not included, this is to compare to the standalone pelagic system
     """
@@ -33,8 +34,9 @@ def bfm50_rate_eqns(count, bfm_variables, time, conc, seasonal_cycle=True):
 
 
     #--------------------------------------------------------------------------
-    # import parameters from json file
-    with open("bfm50_parameters.json", "r") as read_parameters:
+    # # import parameters from json file
+    # with open("bfm50_parameters.json", "r") as read_parameters:
+    with open(current_path + "/bfm/bfm50/bfm50_parameters.json") as read_parameters:
         parameters = json.load(read_parameters)
     
     constant_parameters = parameters["constants"]
@@ -85,10 +87,10 @@ def bfm50_rate_eqns(count, bfm_variables, time, conc, seasonal_cycle=True):
         # temper = environmental_parameters["t_win"]
         # salt = environmental_parameters["s_win"]
         # qs = environmental_parameters["qs_win"]
-        wind = bfm_variables.wind
-        temper = bfm_variables.temperature[count]
-        salt = bfm_variables.salinity[count]
-        qs = bfm_variables.irradiance
+        wind = bfm_phys_vars.wind
+        temper = bfm_phys_vars.temperature[count]
+        salt = bfm_phys_vars.salinity[count]
+        qs = bfm_phys_vars.irradiance
 
 
     #--------------------------------------------------------------------------
@@ -177,7 +179,7 @@ def bfm50_rate_eqns(count, bfm_variables, time, conc, seasonal_cycle=True):
     #--------------------------------------------------------------------------
     #---------------------- Phytoplankton Equations ---------------------------
     #--------------------------------------------------------------------------
-    suspended_sediments = bfm_variables.suspended_matter[count]
+    suspended_sediments = bfm_phys_vars.suspended_matter[count]
     # P1: Diatoms terms
     (ddiatoms_LO_Cdt_gpp_disInorgCarbon_IO_C, ddiatoms_LO_Cdt_rsp_disInorgCarbon_IO_C, ddiatoms_LO_Cdt_lys_labileDOM_NO_C, ddiatoms_LO_Cdt_lys_particOrganDetritus_NO_C, ddiatoms_LO_Cdt_exu_semilabileDOC_NO_C, ddiatoms_LO_Ndt_upt_nitrate_IO_N, ddiatoms_LO_Ndt_upt_ammonium_IO_N, 
      extra_n1, ddiatoms_LO_Ndt_lys_labileDOM_NO_N, ddiatoms_LO_Ndt_lys_particOrganDetritus_NO_N, ddiatoms_LO_Pdt_upt_phospate_IO_P, ddiatoms_LO_Pdt_upt_labileDOM_NO_P, ddiatoms_LO_Pdt_lys_labileDOM_NO_P, ddiatoms_LO_Pdt_lys_particOrganDetritus_NO_P, 
@@ -331,11 +333,11 @@ def bfm50_rate_eqns(count, bfm_variables, time, conc, seasonal_cycle=True):
     else:
         dtotalAlkalinity_IO_dt = 0.0
 
-    rates = [ddisOxygen_IO_O_dt, dphospate_IO_P_dt, dnitrate_IO_N_dt, dammonium_IO_N_dt, dnitrogenSink_dt, dsilicate_IO_Si_dt, dreductEquiv_IO_R_dt, dpelBacteria_LO_C_dt, dpelBacteria_LO_N_dt, dpelBacteria_LO_P_dt, 
+    rates = np.array([ddisOxygen_IO_O_dt, dphospate_IO_P_dt, dnitrate_IO_N_dt, dammonium_IO_N_dt, dnitrogenSink_dt, dsilicate_IO_Si_dt, dreductEquiv_IO_R_dt, dpelBacteria_LO_C_dt, dpelBacteria_LO_N_dt, dpelBacteria_LO_P_dt, 
             ddiatoms_LO_C_dt, ddiatoms_LO_N_dt, ddiatoms_LO_P_dt, ddiatoms_LO_Chl_dt, ddiatoms_LO_Si_dt, dnanoflagellates_LO_C_dt, dnanoflagellates_LO_N_dt, dnanoflagellates_LO_P_dt, dnanoflagellates_LO_Chl_dt, 
             dpicophyto_LO_C_dt, dpicophyto_LO_N_dt, dpicophyto_LO_P_dt, dpicophyto_LO_Chl_dt, dlargephyto_LO_C_dt, dlargephyto_LO_N_dt, dlargephyto_LO_P_dt, dlargephyto_LO_Chl_dt, dcarnivMesozoo_LO_C_dt, dcarnivMesozoo_LO_N_dt, dcarnivMesozoo_LO_P_dt,
             domnivMesozoo_LO_C_dt, domnivMesozoo_LO_N_dt, domnivMesozoo_LO_P_dt, dmicrozoo_LO_C_dt, dmicrozoo_LO_N_dt, dmicrozoo_LO_P_dt, dheteroFlagellates_LO_C_dt, dheteroFlagellates_LO_N_dt, dheteroFlagellates_LO_P_dt, dlabileDOM_NO_C_dt, dlabileDOM_NO_N_dt, dlabileDOM_NO_P_dt, 
-            dsemilabileDOC_NO_C_dt, dsemirefractDOC_NO_C_dt, dparticOrganDetritus_NO_C_dt, dparticOrganDetritus_NO_N_dt, dparticOrganDetritus_NO_P_dt, dparticOrganDetritus_NO_Si_dt, ddisInorgCarbon_IO_C_dt, dtotalAlkalinity_IO_dt]
+            dsemilabileDOC_NO_C_dt, dsemirefractDOC_NO_C_dt, dparticOrganDetritus_NO_C_dt, dparticOrganDetritus_NO_N_dt, dparticOrganDetritus_NO_P_dt, dparticOrganDetritus_NO_Si_dt, ddisInorgCarbon_IO_C_dt, dtotalAlkalinity_IO_dt])
     
     return rates, dOdt_wind, do3cdt_air_sea_flux
 

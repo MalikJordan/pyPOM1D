@@ -1,4 +1,4 @@
-from Functions.other_functions import eTq_vector, get_concentration_ratio
+from bfm.bfm50.Functions.other_functions import eTq_vector, get_concentration_ratio
 
 def get_mesozoo_predation_terms(conc, mesozoo3_parameters, mesozoo4_parameters, zoo_availability_parameters, environmental_parameters, constant_parameters, temp):
     """ Calculates the predation terms for mesozooplankton """

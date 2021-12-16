@@ -1,3 +1,4 @@
+from include import INCLUDE_BEN
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #
@@ -132,16 +133,11 @@ p_poro0     = 0.4
 
 # 1D-PARAMETERS
 # try:
-#     import INCLUDE_BEN
-#     INCLUDE_BEN = True
-# except FileNotFoundError:
+#     INCLUDE_BEN
+# except NameError:
 #     INCLUDE_BEN = False
-try:
-    INCLUDE_BEN
-except NameError:
-    INCLUDE_BEN = False
-else:
-    INCLUDE_BEN = True
+# else:
+#     INCLUDE_BEN = True
 if INCLUDE_BEN:
     p_InitSink = 100.0
     p_q10diff  = 1.49

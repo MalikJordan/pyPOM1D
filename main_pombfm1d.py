@@ -1,4 +1,5 @@
 from cppdefs import *
+from include import POM_only
 import numpy as np
 from pom.forcing import forcing_manager
 from inputs import params_POMBFM
@@ -94,17 +95,17 @@ elif params_POMBFM.ihotst == 1:
     # get_rst()
     pass
 
-try:
-    POM_only
-except NameError:
-    POM_only = False
-else:
-    POM_only = True
+# try:
+#     POM_only
+# except NameError:
+#     POM_only = False
+# else:
+#     POM_only = True
 if not POM_only:
     # INITIALIZATION OF BFM
     d3state, d3stateb = initialize_bfm_in_pom(vertical_grid)
     bfm_phys_vars = BfmPhysicalVariableData()
-    pass
+    # pass
 
 # # BEGIN THE TIME MARCH
 # print('ICOUNT before time march loop = ')
@@ -193,16 +194,15 @@ for i in range(0, int(iterations_needed)+1):
     # UPDATE DENSITY
     vertical_density_profile = calculate_vertical_density_profile(temperature,salinity,vertical_grid)
 
-    try:
-        POM_only
-    except NameError:
-        POM_only = False
-    else:
-        POM_only = True
+    # try:
+    #     POM_only
+    # except NameError:
+    #     POM_only = False
+    # else:
+    #     POM_only = True
     if not POM_only:
         bfm_phys_vars = pom_to_bfm(bfm_phys_vars, vertical_grid, temperature, salinity, inorganic_suspended_matter, shortwave_radiation, vertical_density_profile, wind_stress)
-        # pom_bfm_1d(i, vertical_grid, diffusion, nutrients, inorganic_suspended_matter)
-        pass
+        d3state, d3stateb = pom_bfm_1d(vertical_grid, time, diffusion, nutrients, bfm_phys_vars, d3state, d3stateb)
 
 # WRITING OF RESTART
 # print(time,'\n')
@@ -222,12 +222,12 @@ for i in range(0, int(iterations_needed)+1):
 # print(vertical_density_profile)
 
 # BFM RESTART
-try:
-    POM_only
-except NameError:
-    POM_only = False
-else:
-    POM_only = True
+# try:
+#     POM_only
+# except NameError:
+#     POM_only = False
+# else:
+#     POM_only = True
 if not POM_only:
     # INITIALIZATION OF BFM
     # restart_BFM_inPOM()

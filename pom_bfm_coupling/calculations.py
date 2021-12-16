@@ -1,11 +1,11 @@
 import numpy as np
+from include import BFM_POM
 from pom.constants import vertical_layers, twice_the_timestep, seconds_per_day
 from inputs import params_POMBFM
 from pom_bfm_coupling.data_classes import BfmStateVariableData
 from pom.create_profiles import calculate_vertical_temperature_and_salinity_profiles
 from bfm.global_parameters import AssignAirPelFluxesInBFMFlag, p_small
 from bfm.constants import num_d3_box_states
-from main_pombfm1d import d3state, d3stateb
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -45,7 +45,7 @@ def calculate_vertical_advection(property, sinking_velocity, vertical_grid):
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, bfm_variables, dOdt_wind, do3cdt_air_sea_flux):
+def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state, d3stateb, dOdt_wind, do3cdt_air_sea_flux):
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GLOBAL DEFINITION OF PELAGIC (D3/D2) STATE VARIABLES (From ModuleMem)
@@ -98,8 +98,8 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, bfm_vari
 
         # LOAD BFM STATE VAR.
         for i in range(0,vertical_layers-1):
-            bfm_state_var.current[i] = d3state[M][i]
-            bfm_state_var.backward[i] = d3stateb[M][i]
+            bfm_state_var.current[i] = d3state[i][M]
+            bfm_state_var.backward[i] = d3stateb[i][M]
 
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         #   NUTRIENTS SURFACE AND BOTTOM FLUXES
@@ -107,15 +107,15 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, bfm_vari
 
         if M == ppdisOxygen_IO_O:   # Dissolved Oxygen (o2o)
             bfm_state_var.surface_flux = -(dOdt_wind[0] / seconds_per_day)
-            bfm_state_var.bottom_flux = (bfm_variables[vertical_layers-2,0] - nutrients.O2BOTT) * trelax_disOxygen_IO_O
+            bfm_state_var.bottom_flux = (d3state[vertical_layers-2,0] - nutrients.O2bott) * trelax_disOxygen_IO_O
         elif M == ppdisInorgCarbon_IO_C:    # Dissolved Inorganic Carbon (o3c)
             bfm_state_var.surface_flux = 0.
         elif M == ppphospate_IO_P:  # Phosphate (n1p)
             bfm_state_var.surface_flux = 0.
-            bfm_state_var.bottom_flux = (bfm_variables[vertical_layers-2,1] - nutrients.PO4BOTT) * trelax_phospate_IO_P
+            bfm_state_var.bottom_flux = (d3state[vertical_layers-2,1] - nutrients.PO4bott) * trelax_phospate_IO_P
         elif M == ppnitrate_IO_N:   # Nitrate (n3n)
             bfm_state_var.surface_flux = 0.
-            bfm_state_var.bottom_flux = (bfm_variables[vertical_layers-2,2] - nutrients.NO3BOTT) * trelax_nitrate_IO_N
+            bfm_state_var.bottom_flux = (d3state[vertical_layers-2,2] - nutrients.NO3bott) * trelax_nitrate_IO_N
         elif M == ppsilicate_IO_Si: # Silicate (n5s)
             bfm_state_var.surface_flux = 0.
         else:
@@ -151,16 +151,16 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, bfm_vari
 
             # FROM MODULEMEM --> iiP1 = 1, iiP2 = 2, 11P3 = 3, iiP4 = 4
             if M in range(ppdiatoms_LO_C,ppdiatoms_LO_Si):
-                N = 1   # iiP1
+                K = 1   # iiP1
             elif M in range(ppnanoflagellates_LO_C,ppnanoflagellates_LO_Chl):
-                N = 2   # iiP2
+                K = 2   # iiP2
             elif M in range(pppicophyto_LO_C,pppicophyto_LO_Chl):
-                N = 3   # iiP3
+                K = 3   # iiP3
             elif M in range(pplargephyto_LO_C,pplargephyto_LO_Chl):
-                N = 4   # iiP4
+                K = 4   # iiP4
 
             for i in range(0,vertical_layers-1):
-                sinking_velocity[i] = sinking_velocity[i] - phyto_sedimentation_rates[i,N]/seconds_per_day
+                sinking_velocity[i] = sinking_velocity[i] - phyto_sedimentation_rates[i,K-1]/seconds_per_day
 
             # FINAL SINK VALUE
             sinking_velocity[vertical_layers - 1] = sinking_velocity[vertical_layers - 2]
@@ -176,7 +176,8 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, bfm_vari
 
         # SOURCE SPLITTING LEAPFROG INTEGRATION
         for i in range(0,vertical_layers-1):
-            bfm_state_var.forward[i] = bfm_state_var.forward[i] + twice_the_timestep*((bfm_state_var.forward[i]/params_POMBFM.h) + d3source[M][i])
+            # bfm_state_var.forward[i] = bfm_state_var.forward[i] + twice_the_timestep*((bfm_state_var.forward[i]/params_POMBFM.h) + d3source[i][M])
+            bfm_state_var.forward[i] = bfm_state_var.forward[i] + twice_the_timestep*((bfm_state_var.forward[i]/params_POMBFM.h))
 
         # COMPUTE VERTICAL DIFFUSION AND TERMINATE INTEGRATION
         # IMPLICIT LEAPFROGGING
@@ -191,15 +192,15 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, bfm_vari
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
         for N in range(0,vertical_layers-1):
-            d3stateb[M][N] = bfm_state_var.current[N] + 0.5*params_POMBFM.smoth*(bfm_state_var.forward[N] + bfm_state_var.backward[N] - 2.*bfm_state_var.current[N])
-            d3state[M][N] = bfm_state_var.forward[N]
+            d3stateb[N][M] = bfm_state_var.current[N] + 0.5*params_POMBFM.smoth*(bfm_state_var.forward[N] + bfm_state_var.backward[N] - 2.*bfm_state_var.current[N])
+            d3state[N][M] = bfm_state_var.forward[N]
 
     if not AssignAirPelFluxesInBFMFlag:
         dOdt_wind[:] = 0.
         do3cdt_air_sea_flux[:] = 0.
 
 
-    return
+    return d3state, d3stateb
 
 
 def detritus_sedimentation():
@@ -214,10 +215,10 @@ def detritus_sedimentation():
 
     # FROM PelGlobal.F90 (145-148)
     detritus_sedimentation_rate = p_rR6m * np.ones(vertical_layers-1)
-    try:
-        BFM_POM
-    except NameError:
-        BFM_POM = False
+    # try:
+    #     BFM_POM
+    # except NameError:
+    #     BFM_POM = False
     if not BFM_POM:
         detritus_sedimentation_rate[vertical_layers-2] = p_burvel_R6
 
@@ -239,11 +240,11 @@ def phyto_sedimentation():
     # FROM PelGLobal.F90 (149-154)
     phyto_sedimentation_rates = np.zeros((vertical_layers-1,iiPhytoPlankton))
     for i in range(0,iiPhytoPlankton):
-        phyto_sedimentation_rates[:,iiPhytoPlankton] = p_rPIm[i]
-        try:
-            BFM_POM
-        except NameError:
-            BFM_POM = False
+        phyto_sedimentation_rates[:,i] = p_rPIm[i]
+        # try:
+        #     BFM_POM
+        # except NameError:
+        #     BFM_POM = False
         if not BFM_POM:
             phyto_sedimentation_rates[vertical_layers-2,i] = p_burvel_PI
 
