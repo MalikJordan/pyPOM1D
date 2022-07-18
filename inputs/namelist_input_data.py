@@ -133,42 +133,42 @@ g23h0 = 1192.0
 
 
 # bfm_save_nml
-#     ave_save = 'ETW', 'disOxygen_IO_O', 'DIC', 'EIR', 'ESW', 'ERHO', 'xEPS', 'Chla',
-#                'phospate_IO_P', 'nitrate_IO_N', 'ammonium_IO_N', 'nanoflagellates_LO_C', 'nanoflagellates_LO_N', 'nanoflagellates_LO_P', 'nanoflagellates_LO_Chl', 'microzoo_LO_C', 'microzoo_LO_N',
-#                'microzoo_LO_P', 'labileDOM_NO_C', 'labileDOM_NO_N', 'labileDOM_NO_P', 'particOrganDetritus_NO_C', 'particOrganDetritus_NO_N', 'particOrganDetritus_NO_P', 'eiPPY(iiP1)',
-#                'eiPPY(iiP2)', 'eiPPY(iiP3)', 'eiPPY(iiP4)', 'sunPPY(iiP1)',
-#                'sunPPY(iiP2)', 'sunPPY(iiP3)', 'sunPPY(iiP4)', 'ruPTc',
-#                'resPP', 'resZT', 'ruPTn', 'ruPTp', 'exPP', 'ruZTc', 'netZTc',
-#                'rePTp', 'reBn', 'reBp', 'ruBn', 'ruBp', 'EPR'
+ave_save = ['ETW', 'disOxygen_IO_O', 'DIC', 'EIR', 'ESW', 'ERHO', 'xEPS', 'Chla', \
+           'phospate_IO_P', 'nitrate_IO_N', 'ammonium_IO_N', 'nanoflagellates_LO_C', 'nanoflagellates_LO_N', 'nanoflagellates_LO_P', 'nanoflagellates_LO_Chl', 'microzoo_LO_C', 'microzoo_LO_N', \
+           'microzoo_LO_P', 'labileDOM_NO_C', 'labileDOM_NO_N', 'labileDOM_NO_P', 'particOrganDetritus_NO_C', 'particOrganDetritus_NO_N', 'particOrganDetritus_NO_P', 'eiPPY(iiP1)', \
+           'eiPPY(iiP2)', 'eiPPY(iiP3)', 'eiPPY(iiP4)', 'sunPPY(iiP1)', \
+           'sunPPY(iiP2)', 'sunPPY(iiP3)', 'sunPPY(iiP4)', 'ruPTc', \
+           'resPP', 'resZT', 'ruPTn', 'ruPTp', 'exPP', 'ruZTc', 'netZTc', \
+           'rePTp', 'reBn', 'reBp', 'ruBn', 'ruBp', 'EPR']
 
 
-# params_pombfm
-h = 150.0           # bottom_depth
-dti = 100.0         # time_step
-alat = 45.0         # latitude
-idiagn = 1          # prog_diag_switch
-idays = 3600        # length_of_run
-smoth = 0.1         # asselin_parameter
-ihotst = 0          # hot_cold_switch
-kl1 = 2             # surf_layers_log_dist
-kl2 = 150           # bot_layers_log_dist
-savef = 1
-nrt_disOxygen_IO_O = 0.06      # relax_vel_oxygen
-nrt_phospate_IO_P = 0.06      # relax_vel_phosphate
-nrt_nitrate_IO_N = 0.06      # relax_vel_nitrate
-nrt_ammonium_IO_N = 0.05      # relax_vel_ammonium
-nbct = 2            # temp_bc_flag
-nbcs = 1            # sal_bc_flag
-nbcbfm = 1          # bfm_bc_flag
-umol = 1e-06        # background_diffusion
-umolt = 1e-07       # background_diffusion_temp
-umols = 1.3e-07     # background_diffusion_sal
-umolbfm = 0.0001    # background_diffusion_bfm
-ntp = 2             # jerlov_flag
-trt = 0             # relax_time_temp
-srt = 1             # relax_time_sal
-upperh = 5.0        #
-ssrt = 5.68         # surf_sal_relaxation_vel
+# # params_pombfm
+# h = 150.0           # bottom_depth
+# dti = 100.0         # time_step
+# alat = 45.0         # latitude
+# idiagn = 1          # prog_diag_switch
+# idays = 3600        # length_of_run
+# smoth = 0.1         # asselin_parameter
+# ihotst = 0          # hot_cold_switch
+# kl1 = 2             # surf_layers_log_dist
+# kl2 = 150           # bot_layers_log_dist
+# savef = 1
+# nrt_disOxygen_IO_O = 0.06      # relax_vel_oxygen
+# nrt_phospate_IO_P = 0.06      # relax_vel_phosphate
+# nrt_nitrate_IO_N = 0.06      # relax_vel_nitrate
+# nrt_ammonium_IO_N = 0.05      # relax_vel_ammonium
+# nbct = 2            # temp_bc_flag
+# nbcs = 1            # sal_bc_flag
+# nbcbfm = 1          # bfm_bc_flag
+# umol = 1e-06        # background_diffusion
+# umolt = 1e-07       # background_diffusion_temp
+# umols = 1.3e-07     # background_diffusion_sal
+# umolbfm = 0.0001    # background_diffusion_bfm
+# ntp = 2             # jerlov_flag
+# trt = 0             # relax_time_temp
+# srt = 1             # relax_time_sal
+# upperh = 5.0        #
+# ssrt = 5.68         # surf_sal_relaxation_vel
 
 
 

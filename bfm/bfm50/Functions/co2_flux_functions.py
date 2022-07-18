@@ -1,7 +1,8 @@
 import numpy as np
 from bfm.bfm50.Functions.seasonal_cycling_functions import calculate_density
 
-def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_parameters, conc, temper, wind, salt):
+# def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_parameters, conc, temper, wind, salt):
+def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_parameters, conc, temper, wind, salt, rho, del_z):
     """ calculates the air-sea flux of co2 """
     
     # Species concentrations
@@ -33,7 +34,7 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
     pco2_air = co2_flux_parameters["atm_co2_0"]
 
     # get density [kg m^-3]
-    rho = calculate_density(temper,salt,environmental_parameters["del_z"])
+    # rho = calculate_density(temper,salt,environmental_parameters["del_z"])
 
     # initialize ph if it doesn't already have a value
     try:
@@ -142,7 +143,8 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
     do3cdt_air_sea_flux = ken*(pco2_air - pco2_sea)*k0*rho/1000.0
     
     # convert flux to units of mg C m^-3 s^-1
-    do3cdt_air_sea_flux = do3cdt_air_sea_flux/constant_parameters["omega_c"]/environmental_parameters["del_z"]
+    # do3cdt_air_sea_flux = do3cdt_air_sea_flux/constant_parameters["omega_c"]/environmental_parameters["del_z"]
+    do3cdt_air_sea_flux = do3cdt_air_sea_flux/constant_parameters["omega_c"]/del_z
     
     return do3cdt_air_sea_flux
     

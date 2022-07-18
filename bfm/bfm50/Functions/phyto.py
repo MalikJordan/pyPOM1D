@@ -1,8 +1,10 @@
 import numpy as np
 import sys
 from bfm.bfm50.Functions.other_functions import insw_vector, eTq_vector, get_concentration_ratio
+from pom.constants import seconds_per_day
 
-def phyto_eqns(conc, phyto_parameters, env_parameters, constant_parameters, group, pc, pn, pp, pl, qs, suspended_sediments, temp, time):
+# def phyto_eqns(conc, phyto_parameters, env_parameters, constant_parameters, group, pc, pn, pp, pl, qs, suspended_sediments, temp, time):
+def phyto_eqns(conc, phyto_parameters, env_parameters, constant_parameters, del_z, group, irradiance, pc, pn, pp, pl, suspended_sediments, temp, time, xEPS):
     """ Calculates the terms needed for the phytoplnaktion biological rate equations
         Equations come from the BFM user manual
     """
@@ -33,8 +35,8 @@ def phyto_eqns(conc, phyto_parameters, env_parameters, constant_parameters, grou
     # Nutrient limitations (intracellular and extracellular) fpplim is the 
     # combined non-dimensional factor limiting photosynthesis
     # from Phyto.F90 lines 268-308
-    iphospate_IO_P = min(1.0, max(constant_parameters["p_small"], (pp_pc - phyto_parameters["phi_Pmin"])/(phyto_parameters["phi_Popt"] - phyto_parameters["phi_Pmin"])))
-    in1n = min(1.0, max(constant_parameters["p_small"], (pn_pc - phyto_parameters["phi_Nmin"])/(phyto_parameters["phi_Nopt"] - phyto_parameters["phi_Nmin"])))
+    iphospate_IO_P = min(1.0, max(constant_parameters["p_small"], (pp_pc - phyto_parameters["phi_Pmin"])/(phyto_parameters["phi_Popt"] - phyto_parameters["phi_Pmin"]))) # (from Phyto.F90 'iN1p')
+    in1n = min(1.0, max(constant_parameters["p_small"], (pn_pc - phyto_parameters["phi_Nmin"])/(phyto_parameters["phi_Nopt"] - phyto_parameters["phi_Nmin"])))  # (from Phyto.F90 'iNIn')
     
     if group == 1:
         fpplim = min(1.0, silicate_IO_Si/(silicate_IO_Si + phyto_parameters["h_Ps"] + (phyto_parameters["rho_Ps"]*diatoms_LO_Si)))
@@ -49,17 +51,21 @@ def phyto_eqns(conc, phyto_parameters, env_parameters, constant_parameters, grou
     # Total extinction coef (m^-1)
     # suspended_sediments = 0.0
     # from CalcVerticalExtinction.F90 line 82
-    xEPS = env_parameters["p_eps0"] + env_parameters["p_epsESS"]*suspended_sediments + env_parameters["p_epsR6"]*particOrganDetritus_NO_C
-    # from CalcVerticalExtinction.F90 line 101 (ChlAttenFlag=1, ChlDynamicsFlag=2)       
-    xEPS = xEPS + diatoms_LO_Chl + nanoflagellates_LO_Chl*2 + picophyto_LO_Chl*3 + largephyto_LO_Chl*4
+    # xEPS = env_parameters["p_eps0"] + env_parameters["p_epsESS"]*suspended_sediments + env_parameters["p_epsR6"]*particOrganDetritus_NO_C
+    # # from CalcVerticalExtinction.F90 line 101 (ChlAttenFlag=1, ChlDynamicsFlag=2)       
+    # xEPS = xEPS + diatoms_LO_Chl + nanoflagellates_LO_Chl*2 + picophyto_LO_Chl*3 + largephyto_LO_Chl*4
     
     #-------------------------------------------------------------------------- 
     # Light limitation with Chl dynamics
     # irradiance (uE m^-2 s^-1) from Phyto.F90 lines 353-355
-    irradiance = qs*env_parameters["epsilon_PAR"]/constant_parameters["e2w"]
-    r = xEPS * env_parameters["del_z"]
-    r = irradiance/xEPS/env_parameters["del_z"]*(1.0 - np.exp(-r))
-    irr = max(constant_parameters["p_small"], r)
+    # irradiance = qs*env_parameters["epsilon_PAR"]/constant_parameters["e2w"]
+    # r = xEPS * env_parameters["del_z"]
+    # r = irradiance/xEPS/env_parameters["del_z"]*(1.0 - np.exp(-r))
+    r = xEPS[group-1] * del_z
+    r = irradiance[group-1]/xEPS[group-1]/del_z*(1.0 - np.exp(-r))
+    # irr = max(constant_parameters["p_small"], r)
+    irr = max(constant_parameters["p_small"], r * seconds_per_day)
+
     
     # Compute exponent E_PAR/E_K = alpha0/PBmax (part of eqn. 2.2.4)
     exponent = pl_pc*phyto_parameters["alpha_chl"]/phyto_parameters["rP0"]*irr

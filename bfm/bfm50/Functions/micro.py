@@ -12,10 +12,10 @@ def microzoo_eqns(conc, microzoo_parameters, constant_parameters, environmental_
     zn_zc = get_concentration_ratio(zn, zc, constant_parameters["p_small"])
     zp_zc = get_concentration_ratio(zp, zc, constant_parameters["p_small"])
 
-    # Temperature regulating factor
+    # Temperature regulating factor (et)
     fTZ = eTq_vector(temp, environmental_parameters["basetemp"], environmental_parameters["q10z"])
     
-    # Oxygen dependent regulation factor
+    # Oxygen dependent regulation factor (eO2)
     fZO = min(1.0, (disOxygen_IO_O/(disOxygen_IO_O + microzoo_parameters["z_disOxygen_IO_O"])))
     
     #---------------------- Microzooplankton Respiration ----------------------
@@ -48,8 +48,8 @@ def microzoo_eqns(conc, microzoo_parameters, constant_parameters, environmental_
     runc = max(0.0, i_c*(1.0 - microzoo_parameters["betaZ"])-rrac)
     runn = max(0.0, i_n*(1.0 - microzoo_parameters["betaZ"]) + rrsc*zn_zc)
     runp = max(0.0, i_p*(1.0 - microzoo_parameters["betaZ"]) + rrsc*zp_zc)
-    dZpdt_rel_phospate_IO_P = max(0.0, runp/(constant_parameters["p_small"] + runc) - microzoo_parameters["p_Zopt"])*runc
-    dZndt_rel_ammonium_IO_N = max(0.0, runn/(constant_parameters["p_small"] + runc) - microzoo_parameters["n_Zopt"])*runc
+    dZpdt_rel_phospate_IO_P = max(0.0, runp/(constant_parameters["p_small"] + runc) - microzoo_parameters["p_Zopt"])*runc   # MicroZoo.F90, rep
+    dZndt_rel_ammonium_IO_N = max(0.0, runn/(constant_parameters["p_small"] + runc) - microzoo_parameters["n_Zopt"])*runc   # MicroZoo.F90, ren
     
     return dZcdt_rel_labileDOM_NO_C, dZcdt_rel_particOrganDetritus_NO_C, dZcdt_rsp_disInorgCarbon_IO_C, dZndt_rel_labileDOM_NO_N, dZndt_rel_particOrganDetritus_NO_N, dZpdt_rel_labileDOM_NO_P, dZpdt_rel_particOrganDetritus_NO_P, dZpdt_rel_phospate_IO_P, dZndt_rel_ammonium_IO_N
     

@@ -13,7 +13,8 @@ def calculate_oxygen_reaeration(oxygen_reaeration_parameters, environmental_para
     
     # calc theoretical oxygen saturation for temp + salinity and convert into proper units of [mmol O_2/m^3]
     #  From WEISS 1970 DEEP SEA RES 17, 721-735
-    oxy_sat = np.exp(-173.4292 + (249.6339/abt) + (143.3483*np.log(abt))-(21.8492*abt) + salt*(-0.033096 + 0.014259*abt - 0.0017*(abt**2)))*44.661
+    # oxy_sat = np.exp(-173.4292 + (249.6339/abt) + (143.3483*np.log(abt))-(21.8492*abt) + salt*(-0.033096 + 0.014259*abt - 0.0017*(abt**2)))*44.661
+    oxy_sat = np.exp(-173.4292 + (249.6339/abt) + (143.3483*np.log(abt))-(21.8492*abt) + salt*(-0.033096 + 0.014259*abt - 0.0017*(abt**2)))/(24.4665E-3)
 
     # Calculate Schmidt number, ratio between the kinematic viscosity and the molecular diffusivity of carbon dioxide
     schmidt_number_disOxygen_IO_O = (oxygen_reaeration_parameters["k1"] - oxygen_reaeration_parameters["k2"]*temper + oxygen_reaeration_parameters["k3"]*(temper**2) - oxygen_reaeration_parameters["k4"]*(temper**3))
@@ -24,9 +25,11 @@ def calculate_oxygen_reaeration(oxygen_reaeration_parameters, environmental_para
         schmidt_ratio_disOxygen_IO_O = 0.0
 
     # Calculate wind dependency, including conversion cm/hr => m/s
-    wind_dependency = (oxygen_reaeration_parameters["d"]*(wind**2))*np.sqrt(schmidt_ratio_disOxygen_IO_O)*constant_parameters["cm2m"]*constant_parameters["hours_per_day"]/constant_parameters["sec_per_day"]
-    
+    # wind_dependency = (oxygen_reaeration_parameters["d"]*(wind**2))*np.sqrt(schmidt_ratio_disOxygen_IO_O)*constant_parameters["cm2m"]*constant_parameters["hours_per_day"]/constant_parameters["sec_per_day"]
+    wind_dependency = (oxygen_reaeration_parameters["d"]*(wind**2))*np.sqrt(schmidt_ratio_disOxygen_IO_O)*constant_parameters["cm2m"]*constant_parameters["hours_per_day"]
+
     # flux o2 [mmol m^-2 s^-1]
-    dOdt_wind = wind_dependency*(oxy_sat - disOxygen_IO_O)/environmental_parameters["del_z"]
+    # dOdt_wind = wind_dependency*(oxy_sat - disOxygen_IO_O)/environmental_parameters["del_z"]
+    dOdt_wind = wind_dependency*(oxy_sat - disOxygen_IO_O)
     
     return dOdt_wind

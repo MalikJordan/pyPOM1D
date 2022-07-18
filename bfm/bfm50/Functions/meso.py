@@ -12,16 +12,16 @@ def mesozoo_eqns(conc, mesozoo_parameters, constant_parameters, environmental_pa
     zn_zc = get_concentration_ratio(zn, zc, constant_parameters["p_small"])
     zp_zc = get_concentration_ratio(zp, zc, constant_parameters["p_small"])
     
-    # Temperature regulating factor
+    # Temperature regulating factor (from MesoZoo.F90 'et')
     fTZ = eTq_vector(temp, environmental_parameters["basetemp"], environmental_parameters["q10z"])
     
-    # Oxygen dependent regulation factor
+    # Oxygen dependent regulation factor (from MesoZoo.F90 'eo')
     fZO = (max(constant_parameters["p_small"],disOxygen_IO_O)**3)/(max(constant_parameters["p_small"],disOxygen_IO_O)**3 + mesozoo_parameters["z_disOxygen_IO_O"]**3)
     
     # energy cost of ingestion
     prI = 1.0 - mesozoo_parameters["etaZ"] - mesozoo_parameters["betaZ"]
     
-    # Zooplankton total repiration rate (from 'MesoZoo.F90' line 343)
+    # Zooplankton total repiration rate (from MesoZoo.F90 line 343 'rrc')
     dZcdt_rsp_disInorgCarbon_IO_C = prI*i_c + mesozoo_parameters["bZ"]*fTZ*zc
     
     # Specific rates of low oxygen mortality and Density dependent mortality
@@ -72,12 +72,12 @@ def mesozoo_eqns(conc, mesozoo_parameters, constant_parameters, environmental_pa
         q_Zp = max(0.0, (1.0 - mesozoo_parameters["betaZ"])*i_p - mesozoo_parameters["p_Zopt"]*(ru_c - q_Zc))
 
     # Nutrient remineralization basal metabolism + excess of non-limiting nutrients
-    dZpdt_rel_phospate_IO_P = mesozoo_parameters["bZ"]*fZO*fTZ*zp + q_Zp
-    dZndt_rel_ammonium_IO_N = mesozoo_parameters["bZ"]*fZO*fTZ*zn + q_Zn
+    dZpdt_rel_phospate_IO_P = mesozoo_parameters["bZ"]*fZO*fTZ*zp + q_Zp    # (from MesoZoo.F90 'rep')
+    dZndt_rel_ammonium_IO_N = mesozoo_parameters["bZ"]*fZO*fTZ*zn + q_Zn    # (from MesoZoo.F90 'ren')
     
     # Fluxes to particulate organic matter 
     # Add the correction term for organic carbon release based on the limiting constituent
-    dZcdt_rel_particOrganDetritus_NO_C += q_Zc
+    dZcdt_rel_particOrganDetritus_NO_C += q_Zc  # (from MesoZoo.F90 'rq6c')
     
     # mesozooplankton are assumed to have no dissolved products
     dZcdt_rel_labileDOM_NO_C = 0.0

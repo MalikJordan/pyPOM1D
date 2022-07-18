@@ -400,7 +400,8 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_grid, diffusio
     #   APPLY A NON ADIABATIC BOTTOM BOUNDARY CONDITION
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    for i in range(vertical_layers-2, 0, -1):
+    # for i in range(vertical_layers-2, 0, -1):
+    for i in range(vertical_layers-3, 0, -1):
         # k = (vertical_layers) - i
         property.forward[i] = VH[i] * property.forward[i+1] + VHP[i]
 

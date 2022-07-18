@@ -178,6 +178,7 @@ def set_initial_conditions():
     #   Definition of general pelagic state variables: Pelagic Fases
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     nanoflagellates_LO_C, microzoo_LO_C, particOrganDetritus_NO_C, labileDOM_NO_C, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, disOxygen_IO_O = read_bfm_input()
+    ammonium_IO_N[:] = 0. # From get_IC.f90 --> N4n(k) = 0.0
 
     disInorgCarbon_IO_C = disInorgCarbon_IO_C0 * np.ones(vertical_layers)
     totalAlkalinity_IO = totalAlkalinity_IO0 * np.ones(vertical_layers)
@@ -314,7 +315,7 @@ def set_initial_conditions():
     #   Pelagic microzooplankton  (respectively mg C/m3 mMol N/m3 mMol P/m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if calcmicrozooplankton[0]:
-        microzoo_LO_C = microzoo_LO_C0 * np.ones(vertical_layers)
+        # microzoo_LO_C = microzoo_LO_C0 * np.ones(vertical_layers)
         microzoo_LO_N = microzoo_LO_C * p_nRc
         microzoo_LO_P = microzoo_LO_C * p_pRc
     else:

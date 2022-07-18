@@ -10,8 +10,12 @@ from pom.create_profiles import create_kinetic_energy_profile, create_vertical_d
 from pom.data_classes import DiffusionCoefficients, ForcingManagerCounters, LeapFrogTimeLevels, MonthlyForcingData, Stresses, TemperatureSalinityData, VelocityData
 from pom.constants import earth_angular_velocity, DAYI, water_specific_heat_times_density, vertical_layers, seconds_per_day, twice_the_timestep
 from pom_bfm_coupling.initialize_variables import initialize_bfm_in_pom
-from pom_bfm_coupling.data_classes import BfmPhysicalVariableData
-from pom_bfm_coupling.coupling import pom_to_bfm, pom_bfm_1d
+from pom_bfm_coupling.data_classes import BfmPhysicalVariableData, AverageData
+from pom_bfm_coupling.coupling import pom_to_bfm, pom_bfm_1d, calculate_vertical_extinction, calculate_light_distribution
+from matplotlib import pyplot as plt
+
+from tests.test_npz import NPZrates, NPZplots, pom_npz_1d, AverageDataNPZ, checkNPZrates
+
 
 np.set_printoptions(precision=16)
 # pyPOM1D DIRECTORY, USED FOR READING INPUTS (TO BE CHANGED BY USER)
@@ -85,6 +89,7 @@ coriolis_parameter = 2. * earth_angular_velocity * np.sin(params_POMBFM.alat * 2
 
 # ITERATIONS NEEDED TO CARRY OUT AN "IDAYS" SIMULATION
 iterations_needed = params_POMBFM.idays * seconds_per_day / params_POMBFM.dti                            # iend
+# iterations_needed = 30 * seconds_per_day / params_POMBFM.dti                            # iend
 
 # READ  T&S INITIAL CONDITIONS (IHOTST=0) OR RESTART FILE (IHOTST=1)
 if params_POMBFM.ihotst == 0:
@@ -94,22 +99,55 @@ if params_POMBFM.ihotst == 0:
 elif params_POMBFM.ihotst == 1:
     # get_rst()
     pass
+#####################################################################
+# Test case with NPZ Model
+# POM_NPZ = True
+POM_NPZ = False
+if POM_NPZ:
+    # NPZ = np.zeros((3,int(vertical_layers),int(iterations_needed)+2))
+    # NPZ[0,:,0] = 2.5    # μmol N l^-1
+    # NPZ[1,:,0] = 0.5    # μmol N l^-1
+    # NPZ[2,:,0] = 4.     # μmol N l^-1     
+    
+    # # Constant Profile
+    # num_boxes = vertical_layers - 1
+    # NPZ = np.zeros((num_boxes,3))    
+    # NPZ[:,0] = 2.5    # μmol N l^-1
+    # NPZ[:,1] = 0.5    # μmol N l^-1
+    # NPZ[:,2] = 4.     # μmol N l^-1
+    # NPZb = np.zeros((num_boxes,3))    
+    # NPZb[:,0] = 2.5    # μmol N l^-1
+    # NPZb[:,1] = 0.5    # μmol N l^-1
+    # NPZb[:,2] = 4.     # μmol N l^-1
+    # NPZave = AverageDataNPZ()
 
-# try:
-#     POM_only
-# except NameError:
-#     POM_only = False
-# else:
-#     POM_only = True
+    # Linear Profile
+    num_boxes = vertical_layers - 1
+    NPZ = np.zeros((num_boxes,3))    
+    NPZ[:,0] = np.linspace(2.5,2.25,num_boxes)    # μmol N l^-1
+    NPZ[:,1] = np.linspace(0.5,0.45,num_boxes)    # μmol N l^-1
+    NPZ[:,2] = np.linspace(4.0,3.6,num_boxes)    # μmol N l^-1
+    NPZb = np.zeros((num_boxes,3))    
+    NPZb[:,0] = np.linspace(2.5,2.25,num_boxes)    # μmol N l^-1
+    NPZb[:,1] = np.linspace(0.5,0.45,num_boxes)    # μmol N l^-1
+    NPZb[:,2] = np.linspace(4.0,3.6,num_boxes)    # μmol N l^-1
+    NPZave = AverageDataNPZ()
+
+    # Check Scalar for NPZ rates (just BGC, no advection or diffusion)
+    NPZcheck = np.zeros((int(iterations_needed)+2,3))
+    NPZcheck[0,0] = 2.5    # μmol N l^-1
+    NPZcheck[0,1] = 0.5    # μmol N l^-1
+    NPZcheck[0,2] = 4.     # μmol N l^-1
+
+    # fig3 = plt.figure()
+
+#####################################################################
+
 if not POM_only:
     # INITIALIZATION OF BFM
     d3state, d3stateb = initialize_bfm_in_pom(vertical_grid)
+    d3ave = AverageData()
     bfm_phys_vars = BfmPhysicalVariableData()
-    # pass
-
-# # BEGIN THE TIME MARCH
-# print('ICOUNT before time march loop = ')
-# # print(icountf)
 
 # BEGIN THE TIME MARCH
 counters = ForcingManagerCounters()
@@ -117,6 +155,7 @@ month1_data = MonthlyForcingData()
 month2_data = MonthlyForcingData()
 
 for i in range(0, int(iterations_needed)+1):
+
     time = time0 + (params_POMBFM.dti * i * DAYI)
 
     # TURBULENCE CLOSURE
@@ -127,8 +166,8 @@ for i in range(0, int(iterations_needed)+1):
                                                                                                           kinetic_energy, kinetic_energy_times_length, wind_stress, bottom_stress)
     # DEFINE ALL FORCINGS
     temperature.forward, temperature.interpolated, salinity.forward, salinity.interpolated, \
-        shortwave_radiation, temperature.surface_flux, wind_stress, month1_data, month2_data, \
-        counters, nutrients, inorganic_suspended_matter = forcing_manager(i,counters,month1_data,month2_data)
+        shortwave_radiation, temperature.surface_flux, wind_stress, bfm_phys_vars.wgen, bfm_phys_vars.weddy, \
+        month1_data, month2_data, counters, nutrients, inorganic_suspended_matter = forcing_manager(i,counters,month1_data,month2_data)
 
     # T&S COMPUTATION
     if params_POMBFM.idiagn == 0:
@@ -194,43 +233,69 @@ for i in range(0, int(iterations_needed)+1):
     # UPDATE DENSITY
     vertical_density_profile = calculate_vertical_density_profile(temperature,salinity,vertical_grid)
 
-    # try:
-    #     POM_only
-    # except NameError:
-    #     POM_only = False
-    # else:
-    #     POM_only = True
+    #####################################################################
+    # Test case with NPZ Model
+    if POM_NPZ:
+        bfm_phys_vars = pom_to_bfm(bfm_phys_vars, vertical_grid, temperature, salinity, inorganic_suspended_matter, shortwave_radiation, vertical_density_profile, wind_stress)
+        NPZ, NPZb, NPZave = pom_npz_1d(vertical_grid, diffusion, bfm_phys_vars, NPZ, NPZb, NPZave)
+        # NPZcheck = checkNPZrates(NPZcheck, i)
+        # NPZphyto = NPZcheck[i+1,0]
+    # if i % 10000 == 1:
+    #     plt.plot(NPZ[:,0])
+    # if i == 1:
+    #     fig4 = plt.figure()
+    #     plt.plot(NPZ[75,:])
+    #     plt.plot(NPZcheck[:,0])
+
+    #####################################################################
+
     if not POM_only:
         bfm_phys_vars = pom_to_bfm(bfm_phys_vars, vertical_grid, temperature, salinity, inorganic_suspended_matter, shortwave_radiation, vertical_density_profile, wind_stress)
-        d3state, d3stateb = pom_bfm_1d(vertical_grid, time, diffusion, nutrients, bfm_phys_vars, d3state, d3stateb)
+        
+        # # Calculate vertical extinction and update irradiance
+        # bfm_phys_vars = calculate_vertical_extinction(bfm_phys_vars,d3state)
+        # bfm_phys_vars = calculate_light_distribution(bfm_phys_vars)
 
+        # Calculate vertical extinction and update irradiance for each phyto group
+        # for group in range(0,4): # 4 Phytoplankton Groups
+        #     bfm_phys_vars = calculate_vertical_extinction(bfm_phys_vars,d3state,group)
+        #     bfm_phys_vars = calculate_light_distribution(bfm_phys_vars,group)
+        bfm_phys_vars = calculate_vertical_extinction(bfm_phys_vars,d3state,1)
+        bfm_phys_vars = calculate_light_distribution(bfm_phys_vars,1)
+        bfm_phys_vars.irradiance[0,0] = 0.
+        bfm_phys_vars.irradiance[0,2] = 0.
+        bfm_phys_vars.irradiance[0,3] = 0.
+        # Update state variable concentrations
+        d3state, d3stateb, d3ave = pom_bfm_1d(i, vertical_grid, time, diffusion, nutrients, bfm_phys_vars, d3state, d3stateb, d3ave)
+    
 # WRITING OF RESTART
-# print(time,'\n')
-# print('-------------------------------------------------\n')
-# print(velocity.zonal_current,'\n', velocity.zonal_backward,'\n', velocity.meridional_current,'\n', velocity.meridional_backward,'\n')
-# print('-------------------------------------------------\n')
-# print(temperature.current,'\n', temperature.backward,'\n', salinity.current,'\n', salinity.backward,'\n')
-# print('-------------------------------------------------\n')
-# print(kinetic_energy.current,'\n', kinetic_energy.backward,'\n', kinetic_energy_times_length.current,'\n', kinetic_energy_times_length.backward,'\n')
-# print('-------------------------------------------------\n')
-# print(diffusion.tracers,'\n', diffusion.momentum,'\n', diffusion.kinetic_energy,'\n')
-# print('-------------------------------------------------\n')
-# print(vertical_grid.length_scale,'\n')
-# print('-------------------------------------------------\n')
-# print(bottom_stress.zonal,'\n', bottom_stress.meridional,'\n')
-# print('-------------------------------------------------\n')
-# print(vertical_density_profile)
+o2o = d3ave.daily_ave[:,0,:]
+fig1 = plt.figure()
+o2o_plot = plt.imshow(o2o)
+fig1.colorbar(o2o_plot)
+plt.xlabel('Time (Days)')
+plt.ylabel('Depth (m)')
+plt.title('Dissolved Oxygen (mmol O2/m3)')
 
-# BFM RESTART
-# try:
-#     POM_only
-# except NameError:
-#     POM_only = False
-# else:
-#     POM_only = True
+dic = d3ave.daily_ave[:,48,:]
+fig2 = plt.figure()
+dic_plot = plt.imshow(dic)
+fig2.colorbar(dic_plot)
+plt.xlabel('Time (Days)')
+plt.ylabel('Depth (m')
+plt.title('Dissolved Inorganic Carbon (mg C/m3)')
+
+# plt.show()
+# plt.xlabel('Depth (m)')
+# plt.ylabel('Concentration')
+# plt.title('Phytoplankton Time Series')
+
 if not POM_only:
     # INITIALIZATION OF BFM
     # restart_BFM_inPOM()
     pass
+
+if POM_NPZ:
+    NPZplots(NPZave)
 
 print('Main done')

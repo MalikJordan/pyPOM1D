@@ -56,7 +56,7 @@ def get_mesozoo_predation_terms(conc, mesozoo3_parameters, mesozoo4_parameters, 
             "z6": get_concentration_ratio(heteroFlagellates_LO_P, heteroFlagellates_LO_C, constant_parameters["p_small"])
             }
     
-    # Zooplankton temperature regulating factor
+    # Zooplankton temperature regulating factor (from MesoZoo.F90 'et')
     fTZ = eTq_vector(temp, environmental_parameters["basetemp"], environmental_parameters["q10z"])
     
     # Calculate total potential food given the non-dim prey availability
@@ -215,15 +215,15 @@ def get_microzoo_predation_terms(conc, microzoo5_parameters, microzoo6_parameter
     
     # Calculate total potential food given the non-dim prey availability and capture efficiency
     # From MicroZoo.F90 lines 209-237
-    # Bacteria LFG: Food availability of prey Bacteria for predator Z5 and Z6
-    available_bact_c5 = zoo_availability_parameters["del_z5b1"]*pelBacteria_LO_C*capture_efficiencies_z5["b1"]
-    available_bact_n5 = zoo_availability_parameters["del_z5b1"]*pelBacteria_LO_C*capture_efficiencies_z5["b1"]*conc_ratio_n["b1"]
-    available_bact_p5 = zoo_availability_parameters["del_z5b1"]*pelBacteria_LO_C*capture_efficiencies_z5["b1"]*conc_ratio_p["b1"]
-    available_bact_c6 = zoo_availability_parameters["del_z6b1"]*pelBacteria_LO_C*capture_efficiencies_z6["b1"]
+    # Bacteria LFG: Food availability of prey Bacteria for predator Z5 and Z6 (from MicroZoo.F90 'PBAc')
+    available_bact_c5 = zoo_availability_parameters["del_z5b1"]*pelBacteria_LO_C*capture_efficiencies_z5["b1"]  
+    available_bact_n5 = zoo_availability_parameters["del_z5b1"]*pelBacteria_LO_C*capture_efficiencies_z5["b1"]*conc_ratio_n["b1"]       
+    available_bact_p5 = zoo_availability_parameters["del_z5b1"]*pelBacteria_LO_C*capture_efficiencies_z5["b1"]*conc_ratio_p["b1"]       
+    available_bact_c6 = zoo_availability_parameters["del_z6b1"]*pelBacteria_LO_C*capture_efficiencies_z6["b1"]  
     available_bact_n6 = zoo_availability_parameters["del_z6b1"]*pelBacteria_LO_C*capture_efficiencies_z6["b1"]*conc_ratio_n["b1"]
     available_bact_p6 = zoo_availability_parameters["del_z6b1"]*pelBacteria_LO_C*capture_efficiencies_z6["b1"]*conc_ratio_p["b1"]
     
-    # Phytoplankton LFG: Food availability of prey Phytoplankton for predator Z5 and Z6
+    # Phytoplankton LFG: Food availability of prey Phytoplankton for predator Z5 and Z6 (from MicroZoo.F90 'PPyc')
     available_phyto_c5 = ((zoo_availability_parameters["del_microzoo_LO_P1"]*diatoms_LO_C*capture_efficiencies_z5["p1"]) + (zoo_availability_parameters["del_carnivMesozoo_LO_P2"]*nanoflagellates_LO_C*capture_efficiencies_z5["p2"]) + 
                           (zoo_availability_parameters["del_carnivMesozoo_LO_P3"]*picophyto_LO_C*capture_efficiencies_z5["p3"]) + (zoo_availability_parameters["del_carnivMesozoo_LO_P4"]*largephyto_LO_C*capture_efficiencies_z5["p4"]))
     available_phyto_n5 = ((zoo_availability_parameters["del_microzoo_LO_P1"]*diatoms_LO_C*capture_efficiencies_z5["p1"]*conc_ratio_n["p1"]) + (zoo_availability_parameters["del_carnivMesozoo_LO_P2"]*nanoflagellates_LO_C*capture_efficiencies_z5["p2"]*conc_ratio_n["p2"]) + 
@@ -237,10 +237,10 @@ def get_microzoo_predation_terms(conc, microzoo5_parameters, microzoo6_parameter
     available_phyto_p6 = ((zoo_availability_parameters["del_heteroFlagellates_LO_P1"]*diatoms_LO_C*capture_efficiencies_z6["p1"]*conc_ratio_p["p1"]) + (zoo_availability_parameters["del_heteroFlagellates_LO_P2"]*nanoflagellates_LO_C*capture_efficiencies_z6["p2"]*conc_ratio_p["p2"]) + 
                           (zoo_availability_parameters["del_heteroFlagellates_LO_P3"]*picophyto_LO_C*capture_efficiencies_z6["p3"]*conc_ratio_p["p3"]) + (zoo_availability_parameters["del_heteroFlagellates_LO_P4"]*largephyto_LO_C*capture_efficiencies_z6["p4"]*conc_ratio_p["p4"]))
     
-    # Phytoplankton LFG: Food availability of prey Microzooplankton for predator Z5 and Z6
+    # Phytoplankton LFG: Food availability of prey Microzooplankton for predator Z5 and Z6 (from MicroZoo.F90 'MIZc')
     available_microzoo_c5 = (zoo_availability_parameters["del_z5z5"]*microzoo_LO_C*capture_efficiencies_z5["z5"]) + (zoo_availability_parameters["del_z5z6"]*heteroFlagellates_LO_C*capture_efficiencies_z5["z6"])
     available_microzoo_n5 = (zoo_availability_parameters["del_z5z5"]*microzoo_LO_C*capture_efficiencies_z5["z5"]*conc_ratio_n["z5"]) + (zoo_availability_parameters["del_z5z6"]*heteroFlagellates_LO_C*capture_efficiencies_z5["z6"]*conc_ratio_n["z6"])
-    available_microzoo_p5 = (zoo_availability_parameters["del_z5z5"]*microzoo_LO_C*capture_efficiencies_z5["z5"]*conc_ratio_p["z5"]) + (zoo_availability_parameters["del_z5z6"]*heteroFlagellates_LO_C*capture_efficiencies_z5["z6"]*conc_ratio_p["z6"])
+    available_microzoo_p5 = (zoo_availability_parameters["del_z5z5"]*microzoo_LO_C*capture_efficiencies_z5["z5"]*conc_ratio_p["z5"]) + (zoo_availability_parameters["del_z5z6"]*heteroFlagellates_LO_C*capture_efficiencies_z5["z6"]*conc_ratio_p["z6"]) 
     
     available_microzoo_c6 = (zoo_availability_parameters["del_z6z5"]*microzoo_LO_C*capture_efficiencies_z6["z5"]) + (zoo_availability_parameters["del_z6z6"]*heteroFlagellates_LO_C*capture_efficiencies_z6["z6"])
     available_microzoo_n6 = (zoo_availability_parameters["del_z6z5"]*microzoo_LO_C*capture_efficiencies_z6["z5"]**conc_ratio_n["z5"]) + (zoo_availability_parameters["del_z6z6"]*heteroFlagellates_LO_C*capture_efficiencies_z6["z6"]**conc_ratio_n["z6"])

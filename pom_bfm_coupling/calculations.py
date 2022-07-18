@@ -45,7 +45,7 @@ def calculate_vertical_advection(property, sinking_velocity, vertical_grid):
 #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state, d3stateb, dOdt_wind, do3cdt_air_sea_flux):
+def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state, d3stateb, bfm_rates, bfm_phys_vars, dOdt_wind, do3cdt_air_sea_flux):
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   GLOBAL DEFINITION OF PELAGIC (D3/D2) STATE VARIABLES (From ModuleMem)
@@ -98,9 +98,15 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state,
 
         # LOAD BFM STATE VAR.
         for i in range(0,vertical_layers-1):
-            bfm_state_var.current[i] = d3state[i][M]
-            bfm_state_var.backward[i] = d3stateb[i][M]
+            bfm_state_var.current[i] = d3state[i,M]
+            bfm_state_var.backward[i] = d3stateb[i,M]
 
+        bfm_state_var.current[vertical_layers-1] = bfm_state_var.current[vertical_layers-2]
+        bfm_state_var.backward[vertical_layers-1] = bfm_state_var.backward[vertical_layers-2]
+
+        for i in range(0,vertical_layers):
+            sinking_velocity[i] = W_ON*bfm_phys_vars.wgen[i] + Weddy_ON*bfm_phys_vars.weddy[i]
+        
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         #   NUTRIENTS SURFACE AND BOTTOM FLUXES
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -176,12 +182,12 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state,
 
         # SOURCE SPLITTING LEAPFROG INTEGRATION
         for i in range(0,vertical_layers-1):
-            # bfm_state_var.forward[i] = bfm_state_var.forward[i] + twice_the_timestep*((bfm_state_var.forward[i]/params_POMBFM.h) + d3source[i][M])
-            bfm_state_var.forward[i] = bfm_state_var.forward[i] + twice_the_timestep*((bfm_state_var.forward[i]/params_POMBFM.h))
+            bfm_state_var.forward[i] = bfm_state_var.backward[i] + twice_the_timestep*((bfm_state_var.forward[i]/params_POMBFM.h) + bfm_rates[i,M])
+        # bfm_state_var.forward[vertical_layers-1] = bfm_state_var.forward[vertical_layers-2]
 
         # COMPUTE VERTICAL DIFFUSION AND TERMINATE INTEGRATION
         # IMPLICIT LEAPFROGGING
-        calculate_vertical_temperature_and_salinity_profiles(vertical_grid, diffusion, bfm_state_var, 0, params_POMBFM.nbcbfm, params_POMBFM.umolbfm)
+        bfm_state_var = calculate_vertical_temperature_and_salinity_profiles(vertical_grid, diffusion, bfm_state_var, 0, params_POMBFM.nbcbfm, params_POMBFM.umolbfm)
 
         # CLIPPING......IF NEEDED
         for i in range(0,vertical_layers-1):
@@ -192,13 +198,12 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state,
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
         for N in range(0,vertical_layers-1):
-            d3stateb[N][M] = bfm_state_var.current[N] + 0.5*params_POMBFM.smoth*(bfm_state_var.forward[N] + bfm_state_var.backward[N] - 2.*bfm_state_var.current[N])
-            d3state[N][M] = bfm_state_var.forward[N]
+            d3stateb[N,M] = bfm_state_var.current[N] + 0.5*params_POMBFM.smoth*(bfm_state_var.forward[N] + bfm_state_var.backward[N] - 2.*bfm_state_var.current[N])
+            d3state[N,M] = bfm_state_var.forward[N]
 
     if not AssignAirPelFluxesInBFMFlag:
         dOdt_wind[:] = 0.
         do3cdt_air_sea_flux[:] = 0.
-
 
     return d3state, d3stateb
 

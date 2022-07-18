@@ -168,5 +168,5 @@ def forcing_manager(time_loop_counter,counters,month1_data,month2_data):
         # READ FOLLOWING MONTH
         month2_data = write_forcing_data(counters.month_counter)
 
-    return tf, tstar, sf, sstar, swrad, wtsurf, wind_stress, month1_data, month2_data, counters, nutrients, ism
+    return tf, tstar, sf, sstar, swrad, wtsurf, wind_stress, wgen, weddy, month1_data, month2_data, counters, nutrients, ism
 

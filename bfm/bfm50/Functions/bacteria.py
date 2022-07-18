@@ -30,19 +30,19 @@ def bacteria_eqns(conc, bacteria_parameters, constant_parameters, environmental_
     labileDOM_NO_N_labileDOM_NO_C = get_concentration_ratio(labileDOM_NO_N, labileDOM_NO_C, constant_parameters["p_small"])
     particOrganDetritus_NO_N_particOrganDetritus_NO_C = get_concentration_ratio(particOrganDetritus_NO_N, particOrganDetritus_NO_C, constant_parameters["p_small"])
     
-    # Temperature effect on pelagic bacteria
+    # Temperature effect on pelagic bacteria ('et')
     fTB = eTq_vector(temper, environmental_parameters["basetemp"], environmental_parameters["q10b"])
 
     # oxygen non-dimensional regulation factor[-]
-    # Oxygen environment: bacteria are both aerobic and anaerobic
+    # Oxygen environment: bacteria are both aerobic and anaerobic ('eO2')
     f_B_O = max(constant_parameters["p_small"],disOxygen_IO_O)**3/(max(constant_parameters["p_small"],disOxygen_IO_O)**3 + bacteria_parameters["h_B_O"]**3)
     
-    # external nutrient limitation
+    # external nutrient limitation (from PelBac.F90 'eN4n' & 'eN1p')
     f_B_n = ammonium_IO_N/(ammonium_IO_N + bacteria_parameters["h_B_n"])
     f_B_p = phospate_IO_P/(phospate_IO_P + bacteria_parameters["h_B_p"])
     
     # Bacteria mortality (lysis) process [mg C m^-3 s^-1]
-    dBcdt_lys = (bacteria_parameters["d_0B"]*fTB + bacteria_parameters["d_B_d"]*pelBacteria_LO_C)*pelBacteria_LO_C
+    dBcdt_lys = (bacteria_parameters["d_0B"]*fTB + bacteria_parameters["d_B_d"]*pelBacteria_LO_C)*pelBacteria_LO_C  # (from PelBac.F90 'rd')
     dBcdt_lys_labileDOM_NO_C = dBcdt_lys*constant_parameters["epsilon_c"]
     dBcdt_lys_labileDOM_NO_N = dBcdt_lys*bn_bc*constant_parameters["epsilon_n"]
     dBcdt_lys_labileDOM_NO_P = dBcdt_lys*bp_bc*constant_parameters["epsilon_p"]
@@ -53,43 +53,43 @@ def bacteria_eqns(conc, bacteria_parameters, constant_parameters, environmental_
 
     # Substrate availability
     if bacteria_parameters["bact_version"]==1 or bacteria_parameters["bact_version"]==2:
-        # nutrient limitation (intracellular)
+        # nutrient limitation (intracellular) (from PelBac.F90 'iN1n', 'iN1p', 'iN')
         nut_lim_n = min(1.0, max(0.0, bn_bc/bacteria_parameters["n_B_opt"]))         # Nitrogen
         nut_lim_p = min(1.0, max(0.0, bp_bc/bacteria_parameters["p_B_opt"]))         # Phosphorus
         f_B_n_P = min(nut_lim_n, nut_lim_p)
         
-        # Potential uptake by bacteria
+        # Potential uptake by bacteria (from PelBac.F90 'rum')
         potential_upt = f_B_n_P*fTB*bacteria_parameters["r_0B"]*pelBacteria_LO_C
         
-        # correction of substrate quality depending on nutrient content
+        # correction of substrate quality depending on nutrient content (from PelBac.F90 'cuR1' & 'cuR6')
         f_r1_n_P = min(1.0, labileDOM_NO_P_labileDOM_NO_C/bacteria_parameters["p_B_opt"], labileDOM_NO_N_labileDOM_NO_C/bacteria_parameters["n_B_opt"])
         f_r6_n_P = min(1.0, particOrganDetritus_NO_P_particOrganDetritus_NO_C/bacteria_parameters["p_B_opt"], particOrganDetritus_NO_N_particOrganDetritus_NO_C/bacteria_parameters["n_B_opt"])
     else:
         sys.exit('This code does not support this parameterization option, only bact_version=1')
         
     # Calculate the realized substrate uptake rate depending on the type of detritus and quality
-    upt_labileDOM_NO_C = (bacteria_parameters["v_B_r1"]*f_r1_n_P + bacteria_parameters["v_0B_r1"]*(1.0 - f_r1_n_P))*labileDOM_NO_C
-    upt_semilabileDOC_NO_C = bacteria_parameters["v_B_r2"]*semilabileDOC_NO_C
-    upt_semirefractDOC_NO_C = bacteria_parameters["v_B_r3"]*semirefractDOC_NO_C
-    upt_particOrganDetritus_NO_C = bacteria_parameters["v_B_r6"]*f_r6_n_P*particOrganDetritus_NO_C
-    realized_upt = constant_parameters["p_small"] + upt_labileDOM_NO_C + upt_semilabileDOC_NO_C + upt_semirefractDOC_NO_C + upt_particOrganDetritus_NO_C
+    upt_labileDOM_NO_C = (bacteria_parameters["v_B_r1"]*f_r1_n_P + bacteria_parameters["v_0B_r1"]*(1.0 - f_r1_n_P))*labileDOM_NO_C  # (from PelBac.F90 'ruR1c')
+    upt_semilabileDOC_NO_C = bacteria_parameters["v_B_r2"]*semilabileDOC_NO_C   # (from PelBac.F90 'ruR2c')
+    upt_semirefractDOC_NO_C = bacteria_parameters["v_B_r3"]*semirefractDOC_NO_C # (from PelBac.F90 'ruR3c')
+    upt_particOrganDetritus_NO_C = bacteria_parameters["v_B_r6"]*f_r6_n_P*particOrganDetritus_NO_C  # (from PelBac.F90 'ruR6c')
+    realized_upt = constant_parameters["p_small"] + upt_labileDOM_NO_C + upt_semilabileDOC_NO_C + upt_semirefractDOC_NO_C + upt_particOrganDetritus_NO_C    # (from PelBac.F90 'rut')
     
-    # Actual uptake by bacteria
-    actual_upt = min(potential_upt, realized_upt)
+    # Actual uptake by bacteria (from PelBac.F90 'rug')
+    actual_upt = min(potential_upt, realized_upt) 
     
     # Carbon fluxes into bacteria
-    dBcdt_upt_labileDOM_NO_C = actual_upt*upt_labileDOM_NO_C/realized_upt
-    dBcdt_upt_semilabileDOC_NO_C = actual_upt*upt_semilabileDOC_NO_C/realized_upt
-    dBcdt_upt_semirefractDOC_NO_C = actual_upt*upt_semirefractDOC_NO_C/realized_upt
-    dBcdt_upt_particOrganDetritus_NO_C = actual_upt*upt_particOrganDetritus_NO_C/realized_upt
+    dBcdt_upt_labileDOM_NO_C = actual_upt*upt_labileDOM_NO_C/realized_upt   # (from PelBac.F90 'ruR1c')
+    dBcdt_upt_semilabileDOC_NO_C = actual_upt*upt_semilabileDOC_NO_C/realized_upt   # (from PelBac.F90 'ruR2c')
+    dBcdt_upt_semirefractDOC_NO_C = actual_upt*upt_semirefractDOC_NO_C/realized_upt # (from PelBac.F90 'ruR3c')
+    dBcdt_upt_particOrganDetritus_NO_C = actual_upt*upt_particOrganDetritus_NO_C/realized_upt   # (from PelBac.F90 'ruR6c')
     
     # Organic Nitrogen and Phosphrous uptake
-    dBcdt_upt_labileDOM_NO_N = labileDOM_NO_N_labileDOM_NO_C*dBcdt_upt_labileDOM_NO_C
-    dBcdt_upt_particOrganDetritus_NO_N = particOrganDetritus_NO_N_particOrganDetritus_NO_C*dBcdt_upt_particOrganDetritus_NO_C
-    dBcdt_upt_labileDOM_NO_P = labileDOM_NO_P_labileDOM_NO_C*dBcdt_upt_labileDOM_NO_C
-    dBcdt_upt_particOrganDetritus_NO_P = particOrganDetritus_NO_P_particOrganDetritus_NO_C*dBcdt_upt_particOrganDetritus_NO_C
+    dBcdt_upt_labileDOM_NO_N = labileDOM_NO_N_labileDOM_NO_C*dBcdt_upt_labileDOM_NO_C   # (from PelBac.F90 'ruR1n')
+    dBcdt_upt_particOrganDetritus_NO_N = particOrganDetritus_NO_N_particOrganDetritus_NO_C*dBcdt_upt_particOrganDetritus_NO_C   # (from PelBac.F90 'ruR6n')
+    dBcdt_upt_labileDOM_NO_P = labileDOM_NO_P_labileDOM_NO_C*dBcdt_upt_labileDOM_NO_C   # (from PelBac.F90 'ruR1p')
+    dBcdt_upt_particOrganDetritus_NO_P = particOrganDetritus_NO_P_particOrganDetritus_NO_C*dBcdt_upt_particOrganDetritus_NO_C   # (from PelBac.F90 'ruR6p')
     
-    # Bacteria respiration [mc C m^-3 s^-1]
+    # Bacteria respiration [mc C m^-3 s^-1] (from PelBac.F90 'rrc')
     dBcdt_rsp_disInorgCarbon_IO_C = (bacteria_parameters["gamma_B_a"] + bacteria_parameters["gamma_B_O"]*(1.0 - f_B_O))*actual_upt + bacteria_parameters["b_B"]*pelBacteria_LO_C*fTB
 
     # Fluxes from bacteria
@@ -100,10 +100,10 @@ def bacteria_eqns(conc, bacteria_parameters, constant_parameters, environmental_
         dBcdt_rel_semirefractDOC_NO_C = 0.0
         
         # Dissolved Nitrogen dynamics
-        dBndt_upt_rel_ammonium_IO_N = (bn_bc - bacteria_parameters["n_B_opt"])*pelBacteria_LO_C*bacteria_parameters["v_B_n"]
+        dBndt_upt_rel_ammonium_IO_N = (bn_bc - bacteria_parameters["n_B_opt"])*pelBacteria_LO_C*bacteria_parameters["v_B_n"]    # (from PelBac.F90 'ren')
             
         # Dissolved Phosphorus dynamics
-        dBpdt_upt_rel_phospate_IO_P = (bp_bc - bacteria_parameters["p_B_opt"])*pelBacteria_LO_C*bacteria_parameters["v_B_p"]
+        dBpdt_upt_rel_phospate_IO_P = (bp_bc - bacteria_parameters["p_B_opt"])*pelBacteria_LO_C*bacteria_parameters["v_B_p"]    # (from PelBac.F90 'rep')
 
     # BACT2 parameterization
     if bacteria_parameters["bact_version"]==2:
@@ -113,7 +113,7 @@ def bacteria_eqns(conc, bacteria_parameters, constant_parameters, environmental_
     if bacteria_parameters["bact_version"]==3:
         print('This code does not support this parameterization option, only bact_version=1')
 
-    # Term needed for denitrification flux (dnitrate_IO_Ndt_denit) (from PelBac.F90 line 352)
+    # Term needed for denitrification flux (dnitrate_IO_Ndt_denit) (from PelBac.F90 'flN6r')
     flPTreductEquiv_IO_R = (1.0 - f_B_O)*dBcdt_rsp_disInorgCarbon_IO_C*constant_parameters["omega_c"]*constant_parameters["omega_r"]
     
     return (dBcdt_lys_labileDOM_NO_C, dBcdt_lys_labileDOM_NO_N, dBcdt_lys_labileDOM_NO_P, dBcdt_lys_particOrganDetritus_NO_C, dBcdt_lys_particOrganDetritus_NO_N, dBcdt_lys_particOrganDetritus_NO_P, 
