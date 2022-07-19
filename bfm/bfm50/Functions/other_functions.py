@@ -1,21 +1,41 @@
 import numpy as np
+import sys
 
 def insw_vector(parameter):
-    switch = 0.0
-    if parameter > 0.0:
-        switch = 1.0
+    x = len(parameter)
+    switch = np.zeros(x)
+    for i in range(0,x):
+        if parameter[i] > 0.0:
+            switch[i] = 1.0
+
+    # switch = 0.0
+    # if parameter > 0.0:
+    #     switch = 1.0
 
     return switch
 
 
 def eTq_vector(temp, basetemp, q10):
-    eTq = np.exp(np.log(q10)*(temp-basetemp)/basetemp)
+    x = len(temp)
+    eTq = np.zeros(x)
+    for i in range(0,x):
+        eTq[i] = np.exp(np.log(q10)*(temp[i]-basetemp)/basetemp)
     
     return eTq
 
 def get_concentration_ratio(numerator, denominator, p_small):
-    concentration_ratio = 0.0
-    if numerator > 0:
-        concentration_ratio = numerator/(denominator + p_small)
+    x = len(numerator)
+    y = len(denominator)
+    if x == y:
+        concentration_ratio = np.zeros(x)
+        for i in range(0,x):
+            if numerator[i] > 0.0:
+                concentration_ratio[i] = numerator[i]/(denominator[i] + p_small)
+    else:
+        sys.exit("Warning: Array lengths do not match. Cannot determine concentration ratios.")
+    
+    # concentration_ratio = 0.0
+    # if numerator > 0:
+    #     concentration_ratio = numerator/(denominator + p_small)
     
     return concentration_ratio

@@ -5,8 +5,8 @@ from inputs import params_POMBFM
 from bfm.constants import num_d3_box_states #, num_d2_box_states_ben
 from bfm.variable_info import set_variable_info_bfm
 from os import path
-from inputs.namelist_input_data import disOxygen_IO_O0, phospate_IO_P0, nitrate_IO_N0, ammonium_IO_N0, silicate_IO_Si0, reductEquiv_IO_R0, disInorgCarbon_IO_C0, totalAlkalinity_IO0, nitrogenSink0, diatoms_LO_C0, nanoflagellates_LO_C0, picophyto_LO_C0, largephyto_LO_C0, \
-    carnivMesozoo_LO_C0, omnivMesozoo_LO_C0, microzoo_LO_C0, heteroFlagellates_LO_C0, pelBacteria_LO_C0, labileDOM_NO_C0, semilabileDOC_NO_C0, semirefractDOC_NO_C0, particOrganDetritus_NO_C0, \
+from inputs.namelist_input_data import o2o0, n1p0, n3n0, n4n0, n5s0, n6r0, o3c0, o3h0, o4n0, p1c0, p2c0, p3c0, p4c0, \
+    z3c0, z4c0, z5c0, z6c0, b1c0, r1c0, r2c0, r3c0, r6c0, \
     y1c0, y2c0, y3c0, y4c0, y5c0, h1c0, h2c0, k1p0, k11p0, k21p0, k4n0, k14n0, k24n0, k3n0, k5s0, k6r0, \
     d1m0, d2m0, d6m0, d7m0, d8m0, d9m0, q6c0, q6n0, q6p0, q6s0, q1c0, q11c0, g2o0, g3c0, g13c0, g23c0, g3h0, g13h0, g23h0, \
     calcphytoplankton, calcmesozooplankton, calcmicrozooplankton, calcpelbacteria, calcbenorganisms, calcbenbacteria
@@ -111,51 +111,51 @@ def read_bfm_input():
     #   PHYTOPLANKTON CARBON IC
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if path.exists(phyto_input):
-        nanoflagellates_LO_C = np.fromfile(phyto_input)
+        p2c = np.fromfile(phyto_input)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   ZOOPLANKTON CARBON IC
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if path.exists(zoop_input):
-        microzoo_LO_C = np.fromfile(zoop_input)
+        z5c = np.fromfile(zoop_input)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   PARTICULATE ORGANIC CARBON IC
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if path.exists(poc_input):
-        particOrganDetritus_NO_C = np.fromfile(poc_input)
+        r6c = np.fromfile(poc_input)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   DISOLVED ORGANIC CARBON IC
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if path.exists(doc_input):
-        labileDOM_NO_C = np.fromfile(doc_input)
+        r1c = np.fromfile(doc_input)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   PHOSPHATE IC
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if path.exists(phos_input):
-        phospate_IO_P = np.fromfile(phos_input)
+        n1p = np.fromfile(phos_input)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   NITRATE IC
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if path.exists(nit_input):
-        nitrate_IO_N = np.fromfile(nit_input)
+        n3n = np.fromfile(nit_input)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   AMMONIUM IC
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if path.exists(am_input):
-        ammonium_IO_N = np.fromfile(am_input)
+        n4n = np.fromfile(am_input)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   OXYGEN IC
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if path.exists(oxy_input):
-        disOxygen_IO_O = np.fromfile(oxy_input)
+        o2o = np.fromfile(oxy_input)
 
-    return nanoflagellates_LO_C, microzoo_LO_C, particOrganDetritus_NO_C, labileDOM_NO_C, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, disOxygen_IO_O
+    return p2c, z5c, r6c, r1c, n1p, n3n, n4n, o2o
 
 
 def set_initial_conditions():
@@ -177,176 +177,176 @@ def set_initial_conditions():
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   Definition of general pelagic state variables: Pelagic Fases
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    nanoflagellates_LO_C, microzoo_LO_C, particOrganDetritus_NO_C, labileDOM_NO_C, phospate_IO_P, nitrate_IO_N, ammonium_IO_N, disOxygen_IO_O = read_bfm_input()
-    ammonium_IO_N[:] = 0. # From get_IC.f90 --> N4n(k) = 0.0
+    p2c, z5c, r6c, r1c, n1p, n3n, n4n, o2o = read_bfm_input()
+    n4n[:] = 0. # From get_IC.f90 --> N4n(k) = 0.0
 
-    disInorgCarbon_IO_C = disInorgCarbon_IO_C0 * np.ones(vertical_layers)
-    totalAlkalinity_IO = totalAlkalinity_IO0 * np.ones(vertical_layers)
+    o3c = o3c0 * np.ones(vertical_layers)
+    o3h = o3h0 * np.ones(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   Pelagic nutrients (mMol / m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    silicate_IO_Si = silicate_IO_Si0 * np.ones(vertical_layers)
-    nitrogenSink = nitrogenSink0 * np.ones(vertical_layers)
-    reductEquiv_IO_R = reductEquiv_IO_R0 * np.ones(vertical_layers)
+    n5s = n5s0 * np.ones(vertical_layers)
+    o4n = o4n0 * np.ones(vertical_layers)
+    n6r = n6r0 * np.ones(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   Pelagic detritus (respectively mg C/m3 mMol N/m3 mMol P/m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    particOrganDetritus_NO_N = particOrganDetritus_NO_C * p_nRc
-    particOrganDetritus_NO_P = particOrganDetritus_NO_C * p_pRc
-    particOrganDetritus_NO_Si = particOrganDetritus_NO_C * p_sRc
-    semilabileDOC_NO_C = semilabileDOC_NO_C0 * np.ones(vertical_layers)
-    semirefractDOC_NO_C = semirefractDOC_NO_C0 * np.ones(vertical_layers)
+    r6n = r6c * p_nRc
+    r6p = r6c * p_pRc
+    r6s = r6c * p_sRc
+    r2c = r2c0 * np.ones(vertical_layers)
+    r3c = r3c0 * np.ones(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   Dissolved organic matter
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    labileDOM_NO_N = labileDOM_NO_C * p_nRc * 0.5
-    labileDOM_NO_P = labileDOM_NO_C * p_pRc * 0.5
+    r1n = r1c * p_nRc * 0.5
+    r1p = r1c * p_pRc * 0.5
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   State variables for phytoplankton model
     #   pelagic diatoms (respectively mg C/m3 mMol N/m3 mMol P/m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    d1cc = diatoms_LO_C0
+    d1cc = p1c0
     d1cn = d1cc * p_nRc
     d1cp = d1cc * p_pRc
     d1cs = d1cc * p_sRc
     d1ci = d1cc * p_iRc
 
     if calcphytoplankton[0]:
-        diatoms_LO_C = d1cc * np.ones(vertical_layers)
-        diatoms_LO_N = d1cn * np.ones(vertical_layers)
-        diatoms_LO_P = d1cp * np.ones(vertical_layers)
-        diatoms_LO_Si = d1cs * np.ones(vertical_layers)
-        diatoms_LO_Chl = d1ci * np.ones(vertical_layers)
+        p1c = d1cc * np.ones(vertical_layers)
+        p1n = d1cn * np.ones(vertical_layers)
+        p1p = d1cp * np.ones(vertical_layers)
+        p1s = d1cs * np.ones(vertical_layers)
+        p1l = d1ci * np.ones(vertical_layers)
     else:
-        diatoms_LO_C = np.zeros(vertical_layers)
-        diatoms_LO_N = np.zeros(vertical_layers)
-        diatoms_LO_P = np.zeros(vertical_layers)
-        diatoms_LO_Si = np.zeros(vertical_layers)
-        diatoms_LO_Chl = np.zeros(vertical_layers)
+        p1c = np.zeros(vertical_layers)
+        p1n = np.zeros(vertical_layers)
+        p1p = np.zeros(vertical_layers)
+        p1s = np.zeros(vertical_layers)
+        p1l = np.zeros(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   Pelagic flagellates (respectively mg C/m3 mMol N/m3 mMol P/m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    d1cc = nanoflagellates_LO_C0
+    d1cc = p2c0
     d1cn = d1cc * p_nRc
     d1cp = d1cc * p_pRc
     d1ci = d1cc * p_iRc * 0.5
 
     if calcphytoplankton[1]:
-        d2cc = nanoflagellates_LO_C
-        nanoflagellates_LO_N = d2cc * p_nRc
-        nanoflagellates_LO_P = d2cc * p_pRc
-        nanoflagellates_LO_Chl = d2cc * p_iRc * 0.5
+        d2cc = p2c
+        p2n = d2cc * p_nRc
+        p2p = d2cc * p_pRc
+        p2l = d2cc * p_iRc * 0.5
     else:
-        nanoflagellates_LO_C = np.zeros(vertical_layers)
-        nanoflagellates_LO_N = np.zeros(vertical_layers)
-        nanoflagellates_LO_P = np.zeros(vertical_layers)
-        nanoflagellates_LO_Chl = np.zeros(vertical_layers)
+        p2c = np.zeros(vertical_layers)
+        p2n = np.zeros(vertical_layers)
+        p2p = np.zeros(vertical_layers)
+        p2l = np.zeros(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   Picophytoplankton (respectively mg C/m3 mMol N/m3 mMol P/m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    d1cc = picophyto_LO_C0
+    d1cc = p3c0
     d1cn = d1cc * p_nRc
     d1cp = d1cc * p_pRc
     d1ci = d1cc * p_iRc * 0.5
 
     if calcphytoplankton[2]:
-        picophyto_LO_C = d1cc * np.ones(vertical_layers)
-        picophyto_LO_N = d1cn * np.ones(vertical_layers)
-        picophyto_LO_P = d1cp * np.ones(vertical_layers)
-        picophyto_LO_Chl = d1ci * np.ones(vertical_layers)
+        p3c = d1cc * np.ones(vertical_layers)
+        p3n = d1cn * np.ones(vertical_layers)
+        p3p = d1cp * np.ones(vertical_layers)
+        p3l = d1ci * np.ones(vertical_layers)
     else:
-        picophyto_LO_C = np.zeros(vertical_layers)
-        picophyto_LO_N = np.zeros(vertical_layers)
-        picophyto_LO_P = np.zeros(vertical_layers)
-        picophyto_LO_Chl = np.zeros(vertical_layers)
+        p3c = np.zeros(vertical_layers)
+        p3n = np.zeros(vertical_layers)
+        p3p = np.zeros(vertical_layers)
+        p3l = np.zeros(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   Large phytoplankton (respectively mg C/m3 mMol N/m3 mMol P/m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    d1cc = largephyto_LO_C0
+    d1cc = p4c0
     d1cn = d1cc * p_nRc
     d1cp = d1cc * p_pRc
     d1ci = d1cc * p_iRc * 0.5
 
     if calcphytoplankton[3]:
-        largephyto_LO_C = d1cc * np.ones(vertical_layers)
-        largephyto_LO_N = d1cn * np.ones(vertical_layers)
-        largephyto_LO_P = d1cp * np.ones(vertical_layers)
-        largephyto_LO_Chl = d1ci * np.ones(vertical_layers)
+        p4c = d1cc * np.ones(vertical_layers)
+        p4n = d1cn * np.ones(vertical_layers)
+        p4p = d1cp * np.ones(vertical_layers)
+        p4l = d1ci * np.ones(vertical_layers)
     else:
-        largephyto_LO_C = np.zeros(vertical_layers)
-        largephyto_LO_N = np.zeros(vertical_layers)
-        largephyto_LO_P = np.zeros(vertical_layers)
-        largephyto_LO_Chl = np.zeros(vertical_layers)
+        p4c = np.zeros(vertical_layers)
+        p4n = np.zeros(vertical_layers)
+        p4p = np.zeros(vertical_layers)
+        p4l = np.zeros(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   State variables for mesozooplankton model
     #   Carnivorous mesozooplankton ( mg C/m3 )
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if calcmesozooplankton[0]:
-        carnivMesozoo_LO_C = carnivMesozoo_LO_C0 * np.ones(vertical_layers)
-        carnivMesozoo_LO_N = carnivMesozoo_LO_C * p_nRc
-        carnivMesozoo_LO_P = carnivMesozoo_LO_C * p_pRc
+        z3c = z3c0 * np.ones(vertical_layers)
+        z3n = z3c * p_nRc
+        z3p = z3c * p_pRc
     else:
-        carnivMesozoo_LO_C = np.zeros(vertical_layers)
-        carnivMesozoo_LO_N = np.zeros(vertical_layers)
-        carnivMesozoo_LO_P = np.zeros(vertical_layers)
+        z3c = np.zeros(vertical_layers)
+        z3n = np.zeros(vertical_layers)
+        z3p = np.zeros(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   Omnivorous mesozooplankton ( mg C/m3 )
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if calcmesozooplankton[1]:
-        omnivMesozoo_LO_C = omnivMesozoo_LO_C0 * np.ones(vertical_layers)
-        omnivMesozoo_LO_N = omnivMesozoo_LO_C * p_nRc
-        omnivMesozoo_LO_P = omnivMesozoo_LO_C * p_pRc
+        z4c = z4c0 * np.ones(vertical_layers)
+        z4n = z4c * p_nRc
+        z4p = z4c * p_pRc
     else:
-        omnivMesozoo_LO_C = np.zeros(vertical_layers)
-        omnivMesozoo_LO_N = np.zeros(vertical_layers)
-        omnivMesozoo_LO_P = np.zeros(vertical_layers)
+        z4c = np.zeros(vertical_layers)
+        z4n = np.zeros(vertical_layers)
+        z4p = np.zeros(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   State variables for microzooplankton model
     #   Pelagic microzooplankton  (respectively mg C/m3 mMol N/m3 mMol P/m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if calcmicrozooplankton[0]:
-        # microzoo_LO_C = microzoo_LO_C0 * np.ones(vertical_layers)
-        microzoo_LO_N = microzoo_LO_C * p_nRc
-        microzoo_LO_P = microzoo_LO_C * p_pRc
+        # z5c = z5c0 * np.ones(vertical_layers)
+        z5n = z5c * p_nRc
+        z5p = z5c * p_pRc
     else:
-        microzoo_LO_C = np.zeros(vertical_layers)
-        microzoo_LO_N = np.zeros(vertical_layers)
-        microzoo_LO_P = np.zeros(vertical_layers)
+        z5c = np.zeros(vertical_layers)
+        z5n = np.zeros(vertical_layers)
+        z5p = np.zeros(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   Heterotrophic flagellates (respectively mg C/m3 mMol N/m3 mMol P/m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if calcmicrozooplankton[1]:
-        heteroFlagellates_LO_C = heteroFlagellates_LO_C0 * np.ones(vertical_layers)
-        heteroFlagellates_LO_N = heteroFlagellates_LO_C * p_nRc
-        heteroFlagellates_LO_P = heteroFlagellates_LO_C * p_pRc
+        z6c = z6c0 * np.ones(vertical_layers)
+        z6n = z6c * p_nRc
+        z6p = z6c * p_pRc
     else:
-        heteroFlagellates_LO_C = np.zeros(vertical_layers)
-        heteroFlagellates_LO_N = np.zeros(vertical_layers)
-        heteroFlagellates_LO_P = np.zeros(vertical_layers)
+        z6c = np.zeros(vertical_layers)
+        z6n = np.zeros(vertical_layers)
+        z6p = np.zeros(vertical_layers)
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   State variables for pelagic bacteria model B1
     #   Pelagic bacteria (respectively mg C/m3 mMol N/m3 mMol P/m3)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     if calcpelbacteria:
-        pelBacteria_LO_C = pelBacteria_LO_C0 * np.ones(vertical_layers)
-        pelBacteria_LO_N = pelBacteria_LO_C * p_nRc
-        pelBacteria_LO_P = pelBacteria_LO_C * p_pRc
+        b1c = b1c0 * np.ones(vertical_layers)
+        b1n = b1c * p_nRc
+        b1p = b1c * p_pRc
     else:
-        pelBacteria_LO_C = np.zeros(vertical_layers)
-        pelBacteria_LO_N = np.zeros(vertical_layers)
-        pelBacteria_LO_P = np.zeros(vertical_layers)
+        b1c = np.zeros(vertical_layers)
+        b1n = np.zeros(vertical_layers)
+        b1p = np.zeros(vertical_layers)
 
 
     # try:
@@ -455,132 +455,132 @@ def set_initial_conditions():
     # Fill matrix with bfm variable data
     bfm_variables = np.zeros((vertical_layers,50))
 
-    bfm_variables[:,0] = disOxygen_IO_O[:]
-    bfm_variables[:,1] = phospate_IO_P[:]
-    bfm_variables[:,2] = nitrate_IO_N[:]
-    bfm_variables[:,3] = ammonium_IO_N[:]
-    bfm_variables[:,4] = nitrogenSink[:]
-    bfm_variables[:,5] = silicate_IO_Si[:]
-    bfm_variables[:,6] = reductEquiv_IO_R[:]
+    bfm_variables[:,0] = o2o[:]
+    bfm_variables[:,1] = n1p[:]
+    bfm_variables[:,2] = n3n[:]
+    bfm_variables[:,3] = n4n[:]
+    bfm_variables[:,4] = o4n[:]
+    bfm_variables[:,5] = n5s[:]
+    bfm_variables[:,6] = n6r[:]
 
-    bfm_variables[:,7] = pelBacteria_LO_C[:]
-    bfm_variables[:,8] = pelBacteria_LO_N[:]
-    bfm_variables[:,9] = pelBacteria_LO_P[:]
+    bfm_variables[:,7] = b1c[:]
+    bfm_variables[:,8] = b1n[:]
+    bfm_variables[:,9] = b1p[:]
  
-    bfm_variables[:,10] = diatoms_LO_C[:]
-    bfm_variables[:,11] = diatoms_LO_N[:]
-    bfm_variables[:,12] = diatoms_LO_P[:]
-    bfm_variables[:,13] = diatoms_LO_Chl[:]
-    bfm_variables[:,14] = diatoms_LO_Si[:]
+    bfm_variables[:,10] = p1c[:]
+    bfm_variables[:,11] = p1n[:]
+    bfm_variables[:,12] = p1p[:]
+    bfm_variables[:,13] = p1l[:]
+    bfm_variables[:,14] = p1s[:]
  
-    bfm_variables[:,15] = nanoflagellates_LO_C[:]
-    bfm_variables[:,16] = nanoflagellates_LO_N[:]
-    bfm_variables[:,17] = nanoflagellates_LO_P[:]
-    bfm_variables[:,18] = nanoflagellates_LO_Chl[:]
+    bfm_variables[:,15] = p2c[:]
+    bfm_variables[:,16] = p2n[:]
+    bfm_variables[:,17] = p2p[:]
+    bfm_variables[:,18] = p2l[:]
 
-    bfm_variables[:,19] = picophyto_LO_C[:]
-    bfm_variables[:,20] = picophyto_LO_N[:]
-    bfm_variables[:,21] = picophyto_LO_P[:]
-    bfm_variables[:,22] = picophyto_LO_Chl[:]
+    bfm_variables[:,19] = p3c[:]
+    bfm_variables[:,20] = p3n[:]
+    bfm_variables[:,21] = p3p[:]
+    bfm_variables[:,22] = p3l[:]
 
-    bfm_variables[:,23] = largephyto_LO_C[:]
-    bfm_variables[:,24] = largephyto_LO_N[:]
-    bfm_variables[:,25] = largephyto_LO_P[:]
-    bfm_variables[:,26] = largephyto_LO_Chl[:]
+    bfm_variables[:,23] = p4c[:]
+    bfm_variables[:,24] = p4n[:]
+    bfm_variables[:,25] = p4p[:]
+    bfm_variables[:,26] = p4l[:]
 
-    bfm_variables[:,27] = carnivMesozoo_LO_C[:]
-    bfm_variables[:,28] = carnivMesozoo_LO_N[:]
-    bfm_variables[:,29] = carnivMesozoo_LO_P[:]
+    bfm_variables[:,27] = z3c[:]
+    bfm_variables[:,28] = z3n[:]
+    bfm_variables[:,29] = z3p[:]
 
-    bfm_variables[:,30] = omnivMesozoo_LO_C[:]
-    bfm_variables[:,31] = omnivMesozoo_LO_N[:]
-    bfm_variables[:,32] = omnivMesozoo_LO_P[:]
+    bfm_variables[:,30] = z4c[:]
+    bfm_variables[:,31] = z4n[:]
+    bfm_variables[:,32] = z4p[:]
  
-    bfm_variables[:,33] = microzoo_LO_C[:]
-    bfm_variables[:,34] = microzoo_LO_N[:]
-    bfm_variables[:,35] = microzoo_LO_P[:]
+    bfm_variables[:,33] = z5c[:]
+    bfm_variables[:,34] = z5n[:]
+    bfm_variables[:,35] = z5p[:]
  
-    bfm_variables[:,36] = heteroFlagellates_LO_C[:]
-    bfm_variables[:,37] = heteroFlagellates_LO_N[:]
-    bfm_variables[:,38] = heteroFlagellates_LO_P[:]
+    bfm_variables[:,36] = z6c[:]
+    bfm_variables[:,37] = z6n[:]
+    bfm_variables[:,38] = z6p[:]
 
-    bfm_variables[:,39] = labileDOM_NO_C[:]
-    bfm_variables[:,40] = labileDOM_NO_N[:]
-    bfm_variables[:,41] = labileDOM_NO_P[:]
+    bfm_variables[:,39] = r1c[:]
+    bfm_variables[:,40] = r1n[:]
+    bfm_variables[:,41] = r1p[:]
  
-    bfm_variables[:,42] = semilabileDOC_NO_C[:]
-    bfm_variables[:,43] = semirefractDOC_NO_C[:]
+    bfm_variables[:,42] = r2c[:]
+    bfm_variables[:,43] = r3c[:]
 
-    bfm_variables[:,44] = particOrganDetritus_NO_C[:]
-    bfm_variables[:,45] = particOrganDetritus_NO_N[:]
-    bfm_variables[:,46] = particOrganDetritus_NO_P[:]
-    bfm_variables[:,47] = particOrganDetritus_NO_Si[:]
+    bfm_variables[:,44] = r6c[:]
+    bfm_variables[:,45] = r6n[:]
+    bfm_variables[:,46] = r6p[:]
+    bfm_variables[:,47] = r6s[:]
 
-    bfm_variables[:,48] = disInorgCarbon_IO_C[:]
-    bfm_variables[:,49] = totalAlkalinity_IO[:]
+    bfm_variables[:,48] = o3c[:]
+    bfm_variables[:,49] = o3h[:]
 
     return bfm_variables
 
 
 # UPDATED VARIABLE NAMES    -    NAME_TYPE_CONSTITUENT
 #
-# n1p - phospate_IO_P
-# n3n - nitrate_IO_N
-# n4n - ammonium_IO_N
-# n5s - silicate_IO_Si
-# n6r - reductEquiv_IO_R
-# n7f - reductEquiv_IO_Fe
-# o2o - disOxygen_IO_O
-# o3c - disInorgCarbon_IO_C
-# o3h - totalAlkalinity_IO
-# o4n - nitrogenSink
-# p1c - diatoms_LO_C
-# p1n - diatoms_LO_N
-# p1p - diatoms_LO_P
-# p1l - diatoms_LO_Chl
-# p1s - diatoms_LO_Si
-# p1f - diatoms_LO_Fe
-# p2c - nanoflagellates_LO_C
-# p2n - nanoflagellates_LO_N
-# p2p - nanoflagellates_LO_P
-# p2l - nanoflagellates_LO_Chl
-# p2f - nanoflagellates_LO_Fe
-# p3c - picophyto_LO_C
-# p3n - picophyto_LO_N
-# p3p - picophyto_LO_P
-# p3l - picophyto_LO_L
-# p3f - picophyto_LO_Fe
-# p4c - largephyto_LO_C
-# p4n - largephyto_LO_N
-# p4p - largephyto_LO_P
-# p4l - largephyto_LO_Chl
-# p4f - largephyto_LO_Fe
-# b1c - pelBacteria_LO_C
-# b1n - pelBacteria_LO_N
-# b1p - pelBacteria_LO_P
-# z3c - carnivMesozoo_LO_C
-# z3n - carnivMesozoo_LO_N
-# z3p - carnivMesozoo_LO_P
-# z4c - omnivMesozoo_LO_C
-# z4n - omnivMesozoo_LO_N
-# z4p - omnivMesozoo_LO_P
-# z5c - microzoo_LO_C
-# z5n - microzoo_LO_N
-# z5p - microzoo_LO_P
-# z6c - heteroFlagellates_LO_C
-# z6n - heteroFlagellates_LO_N
-# z6p - heteroFlagellates_LO_P
-# r1c - labileDOM_NO_C
-# r1n - labileDOM_NO_N
-# r1p - labileDOM_NO_P
-# r1f - labileDOM_NO_Fe
-# r2c - semilabileDOC_NO_C
-# r3c - semirefractDOC_NO_C
-# r6c - particOrganDetritus_NO_C
-# r6n - particOrganDetritus_NO_N
-# r6p - particOrganDetritus_NO_P
-# r6s - particOrganDetritus_NO_Si
-# r6f - particOrganDetritus_NO_Fe
+# n1p - n1p
+# n3n - n3n
+# n4n - n4n
+# n5s - n5s
+# n6r - n6r
+# n7f - n7f
+# o2o - o2o
+# o3c - o3c
+# o3h - o3h
+# o4n - o4n
+# p1c - p1c
+# p1n - p1n
+# p1p - p1p
+# p1l - p1l
+# p1s - p1s
+# p1f - p1f
+# p2c - p2c
+# p2n - p2n
+# p2p - p2p
+# p2l - p2l
+# p2f - p2f
+# p3c - p3c
+# p3n - p3n
+# p3p - p3p
+# p3l - p3l
+# p3f - p3f
+# p4c - p4c
+# p4n - p4n
+# p4p - p4p
+# p4l - p4l
+# p4f - p4f
+# b1c - b1c
+# b1n - b1n
+# b1p - b1p
+# z3c - z3c
+# z3n - z3n
+# z3p - z3p
+# z4c - z4c
+# z4n - z4n
+# z4p - z4p
+# z5c - z5c
+# z5n - z5n
+# z5p - z5p
+# z6c - z6c
+# z6n - z6n
+# z6p - z6p
+# r1c - r1c
+# r1n - r1n
+# r1p - r1p
+# r1f - r1f
+# r2c - r2c
+# r3c - r3c
+# r6c - r6c
+# r6n - r6n
+# r6p - r6p
+# r6s - r6s
+# r6f - r6f
 
 
 

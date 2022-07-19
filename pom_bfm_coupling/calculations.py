@@ -51,15 +51,15 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state,
     #   GLOBAL DEFINITION OF PELAGIC (D3/D2) STATE VARIABLES (From ModuleMem)
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     # Values correspond to index from bfm.variable_info.py
-    ppdisOxygen_IO_O = 0; ppphospate_IO_P = 1; ppnitrate_IO_N = 2
-    ppammonium_IO_N = 3; ppnitrogenSink = 4; ppsilicate_IO_Si = 5; ppreductEquiv_IO_R = 6; pppelBacteria_LO_C = 7; pppelBacteria_LO_N = 8; pppelBacteria_LO_P = 9; ppdiatoms_LO_C = 10
-    ppdiatoms_LO_N = 11; ppdiatoms_LO_P = 12; ppdiatoms_LO_Chl = 13; ppdiatoms_LO_Si = 14; ppnanoflagellates_LO_C = 15; ppnanoflagellates_LO_N = 16; ppnanoflagellates_LO_P = 17
-    ppnanoflagellates_LO_Chl = 18; ppP2s = 0; pppicophyto_LO_C = 19; pppicophyto_LO_N = 20; pppicophyto_LO_P = 21; pppicophyto_LO_Chl = 22; ppP3s = 0
-    pplargephyto_LO_C = 23; pplargephyto_LO_N = 24; pplargephyto_LO_P = 25; pplargephyto_LO_Chl = 26; ppP4s = 0; ppcarnivMesozoo_LO_C = 27; ppcarnivMesozoo_LO_N = 28
-    ppcarnivMesozoo_LO_P = 29; ppomnivMesozoo_LO_C = 30; ppomnivMesozoo_LO_N = 31; ppomnivMesozoo_LO_P = 32; ppmicrozoo_LO_C = 33; ppmicrozoo_LO_N = 34; ppmicrozoo_LO_P = 35
-    ppheteroFlagellates_LO_C = 36; ppheteroFlagellates_LO_N = 37; ppheteroFlagellates_LO_P = 38; pplabileDOM_NO_C = 39; pplabileDOM_NO_N = 40; pplabileDOM_NO_P = 41; ppR1s = 0
-    ppsemilabileDOC_NO_C = 42; ppR2n = 0; ppR2p = 0; ppR2s = 0; ppsemirefractDOC_NO_C = 43; ppR3n = 0; ppR3p = 0; ppR3s = 0
-    ppparticOrganDetritus_NO_C = 44; ppparticOrganDetritus_NO_N = 45; ppparticOrganDetritus_NO_P = 46; ppparticOrganDetritus_NO_Si = 47; ppdisInorgCarbon_IO_C = 48; pptotalAlkalinity_IO = 49
+    ppo2o = 0; ppn1p = 1; ppn3n = 2
+    ppn4n = 3; ppo4n = 4; ppn5s = 5; ppn6r = 6; ppb1c = 7; ppb1n = 8; ppb1p = 9; ppp1c = 10
+    ppp1n = 11; ppp1p = 12; ppp1l = 13; ppp1s = 14; ppp2c = 15; ppp2n = 16; ppp2p = 17
+    ppp2l = 18; ppP2s = 0; ppp3c = 19; ppp3n = 20; ppp3p = 21; ppp3l = 22; ppP3s = 0
+    ppp4c = 23; ppp4n = 24; ppp4p = 25; ppp4l = 26; ppP4s = 0; ppz3c = 27; ppz3n = 28
+    ppz3p = 29; ppz4c = 30; ppz4n = 31; ppz4p = 32; ppz5c = 33; ppz5n = 34; ppz5p = 35
+    ppz6c = 36; ppz6n = 37; ppz6p = 38; ppr1c = 39; ppr1n = 40; ppr1p = 41; ppR1s = 0
+    ppr2c = 42; ppR2n = 0; ppR2p = 0; ppR2s = 0; ppr3c = 43; ppR3n = 0; ppR3p = 0; ppR3s = 0
+    ppr6c = 44; ppr6n = 45; ppr6p = 46; ppr6s = 47; ppo3c = 48; ppo3h = 49
 
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   LOCAL VARIABLES
@@ -79,10 +79,10 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state,
     #   LOCAL VARIABLES
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    trelax_disOxygen_IO_O = params_POMBFM.nrt_disOxygen_IO_O / seconds_per_day
-    trelax_phospate_IO_P = params_POMBFM.nrt_phospate_IO_P / seconds_per_day
-    trelax_nitrate_IO_N = params_POMBFM.nrt_nitrate_IO_N / seconds_per_day
-    trelax_ammonium_IO_N = params_POMBFM.nrt_ammonium_IO_N
+    trelax_o2o = params_POMBFM.nrt_o2o / seconds_per_day
+    trelax_n1p = params_POMBFM.nrt_n1p / seconds_per_day
+    trelax_n3n = params_POMBFM.nrt_n3n / seconds_per_day
+    trelax_n4n = params_POMBFM.nrt_n4n
 
     # LOOP OVER BFM STATE VAR'S
     for M in range(0,num_d3_box_states):
@@ -111,18 +111,18 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state,
         #   NUTRIENTS SURFACE AND BOTTOM FLUXES
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-        if M == ppdisOxygen_IO_O:   # Dissolved Oxygen (o2o)
+        if M == ppo2o:   # Dissolved Oxygen (o2o)
             bfm_state_var.surface_flux = -(dOdt_wind[0] / seconds_per_day)
-            bfm_state_var.bottom_flux = (d3state[vertical_layers-2,0] - nutrients.O2bott) * trelax_disOxygen_IO_O
-        elif M == ppdisInorgCarbon_IO_C:    # Dissolved Inorganic Carbon (o3c)
+            bfm_state_var.bottom_flux = (d3state[vertical_layers-2,0] - nutrients.O2bott) * trelax_o2o
+        elif M == ppo3c:    # Dissolved Inorganic Carbon (o3c)
             bfm_state_var.surface_flux = 0.
-        elif M == ppphospate_IO_P:  # Phosphate (n1p)
+        elif M == ppn1p:  # Phosphate (n1p)
             bfm_state_var.surface_flux = 0.
-            bfm_state_var.bottom_flux = (d3state[vertical_layers-2,1] - nutrients.PO4bott) * trelax_phospate_IO_P
-        elif M == ppnitrate_IO_N:   # Nitrate (n3n)
+            bfm_state_var.bottom_flux = (d3state[vertical_layers-2,1] - nutrients.PO4bott) * trelax_n1p
+        elif M == ppn3n:   # Nitrate (n3n)
             bfm_state_var.surface_flux = 0.
-            bfm_state_var.bottom_flux = (d3state[vertical_layers-2,2] - nutrients.NO3bott) * trelax_nitrate_IO_N
-        elif M == ppsilicate_IO_Si: # Silicate (n5s)
+            bfm_state_var.bottom_flux = (d3state[vertical_layers-2,2] - nutrients.NO3bott) * trelax_n3n
+        elif M == ppn5s: # Silicate (n5s)
             bfm_state_var.surface_flux = 0.
         else:
             bfm_state_var.surface_flux = 0.
@@ -140,7 +140,7 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state,
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         detritus_sedimentation_rate = detritus_sedimentation()
         # The botflux for Particulate Organic Matter is left equal to ZERO
-        if ppparticOrganDetritus_NO_C <= M <= ppparticOrganDetritus_NO_Si:
+        if ppr6c <= M <= ppr6s:
 
             for i in range(0,vertical_layers-1):
                 sinking_velocity[i] = sinking_velocity[i] - detritus_sedimentation_rate[i]/seconds_per_day
@@ -153,16 +153,16 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state,
         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
         phyto_sedimentation_rates = phyto_sedimentation()
         # The botflux for Phytoplankton is left equal to ZERO
-        if ppdiatoms_LO_C <= M <= pplargephyto_LO_Chl:
+        if ppp1c <= M <= ppp4l:
 
             # FROM MODULEMEM --> iiP1 = 1, iiP2 = 2, 11P3 = 3, iiP4 = 4
-            if M in range(ppdiatoms_LO_C,ppdiatoms_LO_Si):
+            if M in range(ppp1c,ppp1s):
                 K = 1   # iiP1
-            elif M in range(ppnanoflagellates_LO_C,ppnanoflagellates_LO_Chl):
+            elif M in range(ppp2c,ppp2l):
                 K = 2   # iiP2
-            elif M in range(pppicophyto_LO_C,pppicophyto_LO_Chl):
+            elif M in range(ppp3c,ppp3l):
                 K = 3   # iiP3
-            elif M in range(pplargephyto_LO_C,pplargephyto_LO_Chl):
+            elif M in range(ppp4c,ppp4l):
                 K = 4   # iiP4
 
             for i in range(0,vertical_layers-1):

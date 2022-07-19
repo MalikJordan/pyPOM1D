@@ -54,203 +54,203 @@ def set_variable_info_bfm():
     variable_units = np.empty(333, dtype=str)
 
     # 3D variables description:
-    variable_abbrev[0] = "disOxygen_IO_O"
+    variable_abbrev[0] = "o2o"
     variable_names[0] = "Oxygen"
     variable_units[0] = "mmol O2/m3"
 
-    variable_abbrev[1] = "phospate_IO_P"
+    variable_abbrev[1] = "n1p"
     variable_names[1] = "Phosphate"
     variable_units[1] = "mmol P/m3"
 
-    variable_abbrev[2] = "nitrate_IO_N"
+    variable_abbrev[2] = "n3n"
     variable_names[2] = "Nitrate"
     variable_units[2] = "mmol N/m3"
 
-    variable_abbrev[3] = "ammonium_IO_N"
+    variable_abbrev[3] = "n4n"
     variable_names[3] = "Ammonium"
     variable_units[3] = "mmol N/m3"
 
-    variable_abbrev[4] = "nitrogenSink"
-    variable_names[4] = "NitrogenSink"
+    variable_abbrev[4] = "o4n"
+    variable_names[4] = "o4n"
     variable_units[4] = "mmol N/m3"
 
-    variable_abbrev[5] = "silicate_IO_Si"
+    variable_abbrev[5] = "n5s"
     variable_names[5] = "Silicate"
     variable_units[5] = "mmol Si/m3"
 
-    variable_abbrev[6] = "reductEquiv_IO_R"
+    variable_abbrev[6] = "n6r"
     variable_names[6] = "Reduction Equivalents"
     variable_units[6] = "mmol S--/m3"
 
-    variable_abbrev[7] = "pelBacteria_LO_C"
+    variable_abbrev[7] = "b1c"
     variable_names[7] = "Aerobic and Anaerobic Bacteria"
     variable_units[7] = "mg C/m3"
 
-    variable_abbrev[8] = "pelBacteria_LO_N"
+    variable_abbrev[8] = "b1n"
     variable_names[8] = "Aerobic and Anaerobic Bacteria"
     variable_units[8] = "mmol N/m3"
 
-    variable_abbrev[9] = "pelBacteria_LO_P"
+    variable_abbrev[9] = "b1p"
     variable_names[9] = "Aerobic and Anaerobic Bacteria"
     variable_units[9] = "mmol P/m3"
 
-    variable_abbrev[10] = "diatoms_LO_C"
+    variable_abbrev[10] = "p1c"
     variable_names[10] = "Diatoms"
     variable_units[10] = "mg C/m3"
 
-    variable_abbrev[11] = "diatoms_LO_N"
+    variable_abbrev[11] = "p1n"
     variable_names[11] = "Diatoms"
     variable_units[11] = "mmol N/m3"
 
-    variable_abbrev[12] = "diatoms_LO_P"
+    variable_abbrev[12] = "p1p"
     variable_names[12] = "Diatoms"
     variable_units[12] = "mmol P/m3"
 
-    variable_abbrev[13] = "diatoms_LO_Chl"
+    variable_abbrev[13] = "p1l"
     variable_names[13] = "Diatoms"
     variable_units[13] = "mg Chl/m3"
 
-    variable_abbrev[14] = "diatoms_LO_Si"
+    variable_abbrev[14] = "p1s"
     variable_names[14] = "Diatoms"
     variable_units[14] = "mmol Si/m3"
 
-    variable_abbrev[15] = "nanoflagellates_LO_C"
+    variable_abbrev[15] = "p2c"
     variable_names[15] = "Flagellates"
     variable_units[15] = "mg C/m3"
 
-    variable_abbrev[16] = "nanoflagellates_LO_N"
+    variable_abbrev[16] = "p2n"
     variable_names[16] = "Flagellates"
     variable_units[16] = "mmol N/m3"
 
-    variable_abbrev[17] = "nanoflagellates_LO_P"
+    variable_abbrev[17] = "p2p"
     variable_names[17] = "Flagellates"
     variable_units[17] = "mmol P/m3"
 
-    variable_abbrev[18] = "nanoflagellates_LO_Chl"
+    variable_abbrev[18] = "p2l"
     variable_names[18] = "Flagellates"
     variable_units[18] = "mg Chl/m3"
 
-    variable_abbrev[19] = "picophyto_LO_C"
+    variable_abbrev[19] = "p3c"
     variable_names[19] = "PicoPhytoplankton"
     variable_units[19] = "mg C/m3"
 
-    variable_abbrev[20] = "picophyto_LO_N"
+    variable_abbrev[20] = "p3n"
     variable_names[20] = "PicoPhytoplankton"
     variable_units[20] = "mmol N/m3"
 
-    variable_abbrev[21] = "picophyto_LO_P"
+    variable_abbrev[21] = "p3p"
     variable_names[21] = "PicoPhytoplankton"
     variable_units[21] = "mmol P/m3"
 
-    variable_abbrev[22] = "picophyto_LO_Chl"
+    variable_abbrev[22] = "p3l"
     variable_names[22] = "PicoPhytoplankton"
     variable_units[22] = "mg Chl/m3"
 
-    variable_abbrev[23] = "largephyto_LO_C"
+    variable_abbrev[23] = "p4c"
     variable_names[23] = "Large Phytoplankton"
     variable_units[23] = "mg C/m3"
 
-    variable_abbrev[24] = "largephyto_LO_N"
+    variable_abbrev[24] = "p4n"
     variable_names[24] = "Large Phytoplankton"
     variable_units[24] = "mmol N/m3"
 
-    variable_abbrev[25] = "largephyto_LO_P"
+    variable_abbrev[25] = "p4p"
     variable_names[25] = "Large Phytoplankton"
     variable_units[25] = "mmol P/m3"
 
-    variable_abbrev[26] = "largephyto_LO_Chl"
+    variable_abbrev[26] = "p4l"
     variable_names[26] = "Large Phytoplankton"
     variable_units[26] = "mg Chl/m3"
 
-    variable_abbrev[27] = "carnivMesozoo_LO_C"
+    variable_abbrev[27] = "z3c"
     variable_names[27] = "Carnivorous Mesozooplankton"
     variable_units[27] = "mg C/m3"
 
-    variable_abbrev[28] = "carnivMesozoo_LO_N"
+    variable_abbrev[28] = "z3n"
     variable_names[28] = "Carnivorous Mesozooplankton"
     variable_units[28] = "mmol N/m3"
 
-    variable_abbrev[29] = "carnivMesozoo_LO_P"
+    variable_abbrev[29] = "z3p"
     variable_names[29] = "Carnivorous Mesozooplankton"
     variable_units[29] = "mmol P/m3"
 
-    variable_abbrev[30] = "omnivMesozoo_LO_C"
+    variable_abbrev[30] = "z4c"
     variable_names[30] = "Omnivorous Mesozooplankton"
     variable_units[30] = "mg C/m3"
 
-    variable_abbrev[31] = "omnivMesozoo_LO_N"
+    variable_abbrev[31] = "z4n"
     variable_names[31] = "Omnivorous Mesozooplankton"
     variable_units[31] = "mmol N/m3"
 
-    variable_abbrev[32] = "omnivMesozoo_LO_P"
+    variable_abbrev[32] = "z4p"
     variable_names[32] = "Omnivorous Mesozooplankton"
     variable_units[32] = "mmol P/m3"
 
-    variable_abbrev[33] = "microzoo_LO_C"
+    variable_abbrev[33] = "z5c"
     variable_names[33] = "Microzooplankton"
     variable_units[33] = "mg C/m3"
 
-    variable_abbrev[34] = "microzoo_LO_N"
+    variable_abbrev[34] = "z5n"
     variable_names[34] = "Microzooplankton"
     variable_units[34] = "mmol N/m3"
 
-    variable_abbrev[35] = "microzoo_LO_P"
+    variable_abbrev[35] = "z5p"
     variable_names[35] = "Microzooplankton"
     variable_units[35] = "mmol P/m3"
 
-    variable_abbrev[36] = "heteroFlagellates_LO_C"
+    variable_abbrev[36] = "z6c"
     variable_names[36] = "Heterotrophic Nanoflagellates (HNAN)"
     variable_units[36] = "mg C/m3"
 
-    variable_abbrev[37] = "heteroFlagellates_LO_N"
+    variable_abbrev[37] = "z6n"
     variable_names[37] = "Heterotrophic Nanoflagellates (HNAN)"
     variable_units[37] = "mmol N/m3"
 
-    variable_abbrev[38] = "heteroFlagellates_LO_P"
+    variable_abbrev[38] = "z6p"
     variable_names[38] = "Heterotrophic Nanoflagellates (HNAN)"
     variable_units[38] = "mmol P/m3"
 
-    variable_abbrev[39] = "labileDOM_NO_C"
+    variable_abbrev[39] = "r1c"
     variable_names[39] = "Labile Dissolved Organic Matter"
     variable_units[39] = "mg C/m3"
 
-    variable_abbrev[40] = "labileDOM_NO_N"
+    variable_abbrev[40] = "r1n"
     variable_names[40] = "Labile Dissolved Organic Matter"
     variable_units[40] = "mmol N/m3"
 
-    variable_abbrev[41] = "labileDOM_NO_P"
+    variable_abbrev[41] = "r1p"
     variable_names[41] = "Labile Dissolved Organic Matter"
     variable_units[41] = "mmol P/m3"
 
-    variable_abbrev[42] = "semilabileDOC_NO_C"
+    variable_abbrev[42] = "r2c"
     variable_names[42] = "Semi-labile Dissolved Organic Carbon"
     variable_units[42] = "mg C/m3"
 
-    variable_abbrev[43] = "semirefractDOC_NO_C"
+    variable_abbrev[43] = "r3c"
     variable_names[43] = "Semi-refractory Dissolved Organic Carbon"
     variable_units[43] = "mg C/m3"
 
-    variable_abbrev[44] = "particOrganDetritus_NO_C"
+    variable_abbrev[44] = "r6c"
     variable_names[44] = "Particulate Organic Matter"
     variable_units[44] = "mg C/m3"
 
-    variable_abbrev[45] = "particOrganDetritus_NO_N"
+    variable_abbrev[45] = "r6n"
     variable_names[45] = "Particulate Organic Matter"
     variable_units[45] = "mmol N/m3"
 
-    variable_abbrev[46] = "particOrganDetritus_NO_P"
+    variable_abbrev[46] = "r6p"
     variable_names[46] = "Particulate Organic Matter"
     variable_units[46] = "mmol P/m3"
 
-    variable_abbrev[47] = "particOrganDetritus_NO_Si"
+    variable_abbrev[47] = "r6s"
     variable_names[47] = "Particulate Organic Matter"
     variable_units[47] = "mmol Si/m3"
 
-    variable_abbrev[48] = "disInorgCarbon_IO_C"
+    variable_abbrev[48] = "o3c"
     variable_names[48] = "Dissolved Inorganic Carbon"
     variable_units[48] = "mg C/m3"
 
-    variable_abbrev[49] = "totalAlkalinity_IO"
+    variable_abbrev[49] = "o3h"
     variable_names[49] = "Dissolved Inorganic Carbon"
     variable_units[49] = "mmol eq/m3"
 
@@ -358,15 +358,15 @@ def set_variable_info_bfm():
     variable_names[75] = "Chlorophyll-a"
     variable_units[75] = "mg Chl/m3"
 
-    variable_abbrev[76] = "flPTreductEquiv_IO_R"
+    variable_abbrev[76] = "flPTn6r"
     variable_names[76] = "Pelagic Anaerobic Mineralization Rate"
     variable_units[76] = "mmol O2/m3/d"
 
-    variable_abbrev[77] = "flN3nitrogenSink"
+    variable_abbrev[77] = "flN3o4n"
     variable_names[77] = "Pelagic Denitrification Rate"
     variable_units[77] = "mmol N/m3/d"
 
-    variable_abbrev[78] = "flammonium_IO_Nitrate_IO_N"
+    variable_abbrev[78] = "fln4n3n"
     variable_names[78] = "Pelagic Nitrification Rate"
     variable_units[78] = "mmol N/m3/d"
 
@@ -618,59 +618,59 @@ def set_variable_info_bfm():
     variable_names[140] = "Optimal light in P4(PhytoPlankton)"
     variable_units[140] = "W/m2"
 
-    variable_abbrev[141] = "fP1omnivMesozoo_LO_C"
+    variable_abbrev[141] = "fP1z4c"
     variable_names[141] = "diatom grazing by omniv.zooplankton"
     variable_units[141] = "mg C/m3/d"
 
-    variable_abbrev[142] = "fP2omnivMesozoo_LO_C"
+    variable_abbrev[142] = "fP2z4c"
     variable_names[142] = "flagellates grazing by omniv.zooplankton"
     variable_units[142] = "mg C/m3/d"
 
-    variable_abbrev[143] = "fP3omnivMesozoo_LO_C"
+    variable_abbrev[143] = "fP3z4c"
     variable_names[143] = "picophytoplankton grazing by omniv.zooplankton"
     variable_units[143] = "mg C/m3/d"
 
-    variable_abbrev[144] = "fP4omnivMesozoo_LO_C"
+    variable_abbrev[144] = "fP4z4c"
     variable_names[144] = "large phytoplankton grazing by omniv.zooplankton"
     variable_units[144] = "mg C/m3/d"
 
-    variable_abbrev[145] = "fP1microzoo_LO_C"
+    variable_abbrev[145] = "fP1z5c"
     variable_names[145] = "diatom grazing by microzooplankton"
     variable_units[145] = "mg C/m3/d"
 
-    variable_abbrev[146] = "fP2microzoo_LO_C"
+    variable_abbrev[146] = "fP2z5c"
     variable_names[146] = "flagellates grazing by microzooplankton"
     variable_units[146] = "mg C/m3/d"
 
-    variable_abbrev[147] = "fP3microzoo_LO_C"
+    variable_abbrev[147] = "fP3z5c"
     variable_names[147] = "picophytoplankton grazing by microzooplankton"
     variable_units[147] = "mg C/m3/d"
 
-    variable_abbrev[148] = "fP4microzoo_LO_C"
+    variable_abbrev[148] = "fP4z5c"
     variable_names[148] = "large phytoplankton grazing by microzooplankton"
     variable_units[148] = "mg C/m3/d"
 
-    variable_abbrev[149] = "fP1heteroFlagellates_LO_C"
+    variable_abbrev[149] = "fP1z6c"
     variable_names[149] = "diatom grazing by heterotrophic nanoflagellates"
     variable_units[149] = "mg C/m3/d"
 
-    variable_abbrev[150] = "fP2heteroFlagellates_LO_C"
+    variable_abbrev[150] = "fP2z6c"
     variable_names[150] = "flagellates grazing by heterotrophic nanoflagellates"
     variable_units[150] = "mg C/m3/d"
 
-    variable_abbrev[151] = "fP3heteroFlagellates_LO_C"
+    variable_abbrev[151] = "fP3z6c"
     variable_names[151] = "picophytoplankton grazing by heterotrophic nanoflagellates"
     variable_units[151] = "mg C/m3/d"
 
-    variable_abbrev[152] = "fP4heteroFlagellates_LO_C"
+    variable_abbrev[152] = "fP4z6c"
     variable_names[152] = "large phytoplankton grazing by heterotrophic nanoflagellates"
     variable_units[152] = "mg C/m3/d"
 
-    variable_abbrev[153] = "fB1heteroFlagellates_LO_C"
+    variable_abbrev[153] = "fB1z6c"
     variable_names[153] = "bacterial grazing by heterotrophic nanoflagellates"
     variable_units[153] = "mg C/m3/d"
 
-    variable_abbrev[154] = "fB1microzoo_LO_C"
+    variable_abbrev[154] = "fB1z5c"
     variable_names[154] = "bacterial grazing by microzooplankton"
     variable_units[154] = "mg C/m3/d"
 
@@ -734,7 +734,7 @@ def set_variable_info_bfm():
     variable_names[169] = "bacterial uptake"
     variable_units[169] = "mmol P/m3/d"
 
-    variable_abbrev[170] = "fR2pelBacteria_LO_C"
+    variable_abbrev[170] = "fR2b1c"
     variable_names[170] = "TEP uptake by bacteria"
     variable_units[170] = "mg C/m3/d"
 
@@ -788,605 +788,605 @@ def set_variable_info_bfm():
     variable_units[182] = "-"
 
     # Surface
-    variable_abbrev[183] = "jsurdisOxygen_IO_O"
+    variable_abbrev[183] = "jsuro2o"
     variable_names[183] = "flux of Oxygen at SURFACE"
     variable_units[183] = "mmol O2/m2/day"
 
-    variable_abbrev[184] = "jsurphospate_IO_P"
+    variable_abbrev[184] = "jsurn1p"
     variable_names[184] = "flux of Phosphate at SURFACE"
     variable_units[184] = "mmol P/m2/day"
 
-    variable_abbrev[185] = "jsurnitrate_IO_N"
+    variable_abbrev[185] = "jsurn3n"
     variable_names[185] = "flux of Nitrate at SURFACE"
     variable_units[185] = "mmol N/m2/day"
 
-    variable_abbrev[186] = "jsurammonium_IO_N"
+    variable_abbrev[186] = "jsurn4n"
     variable_names[186] = "flux of Ammonium at SURFACE"
     variable_units[186] = "mmol N/m2/day"
 
-    variable_abbrev[187] = "jsurnitrogenSink"
-    variable_names[187] = "flux of NitrogenSink at SURFACE"
+    variable_abbrev[187] = "jsuro4n"
+    variable_names[187] = "flux of o4n at SURFACE"
     variable_units[187] = "mmol N/m2/day"
 
-    variable_abbrev[188] = "jsursilicate_IO_Si"
+    variable_abbrev[188] = "jsurn5s"
     variable_names[188] = "flux of Silicate at SURFACE"
     variable_units[188] = "mmol Si/m2/day"
 
-    variable_abbrev[189] = "jsurreductEquiv_IO_R"
+    variable_abbrev[189] = "jsurn6r"
     variable_names[189] = "flux of Reduction Equivalents at SURFACE"
     variable_units[189] = "mmol S--/m2/day"
 
-    variable_abbrev[190] = "jsurpelBacteria_LO_C"
+    variable_abbrev[190] = "jsurb1c"
     variable_names[190] = "flux of Aerobic and Anaerobic Bacteria at SURFACE"
     variable_units[190] = "mg C/m2/day"
 
-    variable_abbrev[191] = "jsurpelBacteria_LO_N"
+    variable_abbrev[191] = "jsurb1n"
     variable_names[191] = "flux of Aerobic and Anaerobic Bacteria at SURFACE"
     variable_units[191] = "mmol N/m2/day"
 
-    variable_abbrev[192] = "jsurpelBacteria_LO_P"
+    variable_abbrev[192] = "jsurb1p"
     variable_names[192] = "flux of Aerobic and Anaerobic Bacteria at SURFACE"
     variable_units[192] = "mmol P/m2/day"
 
-    variable_abbrev[193] = "jsurdiatoms_LO_C"
+    variable_abbrev[193] = "jsurp1c"
     variable_names[193] = "flux of Diatoms at SURFACE"
     variable_units[193] = "mg C/m2/day"
 
-    variable_abbrev[194] = "jsurdiatoms_LO_N"
+    variable_abbrev[194] = "jsurp1n"
     variable_names[194] = "flux of Diatoms at SURFACE"
     variable_units[194] = "mmol N/m2/day"
 
-    variable_abbrev[195] = "jsurdiatoms_LO_P"
+    variable_abbrev[195] = "jsurp1p"
     variable_names[195] = "flux of Diatoms at SURFACE"
     variable_units[195] = "mmol P/m2/day"
 
-    variable_abbrev[196] = "jsurdiatoms_LO_Chl"
+    variable_abbrev[196] = "jsurp1l"
     variable_names[196] = "flux of Diatoms at SURFACE"
     variable_units[196] = "mg Chl/m2/day"
 
-    variable_abbrev[197] = "jsurdiatoms_LO_Si"
+    variable_abbrev[197] = "jsurp1s"
     variable_names[197] = "flux of Diatoms at SURFACE"
     variable_units[197] = "mmol Si/m2/day"
 
-    variable_abbrev[198] = "jsurnanoflagellates_LO_C"
+    variable_abbrev[198] = "jsurp2c"
     variable_names[198] = "flux of Flagellates at SURFACE"
     variable_units[198] = "mg C/m2/day"
 
-    variable_abbrev[199] = "jsurnanoflagellates_LO_N"
+    variable_abbrev[199] = "jsurp2n"
     variable_names[199] = "flux of Flagellates at SURFACE"
     variable_units[199] = "mmol N/m2/day"
 
-    variable_abbrev[200] = "jsurnanoflagellates_LO_P"
+    variable_abbrev[200] = "jsurp2p"
     variable_names[200] = "flux of Flagellates at SURFACE"
     variable_units[200] = "mmol P/m2/day"
 
-    variable_abbrev[201] = "jsurnanoflagellates_LO_Chl"
+    variable_abbrev[201] = "jsurp2l"
     variable_names[201] = "flux of Flagellates at SURFACE"
     variable_units[201] = "mg Chl/m2/day"
 
-    variable_abbrev[202] = "jsurpicophyto_LO_C"
+    variable_abbrev[202] = "jsurp3c"
     variable_names[202] = "flux of PicoPhytoplankton at SURFACE"
     variable_units[202] = "mg C/m2/day"
 
-    variable_abbrev[203] = "jsurpicophyto_LO_N"
+    variable_abbrev[203] = "jsurp3n"
     variable_names[203] = "flux of PicoPhytoplankton at SURFACE"
     variable_units[203] = "mmol N/m2/day"
 
-    variable_abbrev[204] = "jsurpicophyto_LO_P"
+    variable_abbrev[204] = "jsurp3p"
     variable_names[204] = "flux of PicoPhytoplankton at SURFACE"
     variable_units[204] = "mmol P/m2/day"
 
-    variable_abbrev[205] = "jsurpicophyto_LO_Chl"
+    variable_abbrev[205] = "jsurp3l"
     variable_names[205] = "flux of PicoPhytoplankton at SURFACE"
     variable_units[205] = "mg Chl/m2/day"
 
-    variable_abbrev[206] = "jsurlargephyto_LO_C"
+    variable_abbrev[206] = "jsurp4c"
     variable_names[206] = "flux of Large Phytoplankton at SURFACE"
     variable_units[206] = "mg C/m2/day"
 
-    variable_abbrev[207] = "jsurlargephyto_LO_N"
+    variable_abbrev[207] = "jsurp4n"
     variable_names[207] = "flux of Large Phytoplankton at SURFACE"
     variable_units[207] = "mmol N/m2/day"
 
-    variable_abbrev[208] = "jsurlargephyto_LO_P"
+    variable_abbrev[208] = "jsurp4p"
     variable_names[208] = "flux of Large Phytoplankton at SURFACE"
     variable_units[208] = "mmol P/m2/day"
 
-    variable_abbrev[209] = "jsurlargephyto_LO_Chl"
+    variable_abbrev[209] = "jsurp4l"
     variable_names[209] = "flux of Large Phytoplankton at SURFACE"
     variable_units[209] = "mg Chl/m2/day"
 
-    variable_abbrev[210] = "jsurcarnivMesozoo_LO_C"
+    variable_abbrev[210] = "jsurz3c"
     variable_names[210] = "flux of Carnivorous Mesozooplankton at SURFACE"
     variable_units[210] = "mg C/m2/day"
 
-    variable_abbrev[211] = "jsurcarnivMesozoo_LO_N"
+    variable_abbrev[211] = "jsurz3n"
     variable_names[211] = "flux of Carnivorous Mesozooplankton at SURFACE"
     variable_units[211] = "mmol N/m2/day"
 
-    variable_abbrev[212] = "jsurcarnivMesozoo_LO_P"
+    variable_abbrev[212] = "jsurz3p"
     variable_names[212] = "flux of Carnivorous Mesozooplankton at SURFACE"
     variable_units[212] = "mmol P/m2/day"
 
-    variable_abbrev[213] = "jsuromnivMesozoo_LO_C"
+    variable_abbrev[213] = "jsurz4c"
     variable_names[213] = "flux of Omnivorous Mesozooplankton at SURFACE"
     variable_units[213] = "mg C/m2/day"
 
-    variable_abbrev[214] = "jsuromnivMesozoo_LO_N"
+    variable_abbrev[214] = "jsurz4n"
     variable_names[214] = "flux of Omnivorous Mesozooplankton at SURFACE"
     variable_units[214] = "mmol N/m2/day"
 
-    variable_abbrev[215] = "jsuromnivMesozoo_LO_P"
+    variable_abbrev[215] = "jsurz4p"
     variable_names[215] = "flux of Omnivorous Mesozooplankton at SURFACE"
     variable_units[215] = "mmol P/m2/day"
 
-    variable_abbrev[216] = "jsurmicrozoo_LO_C"
+    variable_abbrev[216] = "jsurz5c"
     variable_names[216] = "flux of Microzooplankton at SURFACE"
     variable_units[216] = "mg C/m2/day"
 
-    variable_abbrev[217] = "jsurmicrozoo_LO_N"
+    variable_abbrev[217] = "jsurz5n"
     variable_names[217] = "flux of Microzooplankton at SURFACE"
     variable_units[217] = "mmol N/m2/day"
 
-    variable_abbrev[218] = "jsurmicrozoo_LO_P"
+    variable_abbrev[218] = "jsurz5p"
     variable_names[218] = "flux of Microzooplankton at SURFACE"
     variable_units[218] = "mmol P/m2/day"
 
-    variable_abbrev[219] = "jsurheteroFlagellates_LO_C"
+    variable_abbrev[219] = "jsurz6c"
     variable_names[219] = "flux of Heterotrophic Nanoflagellates (HNAN) at SURFACE"
     variable_units[219] = "mg C/m2/day"
 
-    variable_abbrev[220] = "jsurheteroFlagellates_LO_N"
+    variable_abbrev[220] = "jsurz6n"
     variable_names[220] = "flux of Heterotrophic Nanoflagellates (HNAN) at SURFACE"
     variable_units[220] = "mmol N/m2/day"
 
-    variable_abbrev[221] = "jsurheteroFlagellates_LO_P"
+    variable_abbrev[221] = "jsurz6p"
     variable_names[221] = "flux of Heterotrophic Nanoflagellates (HNAN) at SURFACE"
     variable_units[221] = "mmol P/m2/day"
 
-    variable_abbrev[222] = "jsurlabileDOM_NO_C"
+    variable_abbrev[222] = "jsurr1c"
     variable_names[222] = "flux of Labile Dissolved Organic Matter at SURFACE"
     variable_units[222] = "mg C/m2/day"
 
-    variable_abbrev[223] = "jsurlabileDOM_NO_N"
+    variable_abbrev[223] = "jsurr1n"
     variable_names[223] = "flux of Labile Dissolved Organic Matter at SURFACE"
     variable_units[223] = "mmol N/m2/day"
 
-    variable_abbrev[224] = "jsurlabileDOM_NO_P"
+    variable_abbrev[224] = "jsurr1p"
     variable_names[224] = "flux of Labile Dissolved Organic Matter at SURFACE"
     variable_units[224] = "mmol P/m2/day"
 
-    variable_abbrev[225] = "jsursemilabileDOC_NO_C"
+    variable_abbrev[225] = "jsurr2c"
     variable_names[225] = "flux of Semi-labile Dissolved Organic Carbon at SURFACE"
     variable_units[225] = "mg C/m2/day"
 
-    variable_abbrev[226] = "jsursemirefractDOC_NO_C"
+    variable_abbrev[226] = "jsurr3c"
     variable_names[226] = "flux of Semi-refractory Dissolved Organic Carbon at SURFACE"
     variable_units[226] = "mg C/m2/day"
 
-    variable_abbrev[227] = "jsurparticOrganDetritus_NO_C"
+    variable_abbrev[227] = "jsurr6c"
     variable_names[227] = "flux of Particulate Organic Matter at SURFACE"
     variable_units[227] = "mg C/m2/day"
 
-    variable_abbrev[228] = "jsurparticOrganDetritus_NO_N"
+    variable_abbrev[228] = "jsurr6n"
     variable_names[228] = "flux of Particulate Organic Matter at SURFACE"
     variable_units[228] = "mmol N/m2/day"
 
-    variable_abbrev[229] = "jsurparticOrganDetritus_NO_P"
+    variable_abbrev[229] = "jsurr6p"
     variable_names[229] = "flux of Particulate Organic Matter at SURFACE"
     variable_units[229] = "mmol P/m2/day"
 
-    variable_abbrev[230] = "jsurparticOrganDetritus_NO_Si"
+    variable_abbrev[230] = "jsurr6s"
     variable_names[230] = "flux of Particulate Organic Matter at SURFACE"
     variable_units[230] = "mmol Si/m2/day"
 
-    variable_abbrev[231] = "jsurdisInorgCarbon_IO_C"
+    variable_abbrev[231] = "jsuro3c"
     variable_names[231] = "flux of Dissolved Inorganic Carbon at SURFACE"
     variable_units[231] = "mg C/m2/day"
 
-    variable_abbrev[232] = "jsurtotalAlkalinity_IO"
+    variable_abbrev[232] = "jsuro3h"
     variable_names[232] = "flux of Dissolved Inorganic Carbon at SURFACE"
     variable_units[232] = "mmol eq/m2/day"
 
     # Bottom
-    variable_abbrev[233] = "jbotdisOxygen_IO_O"
+    variable_abbrev[233] = "jboto2o"
     variable_names[233] = "flux of Oxygen at BOTTOM"
     variable_units[233] = "mmol O2/m2/day"
 
-    variable_abbrev[234] = "jbotphospate_IO_P"
+    variable_abbrev[234] = "jbotn1p"
     variable_names[234] = "flux of Phosphate at BOTTOM"
     variable_units[234] = "mmol P/m2/day"
 
-    variable_abbrev[235] = "jbotnitrate_IO_N"
+    variable_abbrev[235] = "jbotn3n"
     variable_names[235] = "flux of Nitrate at BOTTOM"
     variable_units[235] = "mmol N/m2/day"
 
-    variable_abbrev[236] = "jbotammonium_IO_N"
+    variable_abbrev[236] = "jbotn4n"
     variable_names[236] = "flux of Ammonium at BOTTOM"
     variable_units[236] = "mmol N/m2/day"
 
-    variable_abbrev[237] = "jbotnitrogenSink"
-    variable_names[237] = "flux of NitrogenSink at BOTTOM"
+    variable_abbrev[237] = "jboto4n"
+    variable_names[237] = "flux of o4n at BOTTOM"
     variable_units[237] = "mmol N/m2/day"
 
-    variable_abbrev[238] = "jbotsilicate_IO_Si"
+    variable_abbrev[238] = "jbotn5s"
     variable_names[238] = "flux of Silicate at BOTTOM"
     variable_units[238] = "mmol Si/m2/day"
 
-    variable_abbrev[239] = "jbotreductEquiv_IO_R"
+    variable_abbrev[239] = "jbotn6r"
     variable_names[239] = "flux of Reduction Equivalents at BOTTOM"
     variable_units[239] = "mmol S--/m2/day"
 
-    variable_abbrev[240] = "jbotpelBacteria_LO_C"
+    variable_abbrev[240] = "jbotb1c"
     variable_names[240] = "flux of Aerobic and Anaerobic Bacteria at BOTTOM"
     variable_units[240] = "mg C/m2/day"
 
-    variable_abbrev[241] = "jbotpelBacteria_LO_N"
+    variable_abbrev[241] = "jbotb1n"
     variable_names[241] = "flux of Aerobic and Anaerobic Bacteria at BOTTOM"
     variable_units[241] = "mmol N/m2/day"
 
-    variable_abbrev[242] = "jbotpelBacteria_LO_P"
+    variable_abbrev[242] = "jbotb1p"
     variable_names[242] = "flux of Aerobic and Anaerobic Bacteria at BOTTOM"
     variable_units[242] = "mmol P/m2/day"
 
-    variable_abbrev[243] = "jbotdiatoms_LO_C"
+    variable_abbrev[243] = "jbotp1c"
     variable_names[243] = "flux of Diatoms at BOTTOM"
     variable_units[243] = "mg C/m2/day"
 
-    variable_abbrev[244] = "jbotdiatoms_LO_N"
+    variable_abbrev[244] = "jbotp1n"
     variable_names[244] = "flux of Diatoms at BOTTOM"
     variable_units[244] = "mmol N/m2/day"
 
-    variable_abbrev[245] = "jbotdiatoms_LO_P"
+    variable_abbrev[245] = "jbotp1p"
     variable_names[245] = "flux of Diatoms at BOTTOM"
     variable_units[245] = "mmol P/m2/day"
 
-    variable_abbrev[246] = "jbotdiatoms_LO_Chl"
+    variable_abbrev[246] = "jbotp1l"
     variable_names[246] = "flux of Diatoms at BOTTOM"
     variable_units[246] = "mg Chl/m2/day"
 
-    variable_abbrev[247] = "jbotdiatoms_LO_Si"
+    variable_abbrev[247] = "jbotp1s"
     variable_names[247] = "flux of Diatoms at BOTTOM"
     variable_units[247] = "mmol Si/m2/day"
 
-    variable_abbrev[248] = "jbotnanoflagellates_LO_C"
+    variable_abbrev[248] = "jbotp2c"
     variable_names[248] = "flux of Flagellates at BOTTOM"
     variable_units[248] = "mg C/m2/day"
 
-    variable_abbrev[249] = "jbotnanoflagellates_LO_N"
+    variable_abbrev[249] = "jbotp2n"
     variable_names[249] = "flux of Flagellates at BOTTOM"
     variable_units[249] = "mmol N/m2/day"
 
-    variable_abbrev[250] = "jbotnanoflagellates_LO_P"
+    variable_abbrev[250] = "jbotp2p"
     variable_names[250] = "flux of Flagellates at BOTTOM"
     variable_units[250] = "mmol P/m2/day"
 
-    variable_abbrev[251] = "jbotnanoflagellates_LO_Chl"
+    variable_abbrev[251] = "jbotp2l"
     variable_names[251] = "flux of Flagellates at BOTTOM"
     variable_units[251] = "mg Chl/m2/day"
 
-    variable_abbrev[252] = "jbotpicophyto_LO_C"
+    variable_abbrev[252] = "jbotp3c"
     variable_names[252] = "flux of PicoPhytoplankton at BOTTOM"
     variable_units[252] = "mg C/m2/day"
 
-    variable_abbrev[253] = "jbotpicophyto_LO_N"
+    variable_abbrev[253] = "jbotp3n"
     variable_names[253] = "flux of PicoPhytoplankton at BOTTOM"
     variable_units[253] = "mmol N/m2/day"
 
-    variable_abbrev[254] = "jbotpicophyto_LO_P"
+    variable_abbrev[254] = "jbotp3p"
     variable_names[254] = "flux of PicoPhytoplankton at BOTTOM"
     variable_units[254] = "mmol P/m2/day"
 
-    variable_abbrev[255] = "jbotpicophyto_LO_Chl"
+    variable_abbrev[255] = "jbotp3l"
     variable_names[255] = "flux of PicoPhytoplankton at BOTTOM"
     variable_units[255] = "mg Chl/m2/day"
 
-    variable_abbrev[256] = "jbotlargephyto_LO_C"
+    variable_abbrev[256] = "jbotp4c"
     variable_names[256] = "flux of Large Phytoplankton at BOTTOM"
     variable_units[256] = "mg C/m2/day"
 
-    variable_abbrev[257] = "jbotlargephyto_LO_N"
+    variable_abbrev[257] = "jbotp4n"
     variable_names[257] = "flux of Large Phytoplankton at BOTTOM"
     variable_units[257] = "mmol N/m2/day"
 
-    variable_abbrev[258] = "jbotlargephyto_LO_P"
+    variable_abbrev[258] = "jbotp4p"
     variable_names[258] = "flux of Large Phytoplankton at BOTTOM"
     variable_units[258] = "mmol P/m2/day"
 
-    variable_abbrev[259] = "jbotlargephyto_LO_Chl"
+    variable_abbrev[259] = "jbotp4l"
     variable_names[259] = "flux of Large Phytoplankton at BOTTOM"
     variable_units[259] = "mg Chl/m2/day"
 
-    variable_abbrev[260] = "jbotcarnivMesozoo_LO_C"
+    variable_abbrev[260] = "jbotz3c"
     variable_names[260] = "flux of Carnivorous Mesozooplankton at BOTTOM"
     variable_units[260] = "mg C/m2/day"
 
-    variable_abbrev[261] = "jbotcarnivMesozoo_LO_N"
+    variable_abbrev[261] = "jbotz3n"
     variable_names[261] = "flux of Carnivorous Mesozooplankton at BOTTOM"
     variable_units[261] = "mmol N/m2/day"
 
-    variable_abbrev[262] = "jbotcarnivMesozoo_LO_P"
+    variable_abbrev[262] = "jbotz3p"
     variable_names[262] = "flux of Carnivorous Mesozooplankton at BOTTOM"
     variable_units[262] = "mmol P/m2/day"
 
-    variable_abbrev[263] = "jbotomnivMesozoo_LO_C"
+    variable_abbrev[263] = "jbotz4c"
     variable_names[263] = "flux of Omnivorous Mesozooplankton at BOTTOM"
     variable_units[263] = "mg C/m2/day"
 
-    variable_abbrev[264] = "jbotomnivMesozoo_LO_N"
+    variable_abbrev[264] = "jbotz4n"
     variable_names[264] = "flux of Omnivorous Mesozooplankton at BOTTOM"
     variable_units[264] = "mmol N/m2/day"
 
-    variable_abbrev[265] = "jbotomnivMesozoo_LO_P"
+    variable_abbrev[265] = "jbotz4p"
     variable_names[265] = "flux of Omnivorous Mesozooplankton at BOTTOM"
     variable_units[265] = "mmol P/m2/day"
 
-    variable_abbrev[266] = "jbotmicrozoo_LO_C"
+    variable_abbrev[266] = "jbotz5c"
     variable_names[266] = "flux of Microzooplankton at BOTTOM"
     variable_units[266] = "mg C/m2/day"
 
-    variable_abbrev[267] = "jbotmicrozoo_LO_N"
+    variable_abbrev[267] = "jbotz5n"
     variable_names[267] = "flux of Microzooplankton at BOTTOM"
     variable_units[267] = "mmol N/m2/day"
 
-    variable_abbrev[268] = "jbotmicrozoo_LO_P"
+    variable_abbrev[268] = "jbotz5p"
     variable_names[268] = "flux of Microzooplankton at BOTTOM"
     variable_units[268] = "mmol P/m2/day"
 
-    variable_abbrev[269] = "jbotheteroFlagellates_LO_C"
+    variable_abbrev[269] = "jbotz6c"
     variable_names[269] = "flux of Heterotrophic Nanoflagellates (HNAN) at BOTTOM"
     variable_units[269] = "mg C/m2/day"
 
-    variable_abbrev[270] = "jbotheteroFlagellates_LO_N"
+    variable_abbrev[270] = "jbotz6n"
     variable_names[270] = "flux of Heterotrophic Nanoflagellates (HNAN) at BOTTOM"
     variable_units[270] = "mmol N/m2/day"
 
-    variable_abbrev[271] = "jbotheteroFlagellates_LO_P"
+    variable_abbrev[271] = "jbotz6p"
     variable_names[271] = "flux of Heterotrophic Nanoflagellates (HNAN) at BOTTOM"
     variable_units[271] = "mmol P/m2/day"
 
-    variable_abbrev[272] = "jbotlabileDOM_NO_C"
+    variable_abbrev[272] = "jbotr1c"
     variable_names[272] = "flux of Labile Dissolved Organic Matter at BOTTOM"
     variable_units[272] = "mg C/m2/day"
 
-    variable_abbrev[273] = "jbotlabileDOM_NO_N"
+    variable_abbrev[273] = "jbotr1n"
     variable_names[273] = "flux of Labile Dissolved Organic Matter at BOTTOM"
     variable_units[273] = "mmol N/m2/day"
 
-    variable_abbrev[274] = "jbotlabileDOM_NO_P"
+    variable_abbrev[274] = "jbotr1p"
     variable_names[274] = "flux of Labile Dissolved Organic Matter at BOTTOM"
     variable_units[274] = "mmol P/m2/day"
 
-    variable_abbrev[275] = "jbotsemilabileDOC_NO_C"
+    variable_abbrev[275] = "jbotr2c"
     variable_names[275] = "flux of Semi-labile Dissolved Organic Carbon at BOTTOM"
     variable_units[275] = "mg C/m2/day"
 
-    variable_abbrev[276] = "jbotsemirefractDOC_NO_C"
+    variable_abbrev[276] = "jbotr3c"
     variable_names[276] = "flux of Semi-refractory Dissolved Organic Carbon at BOTTOM"
     variable_units[276] = "mg C/m2/day"
 
-    variable_abbrev[277] = "jbotparticOrganDetritus_NO_C"
+    variable_abbrev[277] = "jbotr6c"
     variable_names[277] = "flux of Particulate Organic Matter at BOTTOM"
     variable_units[277] = "mg C/m2/day"
 
-    variable_abbrev[278] = "jbotparticOrganDetritus_NO_N"
+    variable_abbrev[278] = "jbotr6n"
     variable_names[278] = "flux of Particulate Organic Matter at BOTTOM"
     variable_units[278] = "mmol N/m2/day"
 
-    variable_abbrev[279] = "jbotparticOrganDetritus_NO_P"
+    variable_abbrev[279] = "jbotr6p"
     variable_names[279] = "flux of Particulate Organic Matter at BOTTOM"
     variable_units[279] = "mmol P/m2/day"
 
-    variable_abbrev[280] = "jbotparticOrganDetritus_NO_Si"
+    variable_abbrev[280] = "jbotr6s"
     variable_names[280] = "flux of Particulate Organic Matter at BOTTOM"
     variable_units[280] = "mmol Si/m2/day"
 
-    variable_abbrev[281] = "jbotdisInorgCarbon_IO_C"
+    variable_abbrev[281] = "jboto3c"
     variable_names[281] = "flux of Dissolved Inorganic Carbon at BOTTOM"
     variable_units[281] = "mg C/m2/day"
 
-    variable_abbrev[282] = "jbottotalAlkalinity_IO"
+    variable_abbrev[282] = "jboto3h"
     variable_names[282] = "flux of Dissolved Inorganic Carbon at BOTTOM"
     variable_units[282] = "mmol eq/m2/day"
 
     # River
-    variable_abbrev[283] = "jrivdisOxygen_IO_O"
+    variable_abbrev[283] = "jrivo2o"
     variable_names[283] = "flux of Oxygen at RIVER"
     variable_units[283] = "mmol O2/m2/day"
 
-    variable_abbrev[284] = "jrivphospate_IO_P"
+    variable_abbrev[284] = "jrivn1p"
     variable_names[284] = "flux of Phosphate at RIVER"
     variable_units[284] = "mmol P/m2/day"
 
-    variable_abbrev[285] = "jrivnitrate_IO_N"
+    variable_abbrev[285] = "jrivn3n"
     variable_names[285] = "flux of Nitrate at RIVER"
     variable_units[285] = "mmol N/m2/day"
 
-    variable_abbrev[286] = "jrivammonium_IO_N"
+    variable_abbrev[286] = "jrivn4n"
     variable_names[286] = "flux of Ammonium at RIVER"
     variable_units[286] = "mmol N/m2/day"
 
-    variable_abbrev[287] = "jrivnitrogenSink"
-    variable_names[287] = "flux of NitrogenSink at RIVER"
-    variable_units[287] = "flux of NitrogenSink at RIVER"
+    variable_abbrev[287] = "jrivo4n"
+    variable_names[287] = "flux of o4n at RIVER"
+    variable_units[287] = "flux of o4n at RIVER"
 
-    variable_abbrev[288] = "jrivsilicate_IO_Si"
+    variable_abbrev[288] = "jrivn5s"
     variable_names[288] = "flux of Silicate at RIVER"
     variable_units[288] = "mmol Si/m2/day"
 
-    variable_abbrev[289] = "jrivreductEquiv_IO_R"
+    variable_abbrev[289] = "jrivn6r"
     variable_names[289] = "flux of Reduction Equivalents at RIVER"
     variable_units[289] = "mmol S--/m2/day"
 
-    variable_abbrev[290] = "jrivpelBacteria_LO_C"
+    variable_abbrev[290] = "jrivb1c"
     variable_names[290] = "flux of Aerobic and Anaerobic Bacteria at RIVER"
     variable_units[290] = "mg C/m2/day"
 
-    variable_abbrev[291] = "jrivpelBacteria_LO_N"
+    variable_abbrev[291] = "jrivb1n"
     variable_names[291] = "flux of Aerobic and Anaerobic Bacteria at RIVER"
     variable_units[291] = "mmol N/m2/day"
 
-    variable_abbrev[292] = "jrivpelBacteria_LO_P"
+    variable_abbrev[292] = "jrivb1p"
     variable_names[292] = "flux of Aerobic and Anaerobic Bacteria at RIVER"
     variable_units[292] = "mmol P/m2/day"
 
-    variable_abbrev[293] = "jrivdiatoms_LO_C"
+    variable_abbrev[293] = "jrivp1c"
     variable_names[293] = "flux of Diatoms at RIVER"
     variable_units[293] = "mg C/m2/day"
 
-    variable_abbrev[294] = "jrivdiatoms_LO_N"
+    variable_abbrev[294] = "jrivp1n"
     variable_names[294] = "flux of Diatoms at RIVER"
     variable_units[294] = "mmol N/m2/day"
 
-    variable_abbrev[295] = "jrivdiatoms_LO_P"
+    variable_abbrev[295] = "jrivp1p"
     variable_names[295] = "flux of Diatoms at RIVER"
     variable_units[295] = "mmol P/m2/day"
 
-    variable_abbrev[296] = "jrivdiatoms_LO_Chl"
+    variable_abbrev[296] = "jrivp1l"
     variable_names[296] = "flux of Diatoms at RIVER"
     variable_units[296] = "mg Chl/m2/day"
 
-    variable_abbrev[297] = "jrivdiatoms_LO_Si"
+    variable_abbrev[297] = "jrivp1s"
     variable_names[297] = "flux of Diatoms at RIVER"
     variable_units[297] = "mmol Si/m2/day"
 
-    variable_abbrev[298] = "jrivnanoflagellates_LO_C"
+    variable_abbrev[298] = "jrivp2c"
     variable_names[298] = "flux of Flagellates at RIVER"
     variable_units[298] = "mg C/m2/day"
 
-    variable_abbrev[299] = "jrivnanoflagellates_LO_N"
+    variable_abbrev[299] = "jrivp2n"
     variable_names[299] = "flux of Flagellates at RIVER"
     variable_units[299] = "mmol N/m2/day"
 
-    variable_abbrev[300] = "jrivnanoflagellates_LO_P"
+    variable_abbrev[300] = "jrivp2p"
     variable_names[300] = "flux of Flagellates at RIVER"
     variable_units[300] = "mmol P/m2/day"
 
-    variable_abbrev[301] = "jrivnanoflagellates_LO_Chl"
+    variable_abbrev[301] = "jrivp2l"
     variable_names[301] = "flux of Flagellates at RIVER"
     variable_units[301] = "flux of Flagellates at RIVER"
 
-    variable_abbrev[302] = "jrivpicophyto_LO_C"
+    variable_abbrev[302] = "jrivp3c"
     variable_names[302] = "flux of PicoPhytoplankton at RIVER"
     variable_units[302] = "mg C/m2/day"
 
-    variable_abbrev[303] = "jrivpicophyto_LO_N"
+    variable_abbrev[303] = "jrivp3n"
     variable_names[303] = "flux of PicoPhytoplankton at RIVER"
     variable_units[303] = "mmol N/m2/day"
 
-    variable_abbrev[304] = "jrivpicophyto_LO_P"
+    variable_abbrev[304] = "jrivp3p"
     variable_names[304] = "flux of PicoPhytoplankton at RIVER"
     variable_units[304] = "mmol P/m2/day"
 
-    variable_abbrev[305] = "jrivpicophyto_LO_Chl"
+    variable_abbrev[305] = "jrivp3l"
     variable_names[305] = "flux of PicoPhytoplankton at RIVER"
     variable_units[305] = "mg Chl/m2/day"
 
-    variable_abbrev[306] = "jrivlargephyto_LO_C"
+    variable_abbrev[306] = "jrivp4c"
     variable_names[306] = "flux of Large Phytoplankton at RIVER"
     variable_units[306] = "mg C/m2/day"
 
-    variable_abbrev[307] = "jrivlargephyto_LO_N"
+    variable_abbrev[307] = "jrivp4n"
     variable_names[307] = "flux of Large Phytoplankton at RIVER"
     variable_units[307] = "mmol N/m2/day"
 
-    variable_abbrev[308] = "jrivlargephyto_LO_P"
+    variable_abbrev[308] = "jrivp4p"
     variable_names[308] = "flux of Large Phytoplankton at RIVER"
     variable_units[308] = "mmol P/m2/day"
 
-    variable_abbrev[309] = "jrivlargephyto_LO_Chl"
+    variable_abbrev[309] = "jrivp4l"
     variable_names[309] = "flux of Large Phytoplankton at RIVER"
     variable_units[309] = "mg Chl/m2/day"
 
-    variable_abbrev[310] = "jrivcarnivMesozoo_LO_C"
+    variable_abbrev[310] = "jrivz3c"
     variable_names[310] = "flux of Carnivorous Mesozooplankton at RIVER"
     variable_units[310] = "mg C/m2/day"
 
-    variable_abbrev[311] = "jrivcarnivMesozoo_LO_N"
+    variable_abbrev[311] = "jrivz3n"
     variable_names[311] = "flux of Carnivorous Mesozooplankton at RIVER"
     variable_units[311] = "mmol N/m2/day"
 
-    variable_abbrev[312] = "jrivcarnivMesozoo_LO_P"
+    variable_abbrev[312] = "jrivz3p"
     variable_names[312] = "flux of Carnivorous Mesozooplankton at RIVER"
     variable_units[312] = "mmol P/m2/day"
 
-    variable_abbrev[313] = "jrivomnivMesozoo_LO_C"
+    variable_abbrev[313] = "jrivz4c"
     variable_names[313] = "flux of Omnivorous Mesozooplankton at RIVER"
     variable_units[313] = "mg C/m2/day"
 
-    variable_abbrev[314] = "jrivomnivMesozoo_LO_N"
+    variable_abbrev[314] = "jrivz4n"
     variable_names[314] = "flux of Omnivorous Mesozooplankton at RIVER"
     variable_units[314] = "mmol N/m2/day"
 
-    variable_abbrev[315] = "jrivomnivMesozoo_LO_P"
+    variable_abbrev[315] = "jrivz4p"
     variable_names[315] = "flux of Omnivorous Mesozooplankton at RIVER"
     variable_units[315] = "mmol P/m2/day"
 
-    variable_abbrev[316] = "jrivmicrozoo_LO_C"
+    variable_abbrev[316] = "jrivz5c"
     variable_names[316] = "flux of Microzooplankton at RIVER"
     variable_units[316] = "mg C/m2/day"
 
-    variable_abbrev[317] = "jrivmicrozoo_LO_N"
+    variable_abbrev[317] = "jrivz5n"
     variable_names[317] = "flux of Microzooplankton at RIVER"
     variable_units[317] = "mmol N/m2/day"
 
-    variable_abbrev[318] = "jrivmicrozoo_LO_P"
+    variable_abbrev[318] = "jrivz5p"
     variable_names[318] = "flux of Microzooplankton at RIVER"
     variable_units[318] = "mmol P/m2/day"
 
-    variable_abbrev[319] = "jrivheteroFlagellates_LO_C"
+    variable_abbrev[319] = "jrivz6c"
     variable_names[319] = "flux of Heterotrophic Nanoflagellates (HNAN) at RIVER"
     variable_units[319] = "mg C/m2/day"
 
-    variable_abbrev[320] = "jrivheteroFlagellates_LO_N"
+    variable_abbrev[320] = "jrivz6n"
     variable_names[320] = "flux of Heterotrophic Nanoflagellates (HNAN) at RIVER"
     variable_units[320] = "mmol N/m2/day"
 
-    variable_abbrev[321] = "jrivheteroFlagellates_LO_P"
+    variable_abbrev[321] = "jrivz6p"
     variable_names[321] = "flux of Heterotrophic Nanoflagellates (HNAN) at RIVER"
     variable_units[321] = "mmol P/m2/day"
 
-    variable_abbrev[322] = "jrivlabileDOM_NO_C"
+    variable_abbrev[322] = "jrivr1c"
     variable_names[322] = "flux of Labile Dissolved Organic Matter at RIVER"
     variable_units[322] = "mg C/m2/day"
 
-    variable_abbrev[323] = "jrivlabileDOM_NO_N"
+    variable_abbrev[323] = "jrivr1n"
     variable_names[323] = "flux of Labile Dissolved Organic Matter at RIVER"
     variable_units[323] = "mmol N/m2/day"
 
-    variable_abbrev[324] = "jrivlabileDOM_NO_P"
+    variable_abbrev[324] = "jrivr1p"
     variable_names[324] = "flux of Labile Dissolved Organic Matter at RIVER"
     variable_units[324] = "mmol P/m2/day"
 
-    variable_abbrev[325] = "jrivsemilabileDOC_NO_C"
+    variable_abbrev[325] = "jrivr2c"
     variable_names[325] = "flux of Semi-labile Dissolved Organic Carbon at RIVER"
     variable_units[325] = "mg C/m2/day"
 
-    variable_abbrev[326] = "jrivsemirefractDOC_NO_C"
+    variable_abbrev[326] = "jrivr3c"
     variable_names[326] = "flux of Semi-refractory Dissolved Organic Carbon at RIVER"
     variable_units[326] = "mg C/m2/day"
 
-    variable_abbrev[327] = "jrivparticOrganDetritus_NO_C"
+    variable_abbrev[327] = "jrivr6c"
     variable_names[327] = "flux of Particulate Organic Matter at RIVER"
     variable_units[327] = "mg C/m2/day"
 
-    variable_abbrev[328] = "jrivparticOrganDetritus_NO_N"
+    variable_abbrev[328] = "jrivr6n"
     variable_names[328] = "flux of Particulate Organic Matter at RIVER"
     variable_units[328] = "mmol N/m2/day"
 
-    variable_abbrev[329] = "jrivparticOrganDetritus_NO_P"
+    variable_abbrev[329] = "jrivr6p"
     variable_names[329] = "flux of Particulate Organic Matter at RIVER"
     variable_units[329] = "mmol P/m2/day"
 
-    variable_abbrev[330] = "jrivparticOrganDetritus_NO_Si"
+    variable_abbrev[330] = "jrivr6s"
     variable_names[330] = "flux of Particulate Organic Matter at RIVER"
     variable_units[330] = "mmol Si/m2/day"
 
-    variable_abbrev[331] = "jrivdisInorgCarbon_IO_C"
+    variable_abbrev[331] = "jrivo3c"
     variable_names[331] = "flux of Dissolved Inorganic Carbon at RIVER"
     variable_units[331] = "mg C/m2/day"
 
-    variable_abbrev[332] = "jrivtotalAlkalinity_IO"
+    variable_abbrev[332] = "jrivo3h"
     variable_names[332] = "flux of Dissolved Inorganic Carbon at RIVER"
     variable_units[332] = "mmol eq/m2/day"
 

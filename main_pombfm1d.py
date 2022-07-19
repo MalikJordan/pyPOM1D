@@ -262,9 +262,9 @@ for i in range(0, int(iterations_needed)+1):
         #     bfm_phys_vars = calculate_light_distribution(bfm_phys_vars,group)
         bfm_phys_vars = calculate_vertical_extinction(bfm_phys_vars,d3state,1)
         bfm_phys_vars = calculate_light_distribution(bfm_phys_vars,1)
-        bfm_phys_vars.irradiance[0,0] = 0.
-        bfm_phys_vars.irradiance[0,2] = 0.
-        bfm_phys_vars.irradiance[0,3] = 0.
+        # bfm_phys_vars.irradiance[0,0] = 0.
+        # bfm_phys_vars.irradiance[0,2] = 0.
+        # bfm_phys_vars.irradiance[0,3] = 0.
         # Update state variable concentrations
         d3state, d3stateb, d3ave = pom_bfm_1d(i, vertical_grid, time, diffusion, nutrients, bfm_phys_vars, d3state, d3stateb, d3ave)
     

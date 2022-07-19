@@ -38,9 +38,9 @@ p_par = 0.4
 p_eps0 = 0.0435
 p_epsr6 = 0.0001
 p_epsess = 0
-p_pe_labileDOM_NO_C = 0.6
-p_pe_labileDOM_NO_N = 0.72
-p_pe_labileDOM_NO_P = 0.832
+p_pe_r1c = 0.6
+p_pe_r1n = 0.72
+p_pe_r1p = 0.832
 p_qro = 0.5
 p_qon_dentri = 1.25
 p_qon_nitri = 2.0
@@ -61,28 +61,28 @@ p_qpqic = 0.010255
 p_qsqic = 0.0221
 
 # bfm_init_nml
-disOxygen_IO_O0 = 219.0
-phospate_IO_P0 = 0.003
-nitrate_IO_N0 = 0.04
-ammonium_IO_N0 = 0.008
-silicate_IO_Si0 = 0.0
-reductEquiv_IO_R0 = 0.0
-disInorgCarbon_IO_C0 = 0.0
-totalAlkalinity_IO0 = 0.0
-nitrogenSink0 = 0.0
-diatoms_LO_C0 = 0.0
-nanoflagellates_LO_C0 = 11.5
-picophyto_LO_C0 = 0.0
-largephyto_LO_C0 = 0.0
-carnivMesozoo_LO_C0 = 0.0
-omnivMesozoo_LO_C0 = 0.0
-microzoo_LO_C0 = 11.5
-heteroFlagellates_LO_C0 = 0.0
-pelBacteria_LO_C0 = 0.0
-labileDOM_NO_C0 = 12.4
-semilabileDOC_NO_C0 = 0.0
-semirefractDOC_NO_C0 = 0.0
-particOrganDetritus_NO_C0 = 12.4
+o2o0 = 219.0
+n1p0 = 0.003
+n3n0 = 0.04
+n4n0 = 0.008
+n5s0 = 0.0
+n6r0 = 0.0
+o3c0 = 0.0
+o3h0 = 0.0
+o4n0 = 0.0
+p1c0 = 0.0
+p2c0 = 11.5
+p3c0 = 0.0
+p4c0 = 0.0
+z3c0 = 0.0
+z4c0 = 0.0
+z5c0 = 11.5
+z6c0 = 0.0
+b1c0 = 0.0
+r1c0 = 12.4
+r2c0 = 0.0
+r3c0 = 0.0
+r6c0 = 12.4
 
 # bfm_ic_nml
 phyto_input = '/inputs/BFM17_BERM_INIT/init_prof_Pc_150m_bermuda_killworth.da'
@@ -133,9 +133,9 @@ g23h0 = 1192.0
 
 
 # bfm_save_nml
-ave_save = ['ETW', 'disOxygen_IO_O', 'DIC', 'EIR', 'ESW', 'ERHO', 'xEPS', 'Chla', \
-           'phospate_IO_P', 'nitrate_IO_N', 'ammonium_IO_N', 'nanoflagellates_LO_C', 'nanoflagellates_LO_N', 'nanoflagellates_LO_P', 'nanoflagellates_LO_Chl', 'microzoo_LO_C', 'microzoo_LO_N', \
-           'microzoo_LO_P', 'labileDOM_NO_C', 'labileDOM_NO_N', 'labileDOM_NO_P', 'particOrganDetritus_NO_C', 'particOrganDetritus_NO_N', 'particOrganDetritus_NO_P', 'eiPPY(iiP1)', \
+ave_save = ['ETW', 'o2o', 'DIC', 'EIR', 'ESW', 'ERHO', 'xEPS', 'Chla', \
+           'n1p', 'n3n', 'n4n', 'p2c', 'p2n', 'p2p', 'p2l', 'z5c', 'z5n', \
+           'z5p', 'r1c', 'r1n', 'r1p', 'r6c', 'r6n', 'r6p', 'eiPPY(iiP1)', \
            'eiPPY(iiP2)', 'eiPPY(iiP3)', 'eiPPY(iiP4)', 'sunPPY(iiP1)', \
            'sunPPY(iiP2)', 'sunPPY(iiP3)', 'sunPPY(iiP4)', 'ruPTc', \
            'resPP', 'resZT', 'ruPTn', 'ruPTp', 'exPP', 'ruZTc', 'netZTc', \
@@ -153,10 +153,10 @@ ave_save = ['ETW', 'disOxygen_IO_O', 'DIC', 'EIR', 'ESW', 'ERHO', 'xEPS', 'Chla'
 # kl1 = 2             # surf_layers_log_dist
 # kl2 = 150           # bot_layers_log_dist
 # savef = 1
-# nrt_disOxygen_IO_O = 0.06      # relax_vel_oxygen
-# nrt_phospate_IO_P = 0.06      # relax_vel_phosphate
-# nrt_nitrate_IO_N = 0.06      # relax_vel_nitrate
-# nrt_ammonium_IO_N = 0.05      # relax_vel_ammonium
+# nrt_o2o = 0.06      # relax_vel_oxygen
+# nrt_n1p = 0.06      # relax_vel_phosphate
+# nrt_n3n = 0.06      # relax_vel_nitrate
+# nrt_n4n = 0.05      # relax_vel_ammonium
 # nbct = 2            # temp_bc_flag
 # nbcs = 1            # sal_bc_flag
 # nbcbfm = 1          # bfm_bc_flag

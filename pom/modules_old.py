@@ -223,10 +223,10 @@ background_diffusion_momentum = float()
 background_diffusion_temperature = float(); background_diffusion_salinity = float(); background_diffusion_bfm = float()
 
 # NUTRIENT RELAXATION TIME
-NRT_disOxygen_IO_O = float()
-NRT_phospate_IO_P = float()
-NRT_nitrate_IO_N = float()
-NRT_ammonium_IO_N = float()
+NRT_o2o = float()
+NRT_n1p = float()
+NRT_n3n = float()
+NRT_n4n = float()
 
 # PARAMETER FOR THE HASSELIN FILTER
 # (TIME STEP MIXING)
@@ -714,56 +714,56 @@ def forcing_manager(time_loop_counter):
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # !    3d name                                                  description           unit
 # ! ---------- ------------------------------------------------------------ ---------------
-# !        disOxygen_IO_O                                                       Oxygen      mmol O2/m3
-# !        phospate_IO_P                                                    Phosphate       mmol P/m3
-# !        nitrate_IO_N                                                      Nitrate       mmol N/m3
-# !        ammonium_IO_N                                                     Ammonium       mmol N/m3
-# !        nitrogenSink                                                 NitrogenSink       mmol N/m3
-# !        silicate_IO_Si                                                     Silicate      mmol Si/m3
-# !        reductEquiv_IO_R                                        Reduction Equivalents     mmol S--/m3
-# !        pelBacteria_LO_C                               Aerobic and Anaerobic Bacteria         mg C/m3
-# !        pelBacteria_LO_N                               Aerobic and Anaerobic Bacteria       mmol N/m3
-# !        pelBacteria_LO_P                               Aerobic and Anaerobic Bacteria       mmol P/m3
-# !        diatoms_LO_C                                                      Diatoms         mg C/m3
-# !        diatoms_LO_N                                                      Diatoms       mmol N/m3
-# !        diatoms_LO_P                                                      Diatoms       mmol P/m3
-# !        diatoms_LO_Chl                                                      Diatoms       mg Chl/m3
-# !        diatoms_LO_Si                                                      Diatoms      mmol Si/m3
-# !        nanoflagellates_LO_C                                                  Flagellates         mg C/m3
-# !        nanoflagellates_LO_N                                                  Flagellates       mmol N/m3
-# !        nanoflagellates_LO_P                                                  Flagellates       mmol P/m3
-# !        nanoflagellates_LO_Chl                                                  Flagellates       mg Chl/m3
-# !        picophyto_LO_C                                            PicoPhytoplankton         mg C/m3
-# !        picophyto_LO_N                                            PicoPhytoplankton       mmol N/m3
-# !        picophyto_LO_P                                            PicoPhytoplankton       mmol P/m3
-# !        picophyto_LO_Chl                                            PicoPhytoplankton       mg Chl/m3
-# !        largephyto_LO_C                                          Large Phytoplankton         mg C/m3
-# !        largephyto_LO_N                                          Large Phytoplankton       mmol N/m3
-# !        largephyto_LO_P                                          Large Phytoplankton       mmol P/m3
-# !        largephyto_LO_Chl                                          Large Phytoplankton       mg Chl/m3
-# !        carnivMesozoo_LO_C                                  Carnivorous Mesozooplankton         mg C/m3
-# !        carnivMesozoo_LO_N                                  Carnivorous Mesozooplankton       mmol N/m3
-# !        carnivMesozoo_LO_P                                  Carnivorous Mesozooplankton       mmol P/m3
-# !        omnivMesozoo_LO_C                                   Omnivorous Mesozooplankton         mg C/m3
-# !        omnivMesozoo_LO_N                                   Omnivorous Mesozooplankton       mmol N/m3
-# !        omnivMesozoo_LO_P                                   Omnivorous Mesozooplankton       mmol P/m3
-# !        microzoo_LO_C                                             Microzooplankton         mg C/m3
-# !        microzoo_LO_N                                             Microzooplankton       mmol N/m3
-# !        microzoo_LO_P                                             Microzooplankton       mmol P/m3
-# !        heteroFlagellates_LO_C                         Heterotrophic Nanoflagellates (HNAN)         mg C/m3
-# !        heteroFlagellates_LO_N                         Heterotrophic Nanoflagellates (HNAN)       mmol N/m3
-# !        heteroFlagellates_LO_P                         Heterotrophic Nanoflagellates (HNAN)       mmol P/m3
-# !        labileDOM_NO_C                              Labile Dissolved Organic Matter         mg C/m3
-# !        labileDOM_NO_N                              Labile Dissolved Organic Matter       mmol N/m3
-# !        labileDOM_NO_P                              Labile Dissolved Organic Matter       mmol P/m3
-# !        semilabileDOC_NO_C                         Semi-labile Dissolved Organic Carbon         mg C/m3
-# !        semirefractDOC_NO_C                     Semi-refractory Dissolved Organic Carbon         mg C/m3
-# !        particOrganDetritus_NO_C                                   Particulate Organic Matter         mg C/m3
-# !        particOrganDetritus_NO_N                                   Particulate Organic Matter       mmol N/m3
-# !        particOrganDetritus_NO_P                                   Particulate Organic Matter       mmol P/m3
-# !        particOrganDetritus_NO_Si                                   Particulate Organic Matter      mmol Si/m3
-# !        disInorgCarbon_IO_C                                   Dissolved Inorganic Carbon         mg C/m3
-# !        totalAlkalinity_IO                                   Dissolved Inorganic Carbon      mmol eq/m3
+# !        o2o                                                       Oxygen      mmol O2/m3
+# !        n1p                                                    Phosphate       mmol P/m3
+# !        n3n                                                      Nitrate       mmol N/m3
+# !        n4n                                                     Ammonium       mmol N/m3
+# !        o4n                                                 o4n       mmol N/m3
+# !        n5s                                                     Silicate      mmol Si/m3
+# !        n6r                                        Reduction Equivalents     mmol S--/m3
+# !        b1c                               Aerobic and Anaerobic Bacteria         mg C/m3
+# !        b1n                               Aerobic and Anaerobic Bacteria       mmol N/m3
+# !        b1p                               Aerobic and Anaerobic Bacteria       mmol P/m3
+# !        p1c                                                      Diatoms         mg C/m3
+# !        p1n                                                      Diatoms       mmol N/m3
+# !        p1p                                                      Diatoms       mmol P/m3
+# !        p1l                                                      Diatoms       mg Chl/m3
+# !        p1s                                                      Diatoms      mmol Si/m3
+# !        p2c                                                  Flagellates         mg C/m3
+# !        p2n                                                  Flagellates       mmol N/m3
+# !        p2p                                                  Flagellates       mmol P/m3
+# !        p2l                                                  Flagellates       mg Chl/m3
+# !        p3c                                            PicoPhytoplankton         mg C/m3
+# !        p3n                                            PicoPhytoplankton       mmol N/m3
+# !        p3p                                            PicoPhytoplankton       mmol P/m3
+# !        p3l                                            PicoPhytoplankton       mg Chl/m3
+# !        p4c                                          Large Phytoplankton         mg C/m3
+# !        p4n                                          Large Phytoplankton       mmol N/m3
+# !        p4p                                          Large Phytoplankton       mmol P/m3
+# !        p4l                                          Large Phytoplankton       mg Chl/m3
+# !        z3c                                  Carnivorous Mesozooplankton         mg C/m3
+# !        z3n                                  Carnivorous Mesozooplankton       mmol N/m3
+# !        z3p                                  Carnivorous Mesozooplankton       mmol P/m3
+# !        z4c                                   Omnivorous Mesozooplankton         mg C/m3
+# !        z4n                                   Omnivorous Mesozooplankton       mmol N/m3
+# !        z4p                                   Omnivorous Mesozooplankton       mmol P/m3
+# !        z5c                                             Microzooplankton         mg C/m3
+# !        z5n                                             Microzooplankton       mmol N/m3
+# !        z5p                                             Microzooplankton       mmol P/m3
+# !        z6c                         Heterotrophic Nanoflagellates (HNAN)         mg C/m3
+# !        z6n                         Heterotrophic Nanoflagellates (HNAN)       mmol N/m3
+# !        z6p                         Heterotrophic Nanoflagellates (HNAN)       mmol P/m3
+# !        r1c                              Labile Dissolved Organic Matter         mg C/m3
+# !        r1n                              Labile Dissolved Organic Matter       mmol N/m3
+# !        r1p                              Labile Dissolved Organic Matter       mmol P/m3
+# !        r2c                         Semi-labile Dissolved Organic Carbon         mg C/m3
+# !        r3c                     Semi-refractory Dissolved Organic Carbon         mg C/m3
+# !        r6c                                   Particulate Organic Matter         mg C/m3
+# !        r6n                                   Particulate Organic Matter       mmol N/m3
+# !        r6p                                   Particulate Organic Matter       mmol P/m3
+# !        r6s                                   Particulate Organic Matter      mmol Si/m3
+# !        o3c                                   Dissolved Inorganic Carbon         mg C/m3
+# !        o3h                                   Dissolved Inorganic Carbon      mmol eq/m3
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   STATE VARIABLES INFO (ICE)
@@ -832,15 +832,15 @@ if INCLUDE_BEN:
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   GLOBAL DEFINITION OF PELAGIC (D3/D2) STATE VARIABLES
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-ppdisOxygen_IO_O = 1;  ppphospate_IO_P = 2;  ppnitrate_IO_N = 3
-ppammonium_IO_N = 4;  ppnitrogenSink = 5;  ppsilicate_IO_Si = 6;  ppreductEquiv_IO_R = 7;  pppelBacteria_LO_C = 8;  pppelBacteria_LO_N = 9;  pppelBacteria_LO_P = 10; ppdiatoms_LO_C = 11
-ppdiatoms_LO_N = 12; ppdiatoms_LO_P = 13; ppdiatoms_LO_Chl = 14; ppdiatoms_LO_Si = 15; ppnanoflagellates_LO_C = 16; ppnanoflagellates_LO_N = 17; ppnanoflagellates_LO_P = 18
-ppnanoflagellates_LO_Chl = 19; ppP2s = 0;  pppicophyto_LO_C = 20; pppicophyto_LO_N = 21; pppicophyto_LO_P = 22; pppicophyto_LO_Chl = 23; ppP3s = 0
-pplargephyto_LO_C = 24; pplargephyto_LO_N = 25; pplargephyto_LO_P = 26; pplargephyto_LO_Chl = 27; ppP4s = 0;  ppcarnivMesozoo_LO_C = 28; ppcarnivMesozoo_LO_N = 29
-ppcarnivMesozoo_LO_P = 30; ppomnivMesozoo_LO_C = 31; ppomnivMesozoo_LO_N = 32; ppomnivMesozoo_LO_P = 33; ppmicrozoo_LO_C = 34; ppmicrozoo_LO_N = 35; ppmicrozoo_LO_P = 36
-ppheteroFlagellates_LO_C = 37; ppheteroFlagellates_LO_N = 38; ppheteroFlagellates_LO_P = 39; pplabileDOM_NO_C = 40; pplabileDOM_NO_N = 41; pplabileDOM_NO_P = 42; ppR1s = 0
-ppsemilabileDOC_NO_C = 43; ppR2n = 0;  ppR2p = 0;  ppR2s = 0;  ppsemirefractDOC_NO_C = 44; ppR3n = 0;  ppR3p = 0; ppR3s = 0
-ppparticOrganDetritus_NO_C = 45; ppparticOrganDetritus_NO_N = 46; ppparticOrganDetritus_NO_P = 47; ppparticOrganDetritus_NO_Si = 48; ppdisInorgCarbon_IO_C = 49; pptotalAlkalinity_IO = 50
+ppo2o = 1;  ppn1p = 2;  ppn3n = 3
+ppn4n = 4;  ppo4n = 5;  ppn5s = 6;  ppn6r = 7;  ppb1c = 8;  ppb1n = 9;  ppb1p = 10; ppp1c = 11
+ppp1n = 12; ppp1p = 13; ppp1l = 14; ppp1s = 15; ppp2c = 16; ppp2n = 17; ppp2p = 18
+ppp2l = 19; ppP2s = 0;  ppp3c = 20; ppp3n = 21; ppp3p = 22; ppp3l = 23; ppP3s = 0
+ppp4c = 24; ppp4n = 25; ppp4p = 26; ppp4l = 27; ppP4s = 0;  ppz3c = 28; ppz3n = 29
+ppz3p = 30; ppz4c = 31; ppz4n = 32; ppz4p = 33; ppz5c = 34; ppz5n = 35; ppz5p = 36
+ppz6c = 37; ppz6n = 38; ppz6p = 39; ppr1c = 40; ppr1n = 41; ppr1p = 42; ppR1s = 0
+ppr2c = 43; ppR2n = 0;  ppR2p = 0;  ppR2s = 0;  ppr3c = 44; ppR3n = 0;  ppR3p = 0; ppR3s = 0
+ppr6c = 45; ppr6n = 46; ppr6p = 47; ppr6s = 48; ppo3c = 49; ppo3h = 50
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #   GLOBAL DEFINITION OF SEAICE (D2) STATE VARIABLES
@@ -925,9 +925,9 @@ iiInorganic        = 1; iiO3 = 1
 # !      cxoO2                                            Oxygen Saturation      mmol O2/m3
 # !     eO2mO2                                   Relative Oxygen saturation               -
 # !       Chla                                                Chlorophyll-a       mg Chl/m3
-# !    flPTreductEquiv_IO_R                        Pelagic Anaerobic Mineralization Rate    mmol O2/m3/d
-# !    flN3nitrogenSink                                 Pelagic Denitrification Rate     mmol N/m3/d
-# !    flammonium_IO_Nitrate_IO_N                                   Pelagic Nitrification Rate     mmol N/m3/d
+# !    flPTn6r                        Pelagic Anaerobic Mineralization Rate    mmol O2/m3/d
+# !    flN3o4n                                 Pelagic Denitrification Rate     mmol N/m3/d
+# !    fln4n3n                                   Pelagic Nitrification Rate     mmol N/m3/d
 # !     sediR2                                  Detritus sedimentation rate             m/d
 # !     sediR6                                  Detritus sedimentation rate             m/d
 # !       xEPS                                 Total Extinction Coefficient             1/m
@@ -996,8 +996,8 @@ ppETW     = 1;  ppESW     = 2;  ppERHO    = 3;  ppEIR = 4
 ppESS     = 5;  ppexud    = 6;  ppDepth   = 7;  ppVolume  = 8;  ppArea     = 9;  ppDIC   = 10; ppCO2   = 11
 pppCO2    = 12; ppHCO3    = 13; ppCO3     = 14; ppALK     = 15; pppH       = 16; ppOCalc = 17; ppOArag = 18
 ppEPR     = 19; pptotpelc = 20; pptotpeln = 21; pptotpelp = 22; pptotpels  = 23
-ppcxoO2   = 24; ppeO2mO2  = 25; ppChla    = 26; ppflPTreductEquiv_IO_R = 27; ppflN3nitrogenSink  = 28
-ppflammonium_IO_Nitrate_IO_N = 29; ppsediR2  = 30; ppsediR6  = 31; ppxEPS    = 32; ppABIO_eps = 33
+ppcxoO2   = 24; ppeO2mO2  = 25; ppChla    = 26; ppflPTn6r = 27; ppflN3o4n  = 28
+ppfln4n3n = 29; ppsediR2  = 30; ppsediR6  = 31; ppxEPS    = 32; ppABIO_eps = 33
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # !    2d name                                                  description           unit
@@ -1096,7 +1096,7 @@ if INCLUDE_BEN:
 # FUNCTIONS DEFINED IN MODULEMEM
 def ppPelBacteria(n,constituent):
 
-    pointers = [pppelBacteria_LO_C, pppelBacteria_LO_N, pppelBacteria_LO_P, 0., 0., 0.]
+    pointers = [ppb1c, ppb1n, ppb1p, 0., 0., 0.]
 
     if n > 1 or n == 0:
         ppPelBacteria = 0
@@ -1110,10 +1110,10 @@ def ppPelBacteria(n,constituent):
 
 def ppPhytoPlankton(n,constituent):
 
-    pointers = [ppdiatoms_LO_C, ppdiatoms_LO_N, ppdiatoms_LO_P, ppdiatoms_LO_Chl, ppdiatoms_LO_Si, 0.,
-                ppnanoflagellates_LO_C, ppnanoflagellates_LO_N, ppnanoflagellates_LO_P, ppnanoflagellates_LO_Chl, 0.   , 0.,
-                pppicophyto_LO_C, pppicophyto_LO_N, pppicophyto_LO_P, pppicophyto_LO_Chl, 0.   , 0.,
-                pplargephyto_LO_C, pplargephyto_LO_N, pplargephyto_LO_P, pplargephyto_LO_Chl, 0.   , 0.]
+    pointers = [ppp1c, ppp1n, ppp1p, ppp1l, ppp1s, 0.,
+                ppp2c, ppp2n, ppp2p, ppp2l, 0.   , 0.,
+                ppp3c, ppp3n, ppp3p, ppp3l, 0.   , 0.,
+                ppp4c, ppp4n, ppp4p, ppp4l, 0.   , 0.]
 
     if n > 4 or n == 0:
         ppPhytoPlankton = 0
@@ -1127,8 +1127,8 @@ def ppPhytoPlankton(n,constituent):
 
 def ppMesoZooPlankton(n,constituent):
 
-    pointers = [ppcarnivMesozoo_LO_C, ppcarnivMesozoo_LO_N, ppcarnivMesozoo_LO_P, 0., 0., 0.,
-                ppomnivMesozoo_LO_C, ppomnivMesozoo_LO_N, ppomnivMesozoo_LO_P, 0., 0., 0.]
+    pointers = [ppz3c, ppz3n, ppz3p, 0., 0., 0.,
+                ppz4c, ppz4n, ppz4p, 0., 0., 0.]
 
     if n > 2 or n == 0:
         ppMesoZooPlankton = 0
@@ -1142,8 +1142,8 @@ def ppMesoZooPlankton(n,constituent):
 
 def ppMicroZooPlankton(n,constituent):
 
-    pointers = [ppmicrozoo_LO_C, ppmicrozoo_LO_N, ppmicrozoo_LO_P, 0., 0., 0.,
-                ppheteroFlagellates_LO_C, ppheteroFlagellates_LO_N, ppheteroFlagellates_LO_P, 0., 0., 0.]
+    pointers = [ppz5c, ppz5n, ppz5p, 0., 0., 0.,
+                ppz6c, ppz6n, ppz6p, 0., 0., 0.]
 
     if n > 2 or n == 0:
         ppMicroZooPlankton = 0
@@ -1157,10 +1157,10 @@ def ppMicroZooPlankton(n,constituent):
 
 def ppPelDetritus(n,constituent):
 
-    pointers = [pplabileDOM_NO_C, pplabileDOM_NO_N, pplabileDOM_NO_P, 0.   , 0.   , 0.,
-                ppsemilabileDOC_NO_C, 0.   , 0.   , 0.   , 0.   , 0.,
-                ppsemirefractDOC_NO_C, 0.   , 0.   , 0.   , 0.   , 0.,
-                ppparticOrganDetritus_NO_C, ppparticOrganDetritus_NO_N, ppparticOrganDetritus_NO_P, 0.   , ppparticOrganDetritus_NO_Si, 0.]
+    pointers = [ppr1c, ppr1n, ppr1p, 0.   , 0.   , 0.,
+                ppr2c, 0.   , 0.   , 0.   , 0.   , 0.,
+                ppr3c, 0.   , 0.   , 0.   , 0.   , 0.,
+                ppr6c, ppr6n, ppr6p, 0.   , ppr6s, 0.]
 
     if n > 4 or n == 0:
         ppPelDetritus = 0
@@ -1266,9 +1266,9 @@ check_fixed_quota = 0
 # ! p_epsChla   [m2/mgChla]    Chla-specific extinction coefficient
 # ! p_epsR6      [m2/mgC]      Specific attenuation coefficient of particulate
 # !                            detritus
-# ! p_pe_labileDOM_NO_C     [-]           Fractional content of C in cytoplasm
-# ! p_pe_labileDOM_NO_N     [-]           Fractional content of N in cytoplasm
-# ! p_pe_labileDOM_NO_P     [-]           Fractional content of P in cytoplasm
+# ! p_pe_r1c     [-]           Fractional content of C in cytoplasm
+# ! p_pe_r1n     [-]           Fractional content of N in cytoplasm
+# ! p_pe_r1p     [-]           Fractional content of P in cytoplasm
 # ! p_qro        [mmolHS-/     Stoichiometric coefficient for
 # !               mmolO2]      anaerobic reactions
 # ! p_qon_dentri [mmolO2/      Stoichiometric coefficient for
@@ -1287,9 +1287,9 @@ p_eps0       = 0.04
 p_epsESS     = 0.04E-03
 p_epsChla    = 0.03
 p_epsR6      = 0.1E-03
-p_pe_labileDOM_NO_C     = 0.60
-p_pe_labileDOM_NO_N     = 0.72
-p_pe_labileDOM_NO_P     = 0.832
+p_pe_r1c     = 0.60
+p_pe_r1n     = 0.72
+p_pe_r1p     = 0.832
 p_pe_R1s     = 0.06
 p_qro        = 0.50
 p_qon_dentri = 1.25

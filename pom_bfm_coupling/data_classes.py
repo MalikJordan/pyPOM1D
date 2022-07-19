@@ -21,9 +21,9 @@ class BfmPhysicalVariableData:
     # def __init__(self, temperature=np.zeros(vertical_layers), salinity=np.zeros(vertical_layers), density=np.zeros(vertical_layers), 
     #              suspended_matter=np.zeros(vertical_layers-1), depth=np.zeros(vertical_layers), irradiance=np.zeros(vertical_layers-1), 
     #              vertical_extinction=np.zeros(vertical_layers-1), wind=0, wgen=np.zeros(vertical_layers), weddy=np.zeros(vertical_layers)):
-    def __init__(self, temperature=np.zeros(vertical_layers), salinity=np.zeros(vertical_layers), density=np.zeros(vertical_layers), 
-                 suspended_matter=np.zeros(num_boxes), depth=np.zeros(vertical_layers), irradiance=np.zeros((num_boxes,4)), 
-                 vertical_extinction=np.zeros((num_boxes,4)), wind=0, wgen=np.zeros(vertical_layers), weddy=np.zeros(vertical_layers)):
+    def __init__(self, temperature=np.zeros(num_boxes), salinity=np.zeros(num_boxes), density=np.zeros(num_boxes), 
+                 suspended_matter=np.zeros(num_boxes), depth=np.zeros(num_boxes), irradiance=np.zeros((num_boxes,4)), 
+                 vertical_extinction=np.zeros((num_boxes,4)), wind=0, wgen=np.zeros(num_boxes), weddy=np.zeros(num_boxes)):
         self.temperature = temperature
         self.salinity = salinity
         self.density = density

@@ -236,15 +236,15 @@ def calculate_mixed_layer_depth(vertical_coordinates_staggered, temperature):
 #     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #     #   GLOBAL DEFINITION OF PELAGIC (D3/D2) STATE VARIABLES (From ModuleMem)
 #     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#     ppdisOxygen_IO_O = 1; ppphospate_IO_P = 2; ppnitrate_IO_N = 3
-#     ppammonium_IO_N = 4; ppnitrogenSink = 5; ppsilicate_IO_Si = 6; ppreductEquiv_IO_R = 7; pppelBacteria_LO_C = 8; pppelBacteria_LO_N = 9; pppelBacteria_LO_P = 10; ppdiatoms_LO_C = 11
-#     ppdiatoms_LO_N = 12; ppdiatoms_LO_P = 13; ppdiatoms_LO_Chl = 14; ppdiatoms_LO_Si = 15; ppnanoflagellates_LO_C = 16; ppnanoflagellates_LO_N = 17; ppnanoflagellates_LO_P = 18
-#     ppnanoflagellates_LO_Chl = 19; ppP2s = 0; pppicophyto_LO_C = 20; pppicophyto_LO_N = 21; pppicophyto_LO_P = 22; pppicophyto_LO_Chl = 23; ppP3s = 0
-#     pplargephyto_LO_C = 24; pplargephyto_LO_N = 25; pplargephyto_LO_P = 26; pplargephyto_LO_Chl = 27; ppP4s = 0; ppcarnivMesozoo_LO_C = 28; ppcarnivMesozoo_LO_N = 29
-#     ppcarnivMesozoo_LO_P = 30; ppomnivMesozoo_LO_C = 31; ppomnivMesozoo_LO_N = 32; ppomnivMesozoo_LO_P = 33; ppmicrozoo_LO_C = 34; ppmicrozoo_LO_N = 35; ppmicrozoo_LO_P = 36
-#     ppheteroFlagellates_LO_C = 37; ppheteroFlagellates_LO_N = 38; ppheteroFlagellates_LO_P = 39; pplabileDOM_NO_C = 40; pplabileDOM_NO_N = 41; pplabileDOM_NO_P = 42; ppR1s = 0
-#     ppsemilabileDOC_NO_C = 43; ppR2n = 0; ppR2p = 0; ppR2s = 0; ppsemirefractDOC_NO_C = 44; ppR3n = 0; ppR3p = 0; ppR3s = 0
-#     ppparticOrganDetritus_NO_C = 45; ppparticOrganDetritus_NO_N = 46; ppparticOrganDetritus_NO_P = 47; ppparticOrganDetritus_NO_Si = 48; ppdisInorgCarbon_IO_C = 49; pptotalAlkalinity_IO = 50
+#     ppo2o = 1; ppn1p = 2; ppn3n = 3
+#     ppn4n = 4; ppo4n = 5; ppn5s = 6; ppn6r = 7; ppb1c = 8; ppb1n = 9; ppb1p = 10; ppp1c = 11
+#     ppp1n = 12; ppp1p = 13; ppp1l = 14; ppp1s = 15; ppp2c = 16; ppp2n = 17; ppp2p = 18
+#     ppp2l = 19; ppP2s = 0; ppp3c = 20; ppp3n = 21; ppp3p = 22; ppp3l = 23; ppP3s = 0
+#     ppp4c = 24; ppp4n = 25; ppp4p = 26; ppp4l = 27; ppP4s = 0; ppz3c = 28; ppz3n = 29
+#     ppz3p = 30; ppz4c = 31; ppz4n = 32; ppz4p = 33; ppz5c = 34; ppz5n = 35; ppz5p = 36
+#     ppz6c = 37; ppz6n = 38; ppz6p = 39; ppr1c = 40; ppr1n = 41; ppr1p = 42; ppR1s = 0
+#     ppr2c = 43; ppR2n = 0; ppR2p = 0; ppR2s = 0; ppr3c = 44; ppR3n = 0; ppR3p = 0; ppR3s = 0
+#     ppr6c = 45; ppr6n = 46; ppr6p = 47; ppr6s = 48; ppo3c = 49; ppo3h = 50
 #
 #     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #     #   LOCAL VARIABLES
@@ -261,10 +261,10 @@ def calculate_mixed_layer_depth(vertical_coordinates_staggered, temperature):
 #     # botflux = float()
 #
 #     # RELAXATION VELOCITY FOR NUT'S
-#     # trelax_disOxygen_IO_O = float()
-#     # trelax_phospate_IO_P = float()
-#     # trelax_nitrate_IO_N = float()
-#     # trelax_ammonium_IO_N = float()
+#     # trelax_o2o = float()
+#     # trelax_n1p = float()
+#     # trelax_n3n = float()
+#     # trelax_n4n = float()
 #
 #     # SEDIMENTATION VELOCITY
 #     sink = np.zeros(vertical_layers)
@@ -280,10 +280,10 @@ def calculate_mixed_layer_depth(vertical_coordinates_staggered, temperature):
 #     #   LOCAL VARIABLES
 #     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #
-#     trelax_disOxygen_IO_O = nrt_disOxygen_IO_O / seconds_per_day
-#     trelax_phospate_IO_P = nrt_phospate_IO_P / seconds_per_day
-#     trelax_nitrate_IO_N = nrt_nitrate_IO_N / seconds_per_day
-#     trelax_ammonium_IO_N = nrt_ammonium_IO_N
+#     trelax_o2o = nrt_o2o / seconds_per_day
+#     trelax_n1p = nrt_n1p / seconds_per_day
+#     trelax_n3n = nrt_n3n / seconds_per_day
+#     trelax_n4n = nrt_n4n
 #
 #     # LOOP OVER BFM STATE VAR'S
 #     for M in range(0,no_d3_box_states):
@@ -307,18 +307,18 @@ def calculate_mixed_layer_depth(vertical_coordinates_staggered, temperature):
 #         #   NUTRIENTS SURFACE AND BOTTOM FLUXES
 #         # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #
-#         if M == ppdisOxygen_IO_O:
-#             surflux = -(jsurdisOxygen_IO_O[0] / seconds_per_day)
-#             botflux = (disOxygen_IO_O[vertical_layers-2] - O2BOTT) * trelax_disOxygen_IO_O
-#         elif M == ppdisInorgCarbon_IO_C:
+#         if M == ppo2o:
+#             surflux = -(jsuro2o[0] / seconds_per_day)
+#             botflux = (o2o[vertical_layers-2] - O2BOTT) * trelax_o2o
+#         elif M == ppo3c:
 #             surflux = zero
-#         elif M == ppphospate_IO_P:
+#         elif M == ppn1p:
 #             surflux = zero
-#             botflux = (phospate_IO_P[vertical_layers-2] - PO4BOTT) * trelax_phospate_IO_P
-#         elif M == ppnitrate_IO_N:
+#             botflux = (n1p[vertical_layers-2] - PO4BOTT) * trelax_n1p
+#         elif M == ppn3n:
 #             surflux = zero
-#             botflux = (nitrate_IO_N[vertical_layers-2] - NO3BOTT) * trelax_nitrate_IO_N
-#         elif M == ppsilicate_IO_Si:
+#             botflux = (n3n[vertical_layers-2] - NO3BOTT) * trelax_n3n
+#         elif M == ppn5s:
 #             surflux = zero
 #         else:
 #             surflux = zero
@@ -337,7 +337,7 @@ def calculate_mixed_layer_depth(vertical_coordinates_staggered, temperature):
 #
 #         # The botflux for Particulate Organic Matter is left equal to ZERO
 #
-#         if M >= ppparticOrganDetritus_NO_C and M <= ppparticOrganDetritus_NO_Si:
+#         if M >= ppr6c and M <= ppr6s:
 #
 #             for i in range(0,vertical_layers-1):
 #                 sink[i] = sink[i] - sediR6[i]/seconds_per_day
@@ -351,15 +351,15 @@ def calculate_mixed_layer_depth(vertical_coordinates_staggered, temperature):
 #
 #         # The botflux for Phytoplankton is left equal to ZERO
 #
-#         if M >= ppdiatoms_LO_C and M <= pplargephyto_LO_Chl:
+#         if M >= ppp1c and M <= ppp4l:
 #
-#             if M in range(ppdiatoms_LO_C,ppdiatoms_LO_Si):
+#             if M in range(ppp1c,ppp1s):
 #                 N = iiP1
-#             elif M in range(ppnanoflagellates_LO_C,ppnanoflagellates_LO_Chl):
+#             elif M in range(ppp2c,ppp2l):
 #                 N = iiP2
-#             elif M in range(pppicophyto_LO_C,pppicophyto_LO_Chl):
+#             elif M in range(ppp3c,ppp3l):
 #                 N = iiP3
-#             elif M in range(pplargephyto_LO_C,pplargephyto_LO_Chl):
+#             elif M in range(ppp4c,ppp4l):
 #                 N = iiP4
 #
 #             for i in range(0,vertical_layers-1):
@@ -399,8 +399,8 @@ def calculate_mixed_layer_depth(vertical_coordinates_staggered, temperature):
 #             D3STATE[M][N] = ffbio[N]
 #
 #     if AssignAirPelFluxesInBFMFlag is False:
-#         jsurdisOxygen_IO_O[:] = zero
-#         jsurdisInorgCarbon_IO_C[:] = zero
+#         jsuro2o[:] = zero
+#         jsuro3c[:] = zero
 #
 #     return
 
