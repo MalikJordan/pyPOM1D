@@ -95,11 +95,12 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state,
         bfm_state_var.forward[:] = 0.
         sinking_velocity[:] = 0.
         POCsink = 0.
-
+        d_dt = np.zeros(vertical_layers-1)
         # LOAD BFM STATE VAR.
         for i in range(0,vertical_layers-1):
             bfm_state_var.current[i] = d3state[i,M]
             bfm_state_var.backward[i] = d3stateb[i,M]
+        d_dt = bfm_rates[M,:]
 
         bfm_state_var.current[vertical_layers-1] = bfm_state_var.current[vertical_layers-2]
         bfm_state_var.backward[vertical_layers-1] = bfm_state_var.backward[vertical_layers-2]
@@ -182,7 +183,9 @@ def calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state,
 
         # SOURCE SPLITTING LEAPFROG INTEGRATION
         for i in range(0,vertical_layers-1):
-            bfm_state_var.forward[i] = bfm_state_var.backward[i] + twice_the_timestep*((bfm_state_var.forward[i]/params_POMBFM.h) + bfm_rates[i,M])
+            # bfm_state_var.forward[i] = bfm_state_var.backward[i] + twice_the_timestep*((bfm_state_var.forward[i]/params_POMBFM.h) + bfm_rates[i,M])
+            bfm_state_var.forward[i] = bfm_state_var.backward[i] + twice_the_timestep*((bfm_state_var.forward[i]/params_POMBFM.h) + d_dt[i])
+        
         # bfm_state_var.forward[vertical_layers-1] = bfm_state_var.forward[vertical_layers-2]
 
         # COMPUTE VERTICAL DIFFUSION AND TERMINATE INTEGRATION
