@@ -1,7 +1,7 @@
 import numpy as np
 from pom.constants import num_boxes
 
-def calculate_oxygen_reaeration(oxygen_reaeration_parameters, environmental_parameters, constant_parameters, conc, temper, salt, wind):
+def calculate_oxygen_reaeration(oxygen_reaeration_parameters, environmental_parameters, constant_parameters, conc, del_z, temper, salt, wind):
     """ calculates the oxygen reaeration between air and water column, 
     as forced by temperature and wind.
     """
@@ -33,5 +33,8 @@ def calculate_oxygen_reaeration(oxygen_reaeration_parameters, environmental_para
     # flux o2 [mmol m^-2 s^-1]
     # dOdt_wind = wind_dependency*(oxy_sat - o2o)/environmental_parameters["del_z"]
     dOdt_wind = wind_dependency*(oxy_sat - o2o)
-    
-    return dOdt_wind
+
+    jsurO2o = np.zeros(num_boxes)
+    jsurO2o[0] = dOdt_wind[0]/del_z[0]
+
+    return (dOdt_wind, jsurO2o)

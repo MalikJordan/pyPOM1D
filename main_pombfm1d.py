@@ -257,11 +257,12 @@ for i in range(0, int(iterations_needed)+1):
         # bfm_phys_vars = calculate_light_distribution(bfm_phys_vars)
 
         # Calculate vertical extinction and update irradiance for each phyto group
-        # for group in range(0,4): # 4 Phytoplankton Groups
-        #     bfm_phys_vars = calculate_vertical_extinction(bfm_phys_vars,d3state,group)
-        #     bfm_phys_vars = calculate_light_distribution(bfm_phys_vars,group)
-        bfm_phys_vars = calculate_vertical_extinction(bfm_phys_vars,d3state,1)
-        bfm_phys_vars = calculate_light_distribution(bfm_phys_vars,1)
+        for group in range(0,4): # 4 Phytoplankton Groups
+            bfm_phys_vars = calculate_vertical_extinction(bfm_phys_vars,d3state,group)
+            bfm_phys_vars = calculate_light_distribution(bfm_phys_vars,group)
+        # bfm_phys_vars = calculate_vertical_extinction(bfm_phys_vars,d3state,1)
+        # bfm_phys_vars = calculate_light_distribution(bfm_phys_vars,1)
+        
         # bfm_phys_vars.irradiance[0,0] = 0.
         # bfm_phys_vars.irradiance[0,2] = 0.
         # bfm_phys_vars.irradiance[0,3] = 0.
@@ -269,19 +270,23 @@ for i in range(0, int(iterations_needed)+1):
         d3state, d3stateb, d3ave = pom_bfm_1d(i, vertical_grid, time, diffusion, nutrients, bfm_phys_vars, d3state, d3stateb, d3ave)
     
 # WRITING OF RESTART
-o2o = d3ave.daily_ave[:,0,:]
+# o2o = d3ave.daily_ave[:,0,:]
+o2o = d3ave.monthly_ave[:,0,0:11]
 fig1 = plt.figure()
 o2o_plot = plt.imshow(o2o)
 fig1.colorbar(o2o_plot)
-plt.xlabel('Time (Days)')
+# plt.xlabel('Time (Days)')
+plt.xlabel('Month')
 plt.ylabel('Depth (m)')
 plt.title('Dissolved Oxygen (mmol O2/m3)')
 
-dic = d3ave.daily_ave[:,48,:]
+# dic = d3ave.daily_ave[:,48,:]
+dic = d3ave.monthly_ave[:,48,0:11]
 fig2 = plt.figure()
 dic_plot = plt.imshow(dic)
 fig2.colorbar(dic_plot)
-plt.xlabel('Time (Days)')
+# plt.xlabel('Time (Days)')
+plt.xlabel('Month')
 plt.ylabel('Depth (m')
 plt.title('Dissolved Inorganic Carbon (mg C/m3)')
 

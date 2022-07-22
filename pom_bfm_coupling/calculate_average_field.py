@@ -42,10 +42,24 @@ def calculate_daily_average_field(d3ave,d3state,case):
         d3ave.single_day_ave[:,:] = d3ave.single_day_ave[:,:] + d3state[:,:]
         d3ave.single_day_ave[:,:] = d3ave.single_day_ave[:,:]/d3ave.count
         d3ave.daily_ave[:,:,d3ave.day] = d3ave.single_day_ave[:,:]
+        d3ave.monthly_ave[:,:,d3ave.month] = d3ave.monthly_ave[:,:,d3ave.month] + d3ave.daily_ave[:,:,d3ave.day]
+        if (d3ave.day != 0) & ((d3ave.day+1) % 30 == 0):
+            # should actually be when (d3ave.day+1) % 30 == 0 because of python '0 first' indexing
+            d3ave.monthly_ave[:,:,d3ave.month] = d3ave.monthly_ave[:,:,d3ave.month]/30
+            d3ave.month += 1
+
         d3ave.day = d3ave.day + 1
         d3ave.single_day_ave[:,:] = 0
     
     elif case == 'Reset':
+        # Output writing and print functions will go here
         d3ave.count = 0
+        d3ave.day = 0
+        d3ave.month = 0
+        d3ave.single_day_ave[:,:] = 0
+        d3ave.daily_ave[:,:,:] = 0
+        d3ave.monthly_ave[:,:,:] = 0
+        
+
 
     return d3ave 

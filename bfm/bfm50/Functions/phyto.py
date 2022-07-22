@@ -100,6 +100,7 @@ def phyto_eqns(conc, phyto_parameters, env_parameters, constant_parameters, del_
         r[i] = xEPS[i,group-1] * del_z[i]
         r[i] = irradiance[i,group-1]/xEPS[i,group-1]/del_z[i]*(1.0 - np.exp(-r[i]))
         irr[i] = max(constant_parameters["p_small"], r[i] * seconds_per_day)
+        # irr[i] = max(constant_parameters["p_small"], r[i])
 
         exponent[i] = pl_pc[i]*phyto_parameters["alpha_chl"]/phyto_parameters["rP0"]*irr[i]     # Compute exponent E_PAR/E_K = alpha0/PBmax (part of eqn. 2.2.4)
 
@@ -270,6 +271,16 @@ def phyto_eqns(conc, phyto_parameters, env_parameters, constant_parameters, del_
         
         # Chlorophyll synthesis from Fortran code Phyto.F90, rate_chl
         dPldt_syn = rho_chl*(photosynthesis - nut_stress_excretion - activity_excretion - activity_rsp)*pc - nut_stress_lysis*pl
+    elif phyto_parameters["chl_switch"] == 3:
+        rho_chl = np.zeros(num_boxes)
+        chl_opt = np.zeros(num_boxes)
+        dPldt_syn = np.zeros(num_boxes)
+        # chl_relax = 0.
+        for i in range(0,num_boxes):
+            rho_chl[i] = phyto_parameters["theta_chl0"]*min(1.0,(photosynthesis[i] - nut_stress_excretion[i] - activity_excretion[i] - activity_rsp[i])*pc[i]/(phyto_parameters["alpha_chl"]*(pl[i] + constant_parameters["p_small"])*irr[i]))
+            chl_opt[i] = phyto_parameters["p_EpEk_or"]*phyto_parameters["rP0"]*pc[i]/(phyto_parameters["alpha_chl"]*irr[i]+constant_parameters["p_small"])
+            # for Phyto2 : chl_opt = 0 & chl_relax = 0 (from Pelagic_Ecology.nml)
+            dPldt_syn[i] = rho_chl[i]*(photosynthesis[i] - nut_stress_excretion[i] - activity_excretion[i] - activity_rsp[i])*pc[i] - (nut_stress_lysis[i] + basal_rsp[i])*pl[i] - max(0.0,pl[i]-chl_opt[i])*phyto_parameters["p_tochl_relt"]
     else:
         sys.exit("Warning: This code does not support other chl systhesis parameterizations")
     

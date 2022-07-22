@@ -69,7 +69,7 @@ def pom_bfm_1d(i, vertical_grid, time, diffusion, nutrients, bfm_phys_vars, d3st
     bfm_rates, dOdt_wind, do3cdt_air_sea_flux = bfm50_rate_eqns(bfm_phys_vars, time, d3state, seasonal_cycle=False)
 
     d3state, d3stateb = calculate_vertical_diffusivity(vertical_grid, diffusion, nutrients, d3state, d3stateb, bfm_rates, bfm_phys_vars, dOdt_wind, do3cdt_air_sea_flux)
-    d3ave.count = d3ave.count + 1
+    d3ave.count += 1
 
     # if i == 0:
     #     TT = time - (params_POMBFM.dti/seconds_per_day)
@@ -82,6 +82,8 @@ def pom_bfm_1d(i, vertical_grid, time, diffusion, nutrients, bfm_phys_vars, d3st
     elif d3ave.count == seconds_per_day/params_POMBFM.dti:
         d3ave = calculate_daily_average_field(d3ave,d3state,'Mean')
         d3ave.count = 0
+    elif d3ave.day == params_POMBFM.idays:
+        d3ave = calculate_daily_average_field(d3ave,d3state,'Reset')
 
     return d3state, d3stateb, d3ave
 
@@ -101,6 +103,18 @@ def calculate_vertical_extinction(bfm_phys_vars, d3state, group):
     elif group == 3: # P4: Large Phytoplankton
         bfm_phys_vars.vertical_extinction[:,group] = bfm_phys_vars.vertical_extinction[:,group] + phyto4_parameters["c_P"] * d3state[:,26]
     
+    # # from CalcVerticalExtinction.F90 line 82
+    # bfm_phys_vars.vertical_extinction[:,group] = env_parameters["p_eps0"] + env_parameters["p_epsESS"]*bfm_phys_vars.suspended_matter + env_parameters["p_epsR6"]*d3state[44,:]
+    # # from CalcVerticalExtinction.F90 line 101 (ChlAttenFlag=1, ChlDynamicsFlag=2)       
+    # if group == 0: # P1: Diatoms
+    #     bfm_phys_vars.vertical_extinction[:,group] = bfm_phys_vars.vertical_extinction[:,group] + phyto1_parameters["c_P"] * d3state[13,:]
+    # elif group == 1: # P2: Flagellates
+    #     bfm_phys_vars.vertical_extinction[:,group] = bfm_phys_vars.vertical_extinction[:,group] + phyto2_parameters["c_P"] * d3state[18,:]
+    # elif group == 2: # P3: PicoPhytoplankton
+    #     bfm_phys_vars.vertical_extinction[:,group] = bfm_phys_vars.vertical_extinction[:,group] + phyto3_parameters["c_P"] * d3state[22,:]
+    # elif group == 3: # P4: Large Phytoplankton
+    #     bfm_phys_vars.vertical_extinction[:,group] = bfm_phys_vars.vertical_extinction[:,group] + phyto4_parameters["c_P"] * d3state[26,:]
+        
     return bfm_phys_vars
 
 

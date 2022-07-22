@@ -395,15 +395,18 @@ def calculate_vertical_temperature_and_salinity_profiles(vertical_grid, diffusio
 
     property.forward[vertical_layers - 2] = (C[vertical_layers - 2] * VHP[vertical_layers - 3] - property.forward[vertical_layers - 2] + (property.bottom_flux * twice_the_timestep / (vertical_grid.vertical_spacing[vertical_layers - 2] * params_POMBFM.h))) / (
             C[vertical_layers - 2] * (1 - VH[vertical_layers - 3]) - 1)
-
+    # property.forward[vertical_layers - 1] = (C[vertical_layers - 1] * VHP[vertical_layers - 2] - property.forward[vertical_layers - 1] + (property.bottom_flux * twice_the_timestep / (vertical_grid.vertical_spacing[vertical_layers - 1] * params_POMBFM.h))) / (
+    #         C[vertical_layers - 1] * (1 - VH[vertical_layers - 2]) - 1)
+    
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     #   APPLY A NON ADIABATIC BOTTOM BOUNDARY CONDITION
     # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-    # for i in range(vertical_layers-2, 0, -1):
-    for i in range(vertical_layers-3, 0, -1):
-        # k = (vertical_layers) - i
-        property.forward[i] = VH[i] * property.forward[i+1] + VHP[i]
+    for i in range(3, vertical_layers):
+    # for i in range(vertical_layers-2, 1, -1):
+        k = (vertical_layers) - i
+        property.forward[k] = VH[k] * property.forward[k+1] + VHP[k]
+        # property.forward[i] = VH[i] * property.forward[i+1] + VHP[i]
 
 
     return property

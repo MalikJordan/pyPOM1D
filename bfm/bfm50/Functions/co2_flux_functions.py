@@ -23,7 +23,8 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
     bt = 2.5*(0.5246 + 1.6256e-2*temper + 4.9946e-4*(temper**2))
 
     # Calculate wind dependency + Chemical enhancement including conversion cm/hr => m/s
-    ken = (bt + co2_flux_parameters["d"]*(wind**2))*np.sqrt(schmidt_ratio_o3c)*constant_parameters["cm2m"]*constant_parameters["hours_per_day"]/constant_parameters["sec_per_day"]
+    # ken = (bt + co2_flux_parameters["d"]*(wind**2))*np.sqrt(schmidt_ratio_o3c)*constant_parameters["cm2m"]*constant_parameters["hours_per_day"]/constant_parameters["sec_per_day"]
+    ken = (bt + co2_flux_parameters["d"]*(wind**2))*np.sqrt(schmidt_ratio_o3c)*constant_parameters["cm2m"]*constant_parameters["hours_per_day"]
 
     # K0, solubility of co2 in the water (K Henry) from Weiss 1974; K0 = [co2]/pco2 [mol kg-1 atm-1]
     tk = (temper + constant_parameters["c_to_kelvin"])
@@ -145,7 +146,7 @@ def calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_p
     # convert flux to units of mg C m^-3 s^-1
     # do3cdt_air_sea_flux = do3cdt_air_sea_flux/constant_parameters["omega_c"]/environmental_parameters["del_z"]
     do3cdt_air_sea_flux = do3cdt_air_sea_flux/constant_parameters["omega_c"]/del_z
-    
+
     return do3cdt_air_sea_flux
     
 def calculate_Hplus(pH, k1, k2, k1p, k2p, k3p, ksi, kw, ks, kf, kb, bt, st, ft, pt, sit, ldic, alk):

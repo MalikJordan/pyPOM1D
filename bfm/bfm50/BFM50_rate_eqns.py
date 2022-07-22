@@ -199,29 +199,45 @@ def bfm50_rate_eqns(bfm_phys_vars, time, d3state, seasonal_cycle=False):
     (dp1cdt_gpp_o3c, dp1cdt_rsp_o3c, dp1cdt_lys_r1c, dp1cdt_lys_r6c, dp1cdt_exu_r2c, dp1ndt_upt_n3n, dp1ndt_upt_n4n, 
      extra_n1, dp1ndt_lys_r1n, dp1ndt_lys_r6n, dp1pdt_upt_n1p, dp1pdt_upt_r1p, dp1pdt_lys_r1p, dp1pdt_lys_r6p, 
      dp1ldt_syn, dp1sdt_upt_n5s, dp1sdt_lys_r6s) = phyto_eqns(d3state, phyto1_prameters, environmental_parameters, constant_parameters, del_z, 1, irradiance, p1c, p1n, p1p, p1l, suspended_sediments, temper, time, xEPS)
-    
+    # (dp1cdt_gpp_o3c, dp1cdt_rsp_o3c, dp1cdt_lys_r1c, dp1cdt_lys_r6c, dp1cdt_exu_r2c, dp1ndt_upt_n3n, dp1ndt_upt_n4n, 
+    #  extra_n1, dp1ndt_lys_r1n, dp1ndt_lys_r6n, dp1pdt_upt_n1p, dp1pdt_upt_r1p, dp1pdt_lys_r1p, dp1pdt_lys_r6p, 
+    #  dp1ldt_syn, dp1sdt_upt_n5s, dp1sdt_lys_r6s) = (np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), 
+    #                                                 np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), 
+    #                                                 np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes))
     # P2: Flagellates terms
     (dp2cdt_gpp_o3c, dp2cdt_rsp_o3c, dp2cdt_lys_r1c, dp2cdt_lys_r6c, dp2cdt_exu_r2c, dp2ndt_upt_n3n, dp2ndt_upt_n4n, 
      extra_n2, dp2ndt_lys_r1n, dp2ndt_lys_r6n, dp2pdt_upt_n1p, dp2pdt_upt_r1p, dp2pdt_lys_r1p, dp2pdt_lys_r6p, 
      dp2ldt_syn, dP2sdt_upt_n5s, dP2sdt_lys_r6s) = phyto_eqns(d3state, phyto2_prameters, environmental_parameters, constant_parameters, del_z, 2, irradiance, p2c, p2n, p2p, p2l, suspended_sediments, temper, time, xEPS)
-
+    np.zeros(num_boxes)
     # P3: PicoPhytoplankton terms
     (dp3cdt_gpp_o3c, dp3cdt_rsp_o3c, dp3cdt_lys_r1c, dp3cdt_lys_r6c, dp3cdt_exu_r2c, dp3ndt_upt_n3n, dp3ndt_upt_n4n, 
      extra_n3, dp3ndt_lys_r1n, dp3ndt_lys_r6n, dp3pdt_upt_n1p, dp3pdt_upt_r1p, dp3pdt_lys_r1p, dp3pdt_lys_r6p, 
      dp3ldt_syn, dP3sdt_upt_n5s, dP3sdt_lys_r6s) = phyto_eqns(d3state, phyto3_prameters, environmental_parameters, constant_parameters, del_z, 3, irradiance, p3c, p3n, p3p, p3l, suspended_sediments, temper, time, xEPS)
-
+    # (dp3cdt_gpp_o3c, dp3cdt_rsp_o3c, dp3cdt_lys_r1c, dp3cdt_lys_r6c, dp3cdt_exu_r2c, dp3ndt_upt_n3n, dp3ndt_upt_n4n, 
+    #  extra_n3, dp3ndt_lys_r1n, dp3ndt_lys_r6n, dp3pdt_upt_n1p, dp3pdt_upt_r1p, dp3pdt_lys_r1p, dp3pdt_lys_r6p, 
+    #  dp3ldt_syn, dP3sdt_upt_n5s, dP3sdt_lys_r6s) = (np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), 
+    #                                                 np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), 
+    #                                                 np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes))
     # P4: Large Phytoplankton terms
     (dp4cdt_gpp_o3c, dp4cdt_rsp_o3c, dp4cdt_lys_r1c, dp4cdt_lys_r6c, dp4cdt_exu_r2c, dp4ndt_upt_n3n, dp4ndt_upt_n4n, 
      extra_n4, dp4ndt_lys_r1n, dp4ndt_lys_r6n, dp4pdt_upt_n1p, dp4pdt_upt_r1p, dp4pdt_lys_r1p, dp4pdt_lys_r6p, 
      dp4ldt_syn, dP4sdt_upt_n5s, dP4sdt_lys_r6s) = phyto_eqns(d3state, phyto4_prameters, environmental_parameters, constant_parameters, del_z, 4, irradiance, p4c, p4n, p4p, p4l, suspended_sediments, temper, time, xEPS)
-
+    # (dp4cdt_gpp_o3c, dp4cdt_rsp_o3c, dp4cdt_lys_r1c, dp4cdt_lys_r6c, dp4cdt_exu_r2c, dp4ndt_upt_n3n, dp4ndt_upt_n4n, 
+    #  extra_n4, dp4ndt_lys_r1n, dp4ndt_lys_r6n, dp4pdt_upt_n1p, dp4pdt_upt_r1p, dp4pdt_lys_r1p, dp4pdt_lys_r6p, 
+    #  dp4ldt_syn, dP4sdt_upt_n5s, dP4sdt_lys_r6s) = (np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), 
+    #                                                 np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), 
+    #                                                 np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes))
     #--------------------------------------------------------------------------
     #------------------------- Bacteria Equations -----------------------------
     #--------------------------------------------------------------------------
     (dBcdt_lys_r1c, dBcdt_lys_r1n, dBcdt_lys_r1p, dBcdt_lys_r6c, dBcdt_lys_r6n, dBcdt_lys_r6p, 
      dBcdt_upt_r1c, dBcdt_upt_r6c, dBpdt_upt_rel_n1p, dBndt_upt_rel_n4n, dBcdt_upt_r2c, dBcdt_upt_r3c, 
      dBcdt_rel_r2c, dBcdt_rel_r3c, dBcdt_rsp_o3c, flPTn6r, f_B_O, f_B_n, f_B_p) = bacteria_eqns(d3state, bacteria_parameters, constant_parameters, environmental_parameters, temper)
-
+    # (dBcdt_lys_r1c, dBcdt_lys_r1n, dBcdt_lys_r1p, dBcdt_lys_r6c, dBcdt_lys_r6n, dBcdt_lys_r6p, 
+    #  dBcdt_upt_r1c, dBcdt_upt_r6c, dBpdt_upt_rel_n1p, dBndt_upt_rel_n4n, dBcdt_upt_r2c, dBcdt_upt_r3c, 
+    #  dBcdt_rel_r2c, dBcdt_rel_r3c, dBcdt_rsp_o3c, flPTn6r, f_B_O, f_B_n, f_B_p) = (np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), 
+    #                                                                                np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), 
+    #                                                                                np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes))
     #--------------------------------------------------------------------------
     #----------------------- Zooplankton Equations ----------------------------
     #--------------------------------------------------------------------------
@@ -235,11 +251,15 @@ def bfm50_rate_eqns(bfm_phys_vars, time, d3state, seasonal_cycle=False):
     # Z3: Carnivorous Mesozooplankton terms
     (dz3cdt_rel_r1c, dz3cdt_rel_r6c, dz3cdt_rsp_o3c, dz3ndt_rel_r1n, dz3ndt_rel_r6n, dz3pdt_rel_r1p, dz3pdt_rel_r6p, 
      dz3pdt_rel_n1p, dz3ndt_rel_n4n) = mesozoo_eqns(d3state, mesozoo3_parameters, constant_parameters, environmental_parameters, z3c, z3n, z3p, ic3, in3, ip3, temper)
-
+    # (dz3cdt_rel_r1c, dz3cdt_rel_r6c, dz3cdt_rsp_o3c, dz3ndt_rel_r1n, dz3ndt_rel_r6n, dz3pdt_rel_r1p, dz3pdt_rel_r6p, 
+    #  dz3pdt_rel_n1p, dz3ndt_rel_n4n) = (np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), 
+    #                                     np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes))
     # Z4: Omnivorous Mesozooplankton terms
     (dz4cdt_rel_r1c, dz4cdt_rel_r6c, dz4cdt_rsp_o3c, dz4ndt_rel_r1n, dz4ndt_rel_r6n, dz4pdt_rel_r1p, dz4pdt_rel_r6p, 
      dz4pdt_rel_n1p, dz4ndt_rel_n4n) = mesozoo_eqns(d3state, mesozoo4_parameters, constant_parameters, environmental_parameters, z4c, z4n, z4p, ic4, in4, ip4, temper)
-
+    # (dz4cdt_rel_r1c, dz4cdt_rel_r6c, dz4cdt_rsp_o3c, dz4ndt_rel_r1n, dz4ndt_rel_r6n, dz4pdt_rel_r1p, dz4pdt_rel_r6p, 
+    #  dz4pdt_rel_n1p, dz4ndt_rel_n4n) = (np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), 
+    #                                     np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes))
     # Z5: Microzooplankton terms
     (dz5cdt_rel_r1c, dz5cdt_rel_r6c, dz5cdt_rsp_o3c, dz5ndt_rel_r1n, dz5ndt_rel_r6n, dz5pdt_rel_r1p, dz5pdt_rel_r6p, 
      dz5pdt_rel_n1p, dz5ndt_rel_n4n) = microzoo_eqns(d3state, microzoo5_parameters, constant_parameters, environmental_parameters, z5c, z5n, z5p, ic5, in5, ip5, temper)
@@ -247,26 +267,29 @@ def bfm50_rate_eqns(bfm_phys_vars, time, d3state, seasonal_cycle=False):
     # Z6: Heterotrophic Nanoflagellates terms
     (dz6cdt_rel_r1c, dz6cdt_rel_r6c, dz6cdt_rsp_o3c, dz6ndt_rel_r1n, dz6ndt_rel_r6n, dz6pdt_rel_r1p, dz6pdt_rel_r6p,  
      dz6pdt_rel_n1p, dz6ndt_rel_n4n) = microzoo_eqns(d3state, microzoo6_parameters, constant_parameters, environmental_parameters, z6c, z6n, z6p, ic6, in6, ip6, temper)
-
+    # (dz6cdt_rel_r1c, dz6cdt_rel_r6c, dz6cdt_rsp_o3c, dz6ndt_rel_r1n, dz6ndt_rel_r6n, dz6pdt_rel_r1p, dz6pdt_rel_r6p,  
+    #  dz6pdt_rel_n1p, dz6ndt_rel_n4n) = (np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes), 
+    #                                     np.zeros(num_boxes), np.zeros(num_boxes), np.zeros(num_boxes))
     #--------------------------------------------------------------------------
     #------------------------ Non-living components ---------------------------
     #--------------------------------------------------------------------------    
-    (dn4ndt_nit_n3n, dn3ndt_denit, dn6rdt_reox, dr6sdt_rmn_n5s) = pel_chem_eqns(pel_chem_parameters, environmental_parameters, constant_parameters, temper, d3state, flPTn6r)
+    (dn4ndt_nit_n3n, dn3ndt_denit, dn6rdt_reox, dr6sdt_rmn_n5s, dr6cdt_remin_o3c, dr1cdt_remin_o3c, dr6cdt_remin_o2o, dr1cdt_remin_o2o, 
+            dr6pdt_remin_n1p, dr1pdt_remin_n1p, dr6ndt_remin_n4n, dr1ndt_remin_n4n) = pel_chem_eqns(pel_chem_parameters, environmental_parameters, constant_parameters, del_z, temper, d3state, flPTn6r)
 
     #---------------------- Oxygen airation by wind ---------------------------
-    dOdt_wind = calculate_oxygen_reaeration(oxygen_reaeration_parameters, environmental_parameters, constant_parameters, d3state, temper, salt, wind)
+    (dOdt_wind, jsurO2o) = calculate_oxygen_reaeration(oxygen_reaeration_parameters, environmental_parameters, constant_parameters, d3state, del_z, temper, salt, wind)
 
     #------------------------------- CO_2 Flux --------------------------------
     do3cdt_air_sea_flux = np.zeros(num_boxes)
-    for i in range(0,num_boxes):
-        conc = d3state[i,:]
-        temp = temper[i]
-        sal = salt[i]
-        dens = rho[i]
-        dz = del_z[i]
-        do3cdt_air_sea_flux[i] = calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_parameters, conc, temp, wind, sal, dens, dz)
+    # for i in range(0,num_boxes):
+    conc = d3state[0,:]
+    temp = temper[0]
+    sal = salt[0]
+    dens = rho[0]
+    dz = del_z[0]
+    do3cdt_air_sea_flux[0] = calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_parameters, conc, temp, wind, sal, dens, dz)
         # do3cdt_air_sea_flux = calculate_co2_flux(co2_flux_parameters, environmental_parameters, constant_parameters, d3state, temper, wind, salt, rho, del_z)
-
+    
     #--------------------------------------------------------------------------
     #----------------------------- Rate Equations -----------------------------
     #--------------------------------------------------------------------------
@@ -276,29 +299,39 @@ def bfm50_rate_eqns(bfm_phys_vars, time, d3state, seasonal_cycle=False):
                constant_parameters["omega_c"]*f_B_O*dBcdt_rsp_o3c - 
                constant_parameters["omega_c"]*(dz3cdt_rsp_o3c + dz4cdt_rsp_o3c + dz5cdt_rsp_o3c + dz6cdt_rsp_o3c) - 
                constant_parameters["omega_n"]*dn4ndt_nit_n3n -
-               (1.0/constant_parameters["omega_r"])*dn6rdt_reox)
+               (1.0/constant_parameters["omega_r"])*dn6rdt_reox - constant_parameters["omega_c"]*(dr6cdt_remin_o2o + dr1cdt_remin_o2o) +
+               jsurO2o)
 
     # Dissolved inorganic nutrient equations
-    dn1p_dt = - (dp1pdt_upt_n1p + dp2pdt_upt_n1p + dp3pdt_upt_n1p + dp4pdt_upt_n1p) + (dBpdt_upt_rel_n1p*insw_vector(dBpdt_upt_rel_n1p)) - ((-1)*f_B_p*dBpdt_upt_rel_n1p*insw_vector(-dBpdt_upt_rel_n1p)) + (dz3pdt_rel_n1p + dz4pdt_rel_n1p + dz5pdt_rel_n1p + dz6pdt_rel_n1p)
+    dn1p_dt = - (dp1pdt_upt_n1p + dp2pdt_upt_n1p + dp3pdt_upt_n1p + dp4pdt_upt_n1p) + (dBpdt_upt_rel_n1p*insw_vector(dBpdt_upt_rel_n1p)) - ((-1)*f_B_p*dBpdt_upt_rel_n1p*insw_vector(-dBpdt_upt_rel_n1p)) + (dz3pdt_rel_n1p + dz4pdt_rel_n1p + dz5pdt_rel_n1p + dz6pdt_rel_n1p) + (dr6pdt_remin_n1p + dr1pdt_remin_n1p)
     dn3n_dt = - (dp1ndt_upt_n3n + dp2ndt_upt_n3n + dp3ndt_upt_n3n + dp4ndt_upt_n3n) + dn4ndt_nit_n3n - dn3ndt_denit
-    dn4n_dt = - (dp1ndt_upt_n4n + dp2ndt_upt_n4n + dp3ndt_upt_n4n + dp4ndt_upt_n4n) + (dBndt_upt_rel_n4n*insw_vector(dBndt_upt_rel_n4n)) - ((-1)*f_B_n*dBndt_upt_rel_n4n*insw_vector(-dBndt_upt_rel_n4n)) + (dz3ndt_rel_n4n + dz4ndt_rel_n4n + dz5ndt_rel_n4n + dz6ndt_rel_n4n) - dn4ndt_nit_n3n
+    dn4n_dt = - (dp1ndt_upt_n4n + dp2ndt_upt_n4n + dp3ndt_upt_n4n + dp4ndt_upt_n4n) + (dBndt_upt_rel_n4n*insw_vector(dBndt_upt_rel_n4n)) - ((-1)*f_B_n*dBndt_upt_rel_n4n*insw_vector(-dBndt_upt_rel_n4n)) + (dz3ndt_rel_n4n + dz4ndt_rel_n4n + dz5ndt_rel_n4n + dz6ndt_rel_n4n) - dn4ndt_nit_n3n + (dr6ndt_remin_n4n + dr1ndt_remin_n4n)
     do4n_dt = dn3ndt_denit
     dn5s_dt = - dp1sdt_upt_n5s + dr6sdt_rmn_n5s
 
     # Reduction equivalents
     dn6r_dt = constant_parameters["omega_r"]*constant_parameters["omega_c"]*(1.0 - f_B_O)*dBcdt_rsp_o3c - constant_parameters["omega_r"]*constant_parameters["omega_dn"]*dn3ndt_denit*insw_vector(-(o2o - n6r)/constant_parameters["omega_r"]) - dn6rdt_reox
+    # dn6r_dt = np.zeros(num_boxes)
 
     # Bacterioplankton
     db1c_dt = dBcdt_upt_r1c + dBcdt_upt_r6c - dBcdt_rsp_o3c - dBcdt_lys_r1c - dBcdt_lys_r6c - (dz5cdt_prd["b1"] + dz6cdt_prd["b1"])
     db1n_dt = - dBcdt_lys_r1n - dBcdt_lys_r6n + (r1n_r1c*dBcdt_upt_r1c) + (r6n_r6c*dBcdt_upt_r6c) - (dBndt_upt_rel_n4n*insw_vector(dBndt_upt_rel_n4n)) + ((-1)*f_B_n*dBndt_upt_rel_n4n*insw_vector(-dBndt_upt_rel_n4n)) - (bn_bc*(dz5cdt_prd["b1"] + dz6cdt_prd["b1"]))
     db1p_dt = (r1p_r1c*dBcdt_upt_r1c) + (r6p_r6c*dBcdt_upt_r6c) - (dBpdt_upt_rel_n1p*insw_vector(dBpdt_upt_rel_n1p)) + ((-1)*f_B_p*dBpdt_upt_rel_n1p*insw_vector(-dBpdt_upt_rel_n1p)) - dBcdt_lys_r1p - dBcdt_lys_r6p - (bp_bc*(dz5cdt_prd["b1"] + dz6cdt_prd["b1"]))
-
+    # db1c_dt = np.zeros(num_boxes)
+    # db1n_dt = np.zeros(num_boxes)
+    # db1p_dt = np.zeros(num_boxes)
+    
     # Phytoplankton
     dp1c_dt = dp1cdt_gpp_o3c - dp1cdt_exu_r2c - dp1cdt_rsp_o3c - dp1cdt_lys_r1c - dp1cdt_lys_r6c - dz3cdt_prd["p1"] - dz4cdt_prd["p1"] - dz5cdt_prd["p1"] - dz6cdt_prd["p1"]
     dp1n_dt = dp1ndt_upt_n3n + dp1ndt_upt_n4n - extra_n1 - dp1ndt_lys_r1n - dp1ndt_lys_r6n - (p1n_p1c*(dz3cdt_prd["p1"] + dz4cdt_prd["p1"] + dz5cdt_prd["p1"] + dz6cdt_prd["p1"]))
     dp1p_dt = dp1pdt_upt_n1p - dp1pdt_upt_r1p - dp1pdt_lys_r1p - dp1pdt_lys_r6p - (p1p_p1c*(dz3cdt_prd["p1"] + dz4cdt_prd["p1"] + dz5cdt_prd["p1"] + dz6cdt_prd["p1"]))
     dp1l_dt = dp1ldt_syn - (p1l_p1c*(dz3cdt_prd["p1"] + dz4cdt_prd["p1"] + dz5cdt_prd["p1"] + dz6cdt_prd["p1"]))
     dp1s_dt = dp1sdt_upt_n5s - dp1sdt_lys_r6s - (p1s_p1c*(dz3cdt_prd["p1"] + dz4cdt_prd["p1"] + dz5cdt_prd["p1"] + dz6cdt_prd["p1"]))
+    # dp1c_dt = np.zeros(num_boxes)
+    # dp1n_dt = np.zeros(num_boxes)
+    # dp1p_dt = np.zeros(num_boxes)
+    # dp1l_dt = np.zeros(num_boxes)
+    # dp1s_dt = np.zeros(num_boxes)
     
     dp2c_dt = dp2cdt_gpp_o3c - dp2cdt_exu_r2c - dp2cdt_rsp_o3c - dp2cdt_lys_r1c - dp2cdt_lys_r6c - dz3cdt_prd["p2"] - dz4cdt_prd["p2"] - dz5cdt_prd["p2"] - dz6cdt_prd["p2"]
     dp2n_dt = dp2ndt_upt_n3n + dp2ndt_upt_n4n - extra_n2 - dp2ndt_lys_r1n - dp2ndt_lys_r6n - (p2n_p2c*(dz3cdt_prd["p2"] + dz4cdt_prd["p2"] + dz5cdt_prd["p2"] + dz6cdt_prd["p2"]))
@@ -309,20 +342,34 @@ def bfm50_rate_eqns(bfm_phys_vars, time, d3state, seasonal_cycle=False):
     dp3n_dt = dp3ndt_upt_n3n + dp3ndt_upt_n4n - extra_n3 - dp3ndt_lys_r1n - dp3ndt_lys_r6n - (p3n_p3c*(dz3cdt_prd["p3"] + dz4cdt_prd["p3"] + dz5cdt_prd["p3"] + dz6cdt_prd["p3"]))
     dp3p_dt = dp3pdt_upt_n1p - dp3pdt_upt_r1p - dp3pdt_lys_r1p - dp3pdt_lys_r6p - (p3p_p3c*(dz3cdt_prd["p3"] + dz4cdt_prd["p3"] + dz5cdt_prd["p3"] + dz6cdt_prd["p3"]))
     dp3l_dt = dp3ldt_syn - (p3l_p3c*(dz3cdt_prd["p3"] + dz4cdt_prd["p3"] + dz5cdt_prd["p3"] + dz6cdt_prd["p3"]))
+    # dp3c_dt = np.zeros(num_boxes)
+    # dp3n_dt = np.zeros(num_boxes)
+    # dp3p_dt = np.zeros(num_boxes)
+    # dp3l_dt = np.zeros(num_boxes)
     
     dp4c_dt = dp4cdt_gpp_o3c - dp4cdt_exu_r2c - dp4cdt_rsp_o3c - dp4cdt_lys_r1c - dp4cdt_lys_r6c - dz3cdt_prd["p4"] - dz4cdt_prd["p4"] - dz5cdt_prd["p4"] - dz6cdt_prd["p4"]
     dp4n_dt = dp4ndt_upt_n3n + dp4ndt_upt_n4n - extra_n4 - dp4ndt_lys_r1n - dp4ndt_lys_r6n - (p4n_p4c*(dz3cdt_prd["p4"] + dz4cdt_prd["p4"] + dz5cdt_prd["p4"] + dz6cdt_prd["p4"]))
     dp4p_dt = dp4pdt_upt_n1p - dp4pdt_upt_r1p - dp4pdt_lys_r1p - dp4pdt_lys_r6p - (p4p_p4c*(dz3cdt_prd["p4"] + dz4cdt_prd["p4"] + dz5cdt_prd["p4"] + dz6cdt_prd["p4"]))
     dp4l_dt = dp4ldt_syn - (p4l_p4c*(dz3cdt_prd["p4"] + dz4cdt_prd["p4"] + dz5cdt_prd["p4"] + dz6cdt_prd["p4"]))
-
+    # dp4c_dt = np.zeros(num_boxes)
+    # dp4n_dt = np.zeros(num_boxes)
+    # dp4p_dt = np.zeros(num_boxes)
+    # dp4l_dt = np.zeros(num_boxes)
+    
     # mesozooplankton
     dz3c_dt = dz3cdt_prd["p1"] + dz3cdt_prd["p2"] + dz3cdt_prd["p3"] + dz3cdt_prd["p4"] + dz3cdt_prd["z4"] + dz3cdt_prd["z5"] + dz3cdt_prd["z6"] - dz4cdt_prd["z3"] - dz3cdt_rel_r1c - dz3cdt_rel_r6c - dz3cdt_rsp_o3c
     dz3n_dt = p1n_p1c*dz3cdt_prd["p1"] + p2n_p2c*dz3cdt_prd["p2"] + p3n_p3c*dz3cdt_prd["p3"] + p4n_p4c*dz3cdt_prd["p4"] + z4n_z4c*dz3cdt_prd["z4"] + z5n_z5c*dz3cdt_prd["z5"] + z6n_z6c*dz3cdt_prd["z6"] - z3n_z3c*dz4cdt_prd["z3"] - dz3ndt_rel_r1n - dz3ndt_rel_r6n - dz3ndt_rel_n4n
     dz3p_dt = p1p_p1c*dz3cdt_prd["p1"] + p2p_p2c*dz3cdt_prd["p2"] + p3p_p3c*dz3cdt_prd["p3"] + p4p_p4c*dz3cdt_prd["p4"] + z4p_z4c*dz3cdt_prd["z4"] + z5p_z5c*dz3cdt_prd["z5"] + z6p_z6c*dz3cdt_prd["z6"] - z3p_z3c*dz4cdt_prd["z3"] - dz3pdt_rel_r1p - dz3pdt_rel_r6p - dz3pdt_rel_n1p
+    # dz3c_dt = np.zeros(num_boxes)
+    # dz3n_dt = np.zeros(num_boxes)
+    # dz3p_dt = np.zeros(num_boxes)
     
     dz4c_dt = dz4cdt_prd["p1"] + dz4cdt_prd["p2"] + dz4cdt_prd["p3"] + dz4cdt_prd["p4"] + dz4cdt_prd["z3"] + dz4cdt_prd["z5"] + dz4cdt_prd["z6"] - dz3cdt_prd["z4"] - dz4cdt_rel_r1c - dz4cdt_rel_r6c - dz4cdt_rsp_o3c
     dz4n_dt = p1n_p1c*dz4cdt_prd["p1"] + p2n_p2c*dz4cdt_prd["p2"] + p3n_p3c*dz4cdt_prd["p3"] + p4n_p4c*dz4cdt_prd["p4"] + z3n_z3c*dz4cdt_prd["z3"] + z5n_z5c*dz4cdt_prd["z5"] + z6n_z6c*dz4cdt_prd["z6"] - z4n_z4c*dz3cdt_prd["z4"] - dz4ndt_rel_r1n - dz4ndt_rel_r6n - dz4ndt_rel_n4n
     dz4p_dt = p1p_p1c*dz4cdt_prd["p1"] + p2p_p2c*dz4cdt_prd["p2"] + p3p_p3c*dz4cdt_prd["p3"] + p4p_p4c*dz4cdt_prd["p4"] + z3p_z3c*dz4cdt_prd["z3"] + z5p_z5c*dz4cdt_prd["z5"] + z6p_z6c*dz4cdt_prd["z6"] - z4p_z4c*dz3cdt_prd["z4"] - dz4pdt_rel_r1p - dz4pdt_rel_r6p - dz4pdt_rel_n1p
+    # dz4c_dt = np.zeros(num_boxes)
+    # dz4n_dt = np.zeros(num_boxes)
+    # dz4p_dt = np.zeros(num_boxes)
     
     # microzooplankton
     dz5c_dt = dz5cdt_prd["b1"] + dz5cdt_prd["p1"] + dz5cdt_prd["p2"] + dz5cdt_prd["p3"] + dz5cdt_prd["p4"] + dz5cdt_prd["z6"] - dz3cdt_prd["z5"] - dz4cdt_prd["z5"] - dz6cdt_prd["z5"] - dz5cdt_rel_r1c - dz5cdt_rel_r6c - dz5cdt_rsp_o3c
@@ -332,34 +379,41 @@ def bfm50_rate_eqns(bfm_phys_vars, time, d3state, seasonal_cycle=False):
     dz6c_dt = dz6cdt_prd["b1"] + dz6cdt_prd["p1"] + dz6cdt_prd["p2"] + dz6cdt_prd["p3"] + dz6cdt_prd["p4"] + dz6cdt_prd["z5"] - dz3cdt_prd["z6"] - dz4cdt_prd["z6"] - dz5cdt_prd["z6"] - dz6cdt_rel_r1c - dz6cdt_rel_r6c - dz6cdt_rsp_o3c
     dz6n_dt = bn_bc*dz6cdt_prd["b1"] + p1n_p1c*dz6cdt_prd["p1"] + p2n_p2c*dz6cdt_prd["p2"] + p3n_p3c*dz6cdt_prd["p3"] + p4n_p4c*dz6cdt_prd["p4"] + z5n_z5c*dz6cdt_prd["z5"] - z6n_z6c*dz3cdt_prd["z6"] - z6n_z6c*dz4cdt_prd["z6"] - z6n_z6c*dz5cdt_prd["z6"] - dz6ndt_rel_r1n - dz6ndt_rel_r6n - dz6ndt_rel_n4n
     dz6p_dt = bp_bc*dz6cdt_prd["b1"] + p1p_p1c*dz6cdt_prd["p1"] + p2p_p2c*dz6cdt_prd["p2"] + p3p_p3c*dz6cdt_prd["p3"] + p4p_p4c*dz6cdt_prd["p4"] + z5p_z5c*dz6cdt_prd["z5"] - z6p_z6c*dz3cdt_prd["z6"] - z6p_z6c*dz4cdt_prd["z6"] - z6p_z6c*dz5cdt_prd["z6"] - dz6pdt_rel_r1p - dz6pdt_rel_r6p - dz6pdt_rel_n1p
-
+    # dz6c_dt = np.zeros(num_boxes)
+    # dz6n_dt = np.zeros(num_boxes)
+    # dz6p_dt = np.zeros(num_boxes)
+    
     # DOM
-    dr1c_dt = (dp1cdt_lys_r1c + dp2cdt_lys_r1c + dp3cdt_lys_r1c + dp4cdt_lys_r1c) + dBcdt_lys_r1c - dBcdt_upt_r1c + (dz5cdt_rel_r1c + dz6cdt_rel_r1c)
-    dr1n_dt = (dp1ndt_lys_r1n + dp2ndt_lys_r1n + dp3ndt_lys_r1n + dp4ndt_lys_r1n) + (extra_n1 + extra_n2 + extra_n3 + extra_n4) + dBcdt_lys_r1n - dBcdt_upt_r1c*r1n_r1c + (dz5ndt_rel_r1n + dz6ndt_rel_r1n)
-    dr1p_dt = (dp1pdt_lys_r1p + dp2pdt_lys_r1p + dp3pdt_lys_r1p + dp4pdt_lys_r1p) + (dp1pdt_upt_r1p + dp2pdt_upt_r1p + dp3pdt_upt_r1p + dp4pdt_upt_r1p) + dBcdt_lys_r1p - dBcdt_upt_r1c*r1p_r1c + (dz5pdt_rel_r1p + dz6pdt_rel_r1p)
+    dr1c_dt = (dp1cdt_lys_r1c + dp2cdt_lys_r1c + dp3cdt_lys_r1c + dp4cdt_lys_r1c) + dBcdt_lys_r1c - dBcdt_upt_r1c + (dz5cdt_rel_r1c + dz6cdt_rel_r1c) - dr1cdt_remin_o3c #  - dr1cdt_remin_o2o
+    dr1n_dt = (dp1ndt_lys_r1n + dp2ndt_lys_r1n + dp3ndt_lys_r1n + dp4ndt_lys_r1n) + (extra_n1 + extra_n2 + extra_n3 + extra_n4) + dBcdt_lys_r1n - dBcdt_upt_r1c*r1n_r1c + (dz5ndt_rel_r1n + dz6ndt_rel_r1n) - dr1ndt_remin_n4n
+    dr1p_dt = (dp1pdt_lys_r1p + dp2pdt_lys_r1p + dp3pdt_lys_r1p + dp4pdt_lys_r1p) + (dp1pdt_upt_r1p + dp2pdt_upt_r1p + dp3pdt_upt_r1p + dp4pdt_upt_r1p) + dBcdt_lys_r1p - dBcdt_upt_r1c*r1p_r1c + (dz5pdt_rel_r1p + dz6pdt_rel_r1p) - dr1pdt_remin_n1p
     dr2c_dt = (dp1cdt_exu_r2c + dp2cdt_exu_r2c + dp3cdt_exu_r2c + dp4cdt_exu_r2c) - dBcdt_upt_r2c + dBcdt_rel_r2c
     dr3c_dt = dBcdt_rel_r3c - dBcdt_upt_r3c
-
+    # dr2c_dt = np.zeros(num_boxes)
+    # dr3c_dt = np.zeros(num_boxes)
+    
     # POM
-    dr6c_dt = (dp1cdt_lys_r6c + dp2cdt_lys_r6c + dp3cdt_lys_r6c + dp4cdt_lys_r6c) + dBcdt_lys_r6c - dBcdt_upt_r6c + (dz3cdt_rel_r6c + dz4cdt_rel_r6c + dz5cdt_rel_r6c + dz6cdt_rel_r6c)
-    dr6n_dt = (dp1ndt_lys_r6n + dp2ndt_lys_r6n + dp3ndt_lys_r6n + dp4ndt_lys_r6n) + dBcdt_lys_r6n - dBcdt_upt_r6c*r6n_r6c + (dz3ndt_rel_r6n + dz4ndt_rel_r6n + dz5ndt_rel_r6n + dz6ndt_rel_r6n)
-    dr6p_dt = (dp1pdt_lys_r6p + dp2pdt_lys_r6p + dp3pdt_lys_r6p + dp4pdt_lys_r6p) + dBcdt_lys_r6p - dBcdt_upt_r6c*r6p_r6c + (dz3pdt_rel_r6p + dz4pdt_rel_r6p + dz5pdt_rel_r6p + dz6pdt_rel_r6p)
+    dr6c_dt = (dp1cdt_lys_r6c + dp2cdt_lys_r6c + dp3cdt_lys_r6c + dp4cdt_lys_r6c) + dBcdt_lys_r6c - dBcdt_upt_r6c + (dz3cdt_rel_r6c + dz4cdt_rel_r6c + dz5cdt_rel_r6c + dz6cdt_rel_r6c) - dr6cdt_remin_o3c #  - dr6cdt_remin_o2o
+    dr6n_dt = (dp1ndt_lys_r6n + dp2ndt_lys_r6n + dp3ndt_lys_r6n + dp4ndt_lys_r6n) + dBcdt_lys_r6n - dBcdt_upt_r6c*r6n_r6c + (dz3ndt_rel_r6n + dz4ndt_rel_r6n + dz5ndt_rel_r6n + dz6ndt_rel_r6n) - dr6ndt_remin_n4n
+    dr6p_dt = (dp1pdt_lys_r6p + dp2pdt_lys_r6p + dp3pdt_lys_r6p + dp4pdt_lys_r6p) + dBcdt_lys_r6p - dBcdt_upt_r6c*r6p_r6c + (dz3pdt_rel_r6p + dz4pdt_rel_r6p + dz5pdt_rel_r6p + dz6pdt_rel_r6p) - dr6pdt_remin_n1p
     dr6s_dt = dp1sdt_lys_r6s - dr6sdt_rmn_n5s + (p1s_p1c*(dz3cdt_prd["p1"] + dz4cdt_prd["p1"] + dz5cdt_prd["p1"] + dz6cdt_prd["p1"]))
-
+    # dr6s_dt = np.zeros(num_boxes)
+    
     # Dissolved inorganic carbon
-    do3c_dt = (-dp1cdt_gpp_o3c + dp1cdt_rsp_o3c) + (-dp2cdt_gpp_o3c + dp2cdt_rsp_o3c) + (-dp3cdt_gpp_o3c + dp3cdt_rsp_o3c) + (-dp4cdt_gpp_o3c + dp4cdt_rsp_o3c) + dBcdt_rsp_o3c + dz3cdt_rsp_o3c + dz4cdt_rsp_o3c + dz5cdt_rsp_o3c + dz6cdt_rsp_o3c
+    do3c_dt = (-dp1cdt_gpp_o3c + dp1cdt_rsp_o3c) + (-dp2cdt_gpp_o3c + dp2cdt_rsp_o3c) + (-dp3cdt_gpp_o3c + dp3cdt_rsp_o3c) + (-dp4cdt_gpp_o3c + dp4cdt_rsp_o3c) + dBcdt_rsp_o3c + dz3cdt_rsp_o3c + dz4cdt_rsp_o3c + dz5cdt_rsp_o3c + dz6cdt_rsp_o3c + (dr6cdt_remin_o3c + dr1cdt_remin_o3c) + do3cdt_air_sea_flux
 
     # Total alkalinity (from Alkalinity.F90)
     if pel_chem_parameters["calc_alkalinity"] and o3c>0.0:
         do3h_dt = -dn3n_dt + dn4n_dt
     else:
-        do3h_dt = 0.0
+        do3h_dt = np.zeros(num_boxes)
+        # do3h_dt = 0.0
 
     rates = np.array([do2o_dt, dn1p_dt, dn3n_dt, dn4n_dt, do4n_dt, dn5s_dt, dn6r_dt, db1c_dt, db1n_dt, db1p_dt, 
             dp1c_dt, dp1n_dt, dp1p_dt, dp1l_dt, dp1s_dt, dp2c_dt, dp2n_dt, dp2p_dt, dp2l_dt, 
             dp3c_dt, dp3n_dt, dp3p_dt, dp3l_dt, dp4c_dt, dp4n_dt, dp4p_dt, dp4l_dt, dz3c_dt, dz3n_dt, dz3p_dt,
             dz4c_dt, dz4n_dt, dz4p_dt, dz5c_dt, dz5n_dt, dz5p_dt, dz6c_dt, dz6n_dt, dz6p_dt, dr1c_dt, dr1n_dt, dr1p_dt, 
-            dr2c_dt, dr3c_dt, dr6c_dt, dr6n_dt, dr6p_dt, dr6s_dt, do3c_dt, do3h_dt])
+            dr2c_dt, dr3c_dt, dr6c_dt, dr6n_dt, dr6p_dt, dr6s_dt, do3c_dt, do3h_dt])/constant_parameters["sec_per_day"]
     
     return rates, dOdt_wind, do3cdt_air_sea_flux
 

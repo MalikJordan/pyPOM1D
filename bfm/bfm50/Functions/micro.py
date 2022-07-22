@@ -55,12 +55,14 @@ def microzoo_eqns(conc, microzoo_parameters, constant_parameters, environmental_
     runp = np.zeros(num_boxes)
     dZpdt_rel_n1p = np.zeros(num_boxes)
     dZndt_rel_n4n = np.zeros(num_boxes)
+    # x = np.zeros(num_boxes)
     for i in range(0,num_boxes):
         runc[i] = max(0.0, i_c[i]*(1.0 - microzoo_parameters["betaZ"])-rrac[i])
         runn[i] = max(0.0, i_n[i]*(1.0 - microzoo_parameters["betaZ"]) + rrsc[i]*zn_zc[i])
         runp[i] = max(0.0, i_p[i]*(1.0 - microzoo_parameters["betaZ"]) + rrsc[i]*zp_zc[i])
+        # x[i] = runn[i]/(constant_parameters["p_small"] + runc[i]) - microzoo_parameters["n_Zopt"]
         dZpdt_rel_n1p[i] = max(0.0, runp[i]/(constant_parameters["p_small"] + runc[i]) - microzoo_parameters["p_Zopt"])*runc[i]   # MicroZoo.F90, rep
         dZndt_rel_n4n[i] = max(0.0, runn[i]/(constant_parameters["p_small"] + runc[i]) - microzoo_parameters["n_Zopt"])*runc[i]   # MicroZoo.F90, ren
-    
+
     return dZcdt_rel_r1c, dZcdt_rel_r6c, dZcdt_rsp_o3c, dZndt_rel_r1n, dZndt_rel_r6n, dZpdt_rel_r1p, dZpdt_rel_r6p, dZpdt_rel_n1p, dZndt_rel_n4n
     

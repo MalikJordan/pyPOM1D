@@ -49,8 +49,10 @@ class NutrientData:
 
 
 class AverageData:
-    def __init__(self,count=0,day=0,single_day_ave=np.zeros((num_boxes,num_d3_box_states)),daily_ave=np.zeros((num_boxes,num_d3_box_states,idays))):
+    def __init__(self,count=0,day=0,month=0,single_day_ave=np.zeros((num_boxes,num_d3_box_states)),daily_ave=np.zeros((num_boxes,num_d3_box_states,idays)),monthly_ave=np.zeros((num_boxes,num_d3_box_states,13))):
         self.count = count
         self.day = day
+        self.month = month
         self.single_day_ave = single_day_ave
         self.daily_ave = daily_ave
+        self.monthly_ave = monthly_ave

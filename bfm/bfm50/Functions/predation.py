@@ -224,12 +224,12 @@ def get_microzoo_predation_terms(conc, microzoo5_parameters, microzoo6_parameter
     available_bact_p6 = zoo_availability_parameters["del_z6b1"]*b1c*capture_efficiencies_z6["b1"]*conc_ratio_p["b1"]
     
     # Phytoplankton LFG: Food availability of prey Phytoplankton for predator Z5 and Z6 (from MicroZoo.F90 'PPyc')
-    available_phyto_c5 = ((zoo_availability_parameters["del_z5p1"]*p1c*capture_efficiencies_z5["p1"]) + (zoo_availability_parameters["del_z3p2"]*p2c*capture_efficiencies_z5["p2"]) + 
-                          (zoo_availability_parameters["del_z3p3"]*p3c*capture_efficiencies_z5["p3"]) + (zoo_availability_parameters["del_z3p4"]*p4c*capture_efficiencies_z5["p4"]))
-    available_phyto_n5 = ((zoo_availability_parameters["del_z5p1"]*p1c*capture_efficiencies_z5["p1"]*conc_ratio_n["p1"]) + (zoo_availability_parameters["del_z3p2"]*p2c*capture_efficiencies_z5["p2"]*conc_ratio_n["p2"]) + 
-                          (zoo_availability_parameters["del_z3p3"]*p3c*capture_efficiencies_z5["p3"]*conc_ratio_n["p3"]) + (zoo_availability_parameters["del_z3p4"]*p4c*capture_efficiencies_z5["p4"]*conc_ratio_n["p4"]))
-    available_phyto_p5 = ((zoo_availability_parameters["del_z5p1"]*p1c*capture_efficiencies_z5["p1"]*conc_ratio_p["p1"]) + (zoo_availability_parameters["del_z3p2"]*p2c*capture_efficiencies_z5["p2"]*conc_ratio_p["p2"]) + 
-                          (zoo_availability_parameters["del_z3p3"]*p3c*capture_efficiencies_z5["p3"]*conc_ratio_p["p3"]) + (zoo_availability_parameters["del_z3p4"]*p4c*capture_efficiencies_z5["p4"]*conc_ratio_p["p4"]))
+    available_phyto_c5 = ((zoo_availability_parameters["del_z5p1"]*p1c*capture_efficiencies_z5["p1"]) + (zoo_availability_parameters["del_z5p2"]*p2c*capture_efficiencies_z5["p2"]) + 
+                          (zoo_availability_parameters["del_z5p3"]*p3c*capture_efficiencies_z5["p3"]) + (zoo_availability_parameters["del_z5p4"]*p4c*capture_efficiencies_z5["p4"]))
+    available_phyto_n5 = ((zoo_availability_parameters["del_z5p1"]*p1c*capture_efficiencies_z5["p1"]*conc_ratio_n["p1"]) + (zoo_availability_parameters["del_z5p2"]*p2c*capture_efficiencies_z5["p2"]*conc_ratio_n["p2"]) + 
+                          (zoo_availability_parameters["del_z5p3"]*p3c*capture_efficiencies_z5["p3"]*conc_ratio_n["p3"]) + (zoo_availability_parameters["del_z5p4"]*p4c*capture_efficiencies_z5["p4"]*conc_ratio_n["p4"]))
+    available_phyto_p5 = ((zoo_availability_parameters["del_z5p1"]*p1c*capture_efficiencies_z5["p1"]*conc_ratio_p["p1"]) + (zoo_availability_parameters["del_z5p2"]*p2c*capture_efficiencies_z5["p2"]*conc_ratio_p["p2"]) + 
+                          (zoo_availability_parameters["del_z5p3"]*p3c*capture_efficiencies_z5["p3"]*conc_ratio_p["p3"]) + (zoo_availability_parameters["del_z5p4"]*p4c*capture_efficiencies_z5["p4"]*conc_ratio_p["p4"]))
     available_phyto_c6 = ((zoo_availability_parameters["del_z6p1"]*p1c*capture_efficiencies_z6["p1"]) + (zoo_availability_parameters["del_z6p2"]*p2c*capture_efficiencies_z6["p2"]) + 
                           (zoo_availability_parameters["del_z6p3"]*p3c*capture_efficiencies_z6["p3"]) + (zoo_availability_parameters["del_z6p4"]*p4c*capture_efficiencies_z6["p4"]))
     available_phyto_n6 = ((zoo_availability_parameters["del_z6p1"]*p1c*capture_efficiencies_z6["p1"]*conc_ratio_n["p1"]) + (zoo_availability_parameters["del_z6p2"]*p2c*capture_efficiencies_z6["p2"]*conc_ratio_n["p2"]) + 

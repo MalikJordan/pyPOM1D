@@ -518,6 +518,73 @@ def set_initial_conditions():
 
     bfm_variables[:,48] = o3c[:]
     bfm_variables[:,49] = o3h[:]
+    
+
+    # bfm_variables = np.zeros((50,vertical_layers))
+    
+    # bfm_variables[0,:] = o2o.transpose()
+    # bfm_variables[1,:] = n1p.transpose()
+    # bfm_variables[2,:] = n3n.transpose()
+    # bfm_variables[3,:] = n4n.transpose()
+    # bfm_variables[4,:] = o4n.transpose()
+    # bfm_variables[5,:] = n5s.transpose()
+    # bfm_variables[6,:] = n6r.transpose()
+
+    # bfm_variables[7,:] = b1c.transpose()
+    # bfm_variables[8,:] = b1n.transpose()
+    # bfm_variables[9,:] = b1p.transpose()
+ 
+    # bfm_variables[10,:] = p1c.transpose()
+    # bfm_variables[11,:] = p1n.transpose()
+    # bfm_variables[12,:] = p1p.transpose()
+    # bfm_variables[13,:] = p1l.transpose()
+    # bfm_variables[14,:] = p1s.transpose()
+ 
+    # bfm_variables[15,:] = p2c.transpose()
+    # bfm_variables[16,:] = p2n.transpose()
+    # bfm_variables[17,:] = p2p.transpose()
+    # bfm_variables[18,:] = p2l.transpose()
+
+    # bfm_variables[19,:] = p3c.transpose()
+    # bfm_variables[20,:] = p3n.transpose()
+    # bfm_variables[21,:] = p3p.transpose()
+    # bfm_variables[22,:] = p3l.transpose()
+
+    # bfm_variables[23,:] = p4c.transpose()
+    # bfm_variables[24,:] = p4n.transpose()
+    # bfm_variables[25,:] = p4p.transpose()
+    # bfm_variables[26,:] = p4l.transpose()
+
+    # bfm_variables[27,:] = z3c.transpose()
+    # bfm_variables[28,:] = z3n.transpose()
+    # bfm_variables[29,:] = z3p.transpose()
+
+    # bfm_variables[30,:] = z4c.transpose()
+    # bfm_variables[31,:] = z4n.transpose()
+    # bfm_variables[32,:] = z4p.transpose()
+ 
+    # bfm_variables[33,:] = z5c.transpose()
+    # bfm_variables[34,:] = z5n.transpose()
+    # bfm_variables[35,:] = z5p.transpose()
+ 
+    # bfm_variables[36,:] = z6c.transpose()
+    # bfm_variables[37,:] = z6n.transpose()
+    # bfm_variables[38,:] = z6p.transpose()
+
+    # bfm_variables[39,:] = r1c.transpose()
+    # bfm_variables[40,:] = r1n.transpose()
+    # bfm_variables[41,:] = r1p.transpose()
+ 
+    # bfm_variables[42,:] = r2c.transpose()
+    # bfm_variables[43,:] = r3c.transpose()
+
+    # bfm_variables[44,:] = r6c.transpose()
+    # bfm_variables[45,:] = r6n.transpose()
+    # bfm_variables[46,:] = r6p.transpose()
+    # bfm_variables[47,:] = r6s.transpose()
+
+    # bfm_variables[48,:] = o3c.transpose()
+    # bfm_variables[49,:] = o3h.transpose()
 
     return bfm_variables
 
